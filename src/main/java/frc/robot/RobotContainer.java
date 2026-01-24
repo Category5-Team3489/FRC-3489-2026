@@ -177,9 +177,9 @@ public class RobotContainer {
     // Change .leftTrigger to what you want it to be to half velocity.
     controller.leftTrigger().whileTrue(DriveCommands.joystickDrive(
             drive,
-            () -> -controller.getLeftY()*1/2,
-            () -> -controller.getLeftX()*1/2,
-            () -> -controller.getRightX()*1/2));
+            () -> -controller.getLeftY()*(1-controller.getLeftTriggerAxis()),
+            () -> -controller.getLeftX()*(1-controller.getLeftTriggerAxis()),
+            () -> -controller.getRightX()*(1-controller.getLeftTriggerAxis())));
 
     // Reset gyro to 0° when B button is pressed
     controller
