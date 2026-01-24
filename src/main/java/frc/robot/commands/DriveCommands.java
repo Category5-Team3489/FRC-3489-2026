@@ -149,6 +149,19 @@ public class DriveCommands {
         // Reset PID controller when command starts
         .beforeStarting(() -> angleController.reset(drive.getRotation().getRadians()));
   }
+  
+  public static ChassisSpeeds getRotationSpeedNeeded(double OrbitSpeed, Translation2d OrbitPoint){
+    // final Translation2d origin = new Translation2d(0,0);
+    // final double radius = OrbitPoint.getDistance(origin);
+    final double slope =
+        1/-(OrbitPoint.getY()/OrbitPoint.getX());
+    final Translation2d unitVector = 
+      new Translation2d(
+        Math.sqrt(1/(slope + 1)),
+        slope*Math.sqrt(1/(slope + 1))
+      );
+    return new ChassisSpeeds(OrbitSpeed * unitVector.getX(), OrbitSpeed * unitVector.getY(),0);
+  }
 
   /**
    * Measures the velocity feedforward constants for the drive motors.
