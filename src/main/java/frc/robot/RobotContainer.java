@@ -174,6 +174,13 @@ public class RobotContainer {
     // Switch to X pattern when X button is pressed
     controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
 
+    // Change .leftTrigger to what you want it to be to half velocity.
+    controller.leftTrigger().whileTrue(DriveCommands.joystickDrive(
+            drive,
+            () -> -controller.getLeftY()*1/2,
+            () -> -controller.getLeftX()*1/2,
+            () -> -controller.getRightX()*1/2));
+
     // Reset gyro to 0° when B button is pressed
     controller
         .b()
