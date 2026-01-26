@@ -40,18 +40,30 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
-
+    
 public class shooter extends SubsystemBase {
     // When called, asks for motor's port and then  creates a motor with the port
-    public shooter(int motorPortAngle, motorPortShoot){
+    public shooter(int motorPortAngle, int motorPortShoot, double distanceFromG){
         private int motorPort1 = motorPortAngle;
         private int motorPort2 = motorPortShoot;
+        private final double distanceFromGround = distanceFromG;
+        private final double HubHeight = 1.829;
     }
     private TalonFX AngleMotor = new TalonFX(motorPort1);
     private TalonFX ShootMotor = new TalonFX(motorPort2);
 
-
-
-
-    
+    public double getNeededAngle(double distance,double initalSpeed, boolean PlusorMinus){
+        // True is plus, false is minus.
+        if(PlusorMinus === true){
+            return Math.atan(
+                ((Math.pow(initalSpeed,2)) + 
+                 (Math.sqrt(Math.pow(initialSpeed,4)-9.8*(9.8*Math.pow(distance, 2) + 2((HubHeight-distanceFromGround)*Math.pow(inital,2))))
+                /(9.8*distance));
+        }else{
+            return Math.atan(
+                ((Math.pow(initalSpeed,2)) - 
+                 (Math.sqrt(Math.pow(initialSpeed,4)-9.8*(9.8*Math.pow(distance, 2) + 2((HubHeight-distanceFromGround)*Math.pow(inital,2))))
+                /(9.8*distance));
+        }
+    }
 }
