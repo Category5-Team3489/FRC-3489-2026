@@ -47,16 +47,18 @@ public class shooter extends SubsystemBase {
     private int motorPort2;
     private final double distanceFromGround;
     private final double HubHeight = 1.829;
+    private TalonFX AngleMotor;
+    private TalonFX ShootMotor;
     
     // When called, asks for motor's port and then  creates a motor with the port
     public shooter(int motorPortAngle, int motorPortShoot, double distanceFromG){
         this.motorPort1 = motorPortAngle;
         this.motorPort2 = motorPortShoot;
         this.distanceFromGround = distanceFromG;
+        this.AngleMotor = new TalonFX(motorPort1);
+        this.ShootMotor = new TalonFX(motorPort2);
     }
-    private TalonFX AngleMotor = new TalonFX(motorPort1);
-    private TalonFX ShootMotor = new TalonFX(motorPort2);
-
+    
     public double getNeededAngle(double distance,double initalSpeed, boolean PlusorMinus){
         // True is plus, false is minus.
         if(PlusorMinus == true){
