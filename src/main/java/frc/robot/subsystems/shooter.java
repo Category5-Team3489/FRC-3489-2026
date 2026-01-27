@@ -50,9 +50,9 @@ public class shooter extends SubsystemBase {
     
     // When called, asks for motor's port and then  creates a motor with the port
     public shooter(int motorPortAngle, int motorPortShoot, double distanceFromG){
-        this.motorPort1 = motorPortAngle
-        this.motorPort2 = motorPortShoot
-        this.distanceFromGround = distanceFromG
+        this.motorPort1 = motorPortAngle;
+        this.motorPort2 = motorPortShoot;
+        this.distanceFromGround = distanceFromG;
     }
     private TalonFX AngleMotor = new TalonFX(motorPort1);
     private TalonFX ShootMotor = new TalonFX(motorPort2);
