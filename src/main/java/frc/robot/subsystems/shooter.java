@@ -61,14 +61,14 @@ public class shooter extends SubsystemBase {
         // True is plus, false is minus.
         if(PlusorMinus == true){
             return Math.atan(
-                ((Math.pow(initalSpeed,2)) + 
-                 (Math.sqrt(Math.pow(initialSpeed,4)-9.8*(9.8*Math.pow(distance, 2) + 2((HubHeight-distanceFromGround)*Math.pow(inital,2))))
-                /(9.8*distance));
+    (Math.pow(initialSpeed, 2) + Math.sqrt(Math.pow(initialSpeed, 4) - 9.8 * (9.8 * Math.pow(distance, 2) + 2 * (HubHeight - distanceFromGround) * Math.pow(initialSpeed, 2)))) 
+    / (9.8 * distance)
+);
         }else{
             return Math.atan(
-                ((Math.pow(initalSpeed,2)) - 
-                 (Math.sqrt(Math.pow(initialSpeed,4)-9.8*(9.8*Math.pow(distance, 2) + 2((HubHeight-distanceFromGround)*Math.pow(inital,2))))
-                /(9.8*distance));
+    (Math.pow(initialSpeed, 2) - Math.sqrt(Math.pow(initialSpeed, 4) - 9.8 * (9.8 * Math.pow(distance, 2) + 2 * (HubHeight - distanceFromGround) * Math.pow(initialSpeed, 2)))) 
+    / (9.8 * distance)
+);
         }
     }
 }
