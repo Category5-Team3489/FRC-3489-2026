@@ -42,12 +42,17 @@ import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
     
 public class shooter extends SubsystemBase {
+    
+    private int motorPort1;
+    private int motorPort2;
+    private final double distanceFromGround;
+    private final double HubHeight = 1.829;
+    
     // When called, asks for motor's port and then  creates a motor with the port
     public shooter(int motorPortAngle, int motorPortShoot, double distanceFromG){
-        private int motorPort1 = motorPortAngle;
-        private int motorPort2 = motorPortShoot;
-        private final double distanceFromGround = distanceFromG;
-        private final double HubHeight = 1.829;
+        this.motorPort1 = motorPortAngle
+        this.motorPort2 = motorPortShoot
+        this.distanceFromGround = distanceFromG
     }
     private TalonFX AngleMotor = new TalonFX(motorPort1);
     private TalonFX ShootMotor = new TalonFX(motorPort2);
