@@ -60,7 +60,7 @@ public class shooter extends SubsystemBase {
         this.ShootMotor = new TalonFX(motorPort2);
     }
     
-    public double getNeededAngle(double distance,double initalSpeed, boolean PlusorMinus){
+    public double getNeededAngle(double distance,double initialSpeed, boolean PlusorMinus){
         // True is plus, false is minus.
         if(PlusorMinus == true){
             return Math.atan(
