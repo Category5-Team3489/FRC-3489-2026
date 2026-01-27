@@ -54,7 +54,7 @@ public class shooter extends SubsystemBase {
 
     public double getNeededAngle(double distance,double initalSpeed, boolean PlusorMinus){
         // True is plus, false is minus.
-        if(PlusorMinus === true){
+        if(PlusorMinus == true){
             return Math.atan(
                 ((Math.pow(initalSpeed,2)) + 
                  (Math.sqrt(Math.pow(initialSpeed,4)-9.8*(9.8*Math.pow(distance, 2) + 2((HubHeight-distanceFromGround)*Math.pow(inital,2))))
