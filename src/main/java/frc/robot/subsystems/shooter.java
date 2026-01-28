@@ -65,6 +65,9 @@ public class shooter extends SubsystemBase {
         this.ShootMotor = new TalonFX(motorPort2);
     }
 
+    // Yo mentor anthony, if you can see this I was wondering
+    // If you could check over this function. If its wrong, 
+    // please tell me why 😭
     public void moveToAngle(double degrees) { 
         double rotations = degrees / 360.0; 
         PositionDutyCycle request = new PositionDutyCycle(rotations);
