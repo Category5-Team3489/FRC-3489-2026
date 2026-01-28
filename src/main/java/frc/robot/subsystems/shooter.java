@@ -40,6 +40,8 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
+
+import com.ctre.phoenix6.controls.PositionDutyCycle;
 import com.ctre.phoenix6.hardware.TalonFX;
     
 public class shooter extends SubsystemBase {
@@ -59,19 +61,27 @@ public class shooter extends SubsystemBase {
         this.AngleMotor = new TalonFX(motorPort1);
         this.ShootMotor = new TalonFX(motorPort2);
     }
+
+    public void moveToAngle(double degrees) { 
+        double rotations = degrees / 360.0; 
+        PositionDutyCycle request = new PositionDutyCycle(rotations);
+        AngleMotor.setControl(request); 
+    }
     
     public double getNeededAngle(double distance,double initialSpeed, boolean PlusorMinus){
         // True is plus, false is minus.
         if(PlusorMinus == true){
-            return Math.atan(
+            return Math.toDegrees(Math.atan(
     (Math.pow(initialSpeed, 2) + Math.sqrt(Math.pow(initialSpeed, 4) - 9.8 * (9.8 * Math.pow(distance, 2) + 2 * (HubHeight - distanceFromGround) * Math.pow(initialSpeed, 2)))) 
-    / (9.8 * distance)
+    / (9.8 * distance))
 );
         }else{
-            return Math.atan(
+            return Math.toDegrees(Math.atan(
     (Math.pow(initialSpeed, 2) - Math.sqrt(Math.pow(initialSpeed, 4) - 9.8 * (9.8 * Math.pow(distance, 2) + 2 * (HubHeight - distanceFromGround) * Math.pow(initialSpeed, 2)))) 
-    / (9.8 * distance)
+    / (9.8 * distance))
 );
         }
     }
+
+    
 }
