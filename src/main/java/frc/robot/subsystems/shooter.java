@@ -2,6 +2,8 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.*;
 
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.PIDConstants;
@@ -35,6 +37,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.Constants.Mode;
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.drive.Drive;
 import frc.robot.util.LocalADStarAK;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -68,6 +71,11 @@ public class shooter extends SubsystemBase {
         AngleMotor.setControl(request); 
     }
     
+    public Command shootAtDistance(double distance) {
+        return Commands.run(() -> ShootMotor.setVoltage(distance*0.3 + 9));
+    }
+    
+
     public double getNeededAngle(double distance,double initialSpeed, boolean PlusorMinus){
         // True is plus, false is minus.
         if(PlusorMinus == true){
