@@ -39,6 +39,12 @@ public class shooter extends SubsystemBase {
     return Commands.run(() -> ShootMotor.setVoltage(distance * 0.3 + 9));
   }
 
+  // Command to move the top motor at a certain speed
+  // I am sick rn so I am not writing comments
+  public Command moveTopMotor(double speed){
+    return Commands.run(() -> AngleMotor.set(speed));
+  }
+
   public double getNeededAngle(double distance, double initialSpeed, boolean PlusorMinus) {
     // True is plus, false is minus.
     if (PlusorMinus == true) {
