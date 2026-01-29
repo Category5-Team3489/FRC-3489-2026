@@ -26,6 +26,7 @@ import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
+import frc.robot.subsystems.intake;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOPhotonVision;
@@ -42,7 +43,7 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   private final Vision vision;
-
+  private final intake Intake;
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
 
@@ -70,6 +71,8 @@ public class RobotContainer {
                 new VisionIOPhotonVision(camera0Name, robotToCamera0),
                 new VisionIOPhotonVision(camera1Name, robotToCamera1));
 
+        Intake = new intake();
+
         // The ModuleIOTalonFXS implementation provides an example implementation for
         // TalonFXS controller connected to a CANdi with a PWM encoder. The
         // implementations
@@ -90,6 +93,8 @@ public class RobotContainer {
         break;
 
       case SIM:
+
+        Intake = new intake();
         // Sim robot, instantiate physics sim IO implementations
         drive =
             new Drive(
@@ -105,9 +110,12 @@ public class RobotContainer {
                 new VisionIOPhotonVisionSim(camera0Name, robotToCamera0, drive::getPose),
                 new VisionIOPhotonVisionSim(camera1Name, robotToCamera1, drive::getPose));
 
+
+
         break;
 
       default:
+        Intake = new intake();
         // Replayed robot, disable IO implementations
         drive =
             new Drive(
@@ -160,8 +168,10 @@ public class RobotContainer {
             () -> -controller.getLeftY(),
             () -> -controller.getLeftX(),
             () -> -controller.getRightX()));
-
+    Intake.setDefaultCommand(Intake.noSpin());
     // Lock to 0° when A button is held
+    controller.rightTrigger().whileTrue(Intake.spinTheStuff());
+
     controller
         .a()
         .whileTrue(
