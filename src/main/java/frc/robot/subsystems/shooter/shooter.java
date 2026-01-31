@@ -41,7 +41,7 @@ public class shooter extends SubsystemBase {
 
   // Command to move the top motor at a certain speed
   // I am sick rn so I am not writing comments
-  public Command moveTopMotor(double speed){
+  public Command moveTopMotor(double speed) {
     return Commands.run(() -> AngleMotor.set(speed));
   }
 

@@ -10,13 +10,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class intake extends SubsystemBase {
   private final TalonFX parker = new TalonFX(22);
 
-  public Command spinTheStuff() {
-    return Commands.run(() -> parker.set(1));
+  public Command spinTheStuff(double input) {
+    return Commands.run(() -> parker.set(input));
   }
 
   public intake() {}
 
   public Command noSpin() {
-    return Commands.run(() -> parker.set(0));
+    return Commands.run(() -> parker.set(0), this);
   }
 }

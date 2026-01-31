@@ -1,14 +1,13 @@
 package frc.robot.subsystems.shooter;
 
-
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class shooterIOSim extends SubsystemBase {
 
@@ -39,7 +38,8 @@ public class shooterIOSim extends SubsystemBase {
   private static final double SHOOT_INERTIA = 0.001;
 
   // When called, creates motor models with reductions
-  public shooterIOSim(double distanceFromG, double angleMotorReduction, double shootMotorReduction) {
+  public shooterIOSim(
+      double distanceFromG, double angleMotorReduction, double shootMotorReduction) {
     this.distanceFromGround = distanceFromG;
 
     // Create DCMotor models and sims using provided reductions.

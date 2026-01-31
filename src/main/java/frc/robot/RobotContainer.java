@@ -93,7 +93,6 @@ public class RobotContainer {
         break;
 
       case SIM:
-
         Intake = new intake();
         // Sim robot, instantiate physics sim IO implementations
         drive =
@@ -109,8 +108,6 @@ public class RobotContainer {
                 drive::addVisionMeasurement,
                 new VisionIOPhotonVisionSim(camera0Name, robotToCamera0, drive::getPose),
                 new VisionIOPhotonVisionSim(camera1Name, robotToCamera1, drive::getPose));
-
-
 
         break;
 
@@ -170,7 +167,7 @@ public class RobotContainer {
             () -> -controller.getRightX()));
     Intake.setDefaultCommand(Intake.noSpin());
     // Lock to 0° when A button is held
-    controller.rightTrigger().whileTrue(Intake.spinTheStuff());
+    controller.rightTrigger().whileTrue(Intake.spinTheStuff(controller.getRightTriggerAxis()));
 
     controller
         .a()
