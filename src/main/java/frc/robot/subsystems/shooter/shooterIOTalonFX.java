@@ -20,12 +20,6 @@ public class shooterIOTalonFX implements shooterIO {
         
     }
 
-    @Override
-    public void setShootMotor(double speed) {
-        // TODO Auto-generated method stub
-        
-    }
-
 
     @Override
     public void stopMotors() {
