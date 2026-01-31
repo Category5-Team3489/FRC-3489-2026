@@ -2,29 +2,26 @@ package frc.robot.subsystems.shooter;
 
 import java.util.logging.Logger;
 
+import org.littletonrobotics.junction.AutoLog;
+
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class shooterIO extends SubsystemBase{
-    private final Inputs inputs = new Inputs();
-    private final int index = 0;
-
-    private static class Inputs {
-        @Override
-        public String toString() {
-            return "Inputs{}";
-        }
+public interface shooterIO{
+    @AutoLog
+    public class shooterIOInputs{
+        public double topMotorCurrent = 0.0;
+        public double bottomMotorCurrent = 0.0;
     }
 
-    private void updateInputs(Inputs inputs) {
-        // Populate inputs from hardware here.
-    }
+    // Update inputs
+    public void updateInputs(shooterIOInputs inputs);
 
-    @Override
-    public void periodic() {
-        updateInputs(inputs);
-        // Replace or reintroduce your logger here; using System.out.println for a safe default.
-        System.out.println("Drive/Module" + Integer.toString(index) + " " + inputs);
-    }
+    // Set motor to angle
+    public void setTopMotor(double speed);
+    public void setBottomMotor(double speed);
+    public void stopMotors();
+    public void shootBall(double speed);
+    public void setShootAngle(double angle);
 }
 
