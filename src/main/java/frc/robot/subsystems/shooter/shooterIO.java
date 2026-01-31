@@ -12,14 +12,15 @@ public interface shooterIO{
     public class shooterIOInputs{
         public double topMotorCurrent = 0.0;
         public double bottomMotorCurrent = 0.0;
+        public double shootAngle = 0.0;
+        public double distanceToTarget = 0.0;
     }
 
     // Update inputs
     public void updateInputs(shooterIOInputs inputs);
 
     // Set motor to angle
-    public void setTopMotor(double speed);
-    public void setBottomMotor(double speed);
+    public void setShootMotor(double speed);
     public void stopMotors();
     public void shootBall(double speed);
     public void setShootAngle(double angle);
