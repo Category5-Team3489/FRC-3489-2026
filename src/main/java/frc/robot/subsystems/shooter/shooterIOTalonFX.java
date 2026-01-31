@@ -17,7 +17,10 @@ public class shooterIOTalonFX implements shooterIO {
     @Override
     public void updateInputs(shooterIOInputs inputs) {
         // TODO Auto-generated method stub
-        
+        inputs.topMotorCurrent = shooterMotor.getSupplyCurrent();
+        inputs.shootAngle = angleMotor.getPosition().toRotations() * 360.0;
+        inputs.bottomMotorCurrent = angleMotor.getSupplyCurrent();
+        inputs.distanceToTarget = 0.0; // This would need a sensor to be implemented
     }
 
 
