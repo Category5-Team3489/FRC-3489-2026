@@ -2,8 +2,6 @@ package frc.robot.subsystems.shooter;
 
 import static edu.wpi.first.units.Units.*;
 
-import com.ctre.phoenix6.controls.PositionDutyCycle;
-import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -13,7 +11,6 @@ public class shooter extends SubsystemBase {
   private final double distanceFromGround;
   private final double HubHeight = 1.829;
   private shooterIO io;
-
 
   // When called, asks for motor's port and then  creates a motor with the port
   public shooter(int motorPortAngle, int motorPortShoot, double distanceFromG) {
@@ -30,7 +27,6 @@ public class shooter extends SubsystemBase {
   public Command shootAtDistance(double distance) {
     return Commands.run(() -> io.shootBall(distance * 0.3 + 9));
   }
-
 
   public double getNeededAngle(double distance, double initialSpeed, boolean PlusorMinus) {
     // True is plus, false is minus.
