@@ -13,8 +13,10 @@ public class shooter extends SubsystemBase {
   private shooterIO io;
 
   // When called, asks for motor's port and then  creates a motor with the port
-  public shooter(int motorPortAngle, int motorPortShoot, double distanceFromG) {
+  public shooter(int motorPortAngle, int motorPortShoot, double distanceFromG, shooterIO shooterIOIo) {
     this.distanceFromGround = distanceFromG;
+    this.io = shooterIOIo;
+
   }
 
   // Yo mentor anthony, if you can see this I was wondering
