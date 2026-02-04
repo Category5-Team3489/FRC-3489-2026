@@ -9,6 +9,10 @@ package frc.robot;
 
 import static frc.robot.subsystems.vision.VisionConstants.*;
 
+import frc.robot.subsystems.shooter.shooter;
+import frc.robot.subsystems.shooter.shooterIO;
+import frc.robot.subsystems.shooter.shooterIOTalonFX;
+import frc.robot.subsystems.shooter.shooterIOSim;
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -44,6 +48,7 @@ public class RobotContainer {
   private final Drive drive;
   private final Vision vision;
   private final intake Intake;
+  private final shooter Shooter;
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
 
@@ -64,7 +69,7 @@ public class RobotContainer {
                 new ModuleIOTalonFX(TunerConstants.FrontRight),
                 new ModuleIOTalonFX(TunerConstants.BackLeft),
                 new ModuleIOTalonFX(TunerConstants.BackRight));
-
+        // Real robot, instantiate hardware IO implementations
         vision =
             new Vision(
                 drive::addVisionMeasurement,
@@ -72,6 +77,9 @@ public class RobotContainer {
                 new VisionIOPhotonVision(camera1Name, robotToCamera1));
 
         Intake = new intake();
+
+        Shooter = new shooter(0.4, 
+            new shooterIOTalonFX(0,0));
 
         // The ModuleIOTalonFXS implementation provides an example implementation for
         // TalonFXS controller connected to a CANdi with a PWM encoder. The
@@ -93,6 +101,9 @@ public class RobotContainer {
         break;
 
       case SIM:
+        
+        Shooter = new shooter(0.4, 
+            new shooterIOSim());
         Intake = new intake();
         // Sim robot, instantiate physics sim IO implementations
         drive =
@@ -112,6 +123,8 @@ public class RobotContainer {
         break;
 
       default:
+        Shooter = new shooter(0.4, 
+            new shooterIOTalonFX(0,0));
         Intake = new intake();
         // Replayed robot, disable IO implementations
         drive =
