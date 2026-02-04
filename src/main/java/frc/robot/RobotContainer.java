@@ -10,7 +10,6 @@ package frc.robot;
 import static frc.robot.subsystems.vision.VisionConstants.*;
 
 import frc.robot.subsystems.shooter.shooter;
-import frc.robot.subsystems.shooter.shooterIO;
 import frc.robot.subsystems.shooter.shooterIOTalonFX;
 import frc.robot.subsystems.shooter.shooterIOSim;
 import com.pathplanner.lib.auto.AutoBuilder;
