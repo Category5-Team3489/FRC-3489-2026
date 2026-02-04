@@ -6,7 +6,7 @@ public interface intakeIO {
         public boolean isBallDetected = false;
     }
 
-    public void spinThatShit(double initialSpeed);
+    public void spinThatStuff(double initialSpeed);
 
     public void stopMotors();
 }
