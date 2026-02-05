@@ -14,10 +14,8 @@ public class intake extends SubsystemBase {
   }
 
   public Command spinTheStuff(double input) {
-    return Commands.run(() -> parker.spinThatStuff());
+    return Commands.run(() -> parker.spinThatStuff(1));
   }
-
-  public intake() {}
 
   public Command noSpin() {
     return Commands.run(() -> parker.stopMotors(), this);
