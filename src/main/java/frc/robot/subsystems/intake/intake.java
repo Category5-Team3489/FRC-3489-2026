@@ -8,15 +8,19 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class intake extends SubsystemBase {
-  private final TalonFX parker = new TalonFX(22);
+  private final IntakeIO parker;
+
+  public intake(IntakeIO given){
+    parker = given;
+  }
 
   public Command spinTheStuff(double input) {
-    return Commands.run(() -> parker.set(input));
+    return Commands.run(() -> parker.spinThatStuff());
   }
 
   public intake() {}
 
   public Command noSpin() {
-    return Commands.run(() -> parker.set(0), this);
+    return Commands.run(() -> parker.stopMotors(), this);
   }
 }
