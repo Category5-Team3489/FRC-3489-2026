@@ -77,7 +77,7 @@ public class RobotContainer {
                 new VisionIOPhotonVision(camera0Name, robotToCamera0),
                 new VisionIOPhotonVision(camera1Name, robotToCamera1));
 
-        Intake = new intake(new intakeIOTalonFX(0, 0));
+        Intake = new intake(new intakeIOTalonFX(0));
 
         Shooter = new shooter(0.4, new shooterIOTalonFX(0, 0));
 
@@ -102,7 +102,7 @@ public class RobotContainer {
 
       case SIM:
         Shooter = new shooter(0.4, new shooterIOSim());
-        Intake = new intake(intakeIOSim());
+        Intake = new intake(new intakeIOSim());
         // Sim robot, instantiate physics sim IO implementations
         drive =
             new Drive(
@@ -122,7 +122,7 @@ public class RobotContainer {
 
       default:
         Shooter = new shooter(0.4, new shooterIOTalonFX(0, 0));
-        Intake = new intake(new intakeIOTalonFX(0, 0));
+        Intake = new intake(new intakeIOTalonFX(0));
         // Replayed robot, disable IO implementations
         drive =
             new Drive(
