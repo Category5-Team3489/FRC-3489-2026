@@ -30,6 +30,9 @@ import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.intake.intake;
+import frc.robot.subsystems.intake.intakeIO;
+import frc.robot.subsystems.intake.intakeIOSim;
+import frc.robot.subsystems.intake.intakeIOTalonFX;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOPhotonVision;
@@ -76,7 +79,7 @@ public class RobotContainer {
                 new VisionIOPhotonVision(camera1Name, robotToCamera1));
 
         Intake = new intake(
-            new IntakeIOTalonFX(0,0)
+            new intakeIOTalonFX(0,0)
         );
 
         Shooter = new shooter(0.4, 
@@ -106,7 +109,7 @@ public class RobotContainer {
         Shooter = new shooter(0.4, 
             new shooterIOSim());
         Intake = new intake(
-            IntakeIOSim()
+            intakeIOSim()
         );
         // Sim robot, instantiate physics sim IO implementations
         drive =
@@ -129,7 +132,7 @@ public class RobotContainer {
         Shooter = new shooter(0.4, 
             new shooterIOTalonFX(0,0));
         Intake = new intake(
-            new IntakeIOTalonFX(0,0)
+            new intakeIOTalonFX(0,0)
         );
         // Replayed robot, disable IO implementations
         drive =
