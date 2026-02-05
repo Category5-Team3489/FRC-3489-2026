@@ -9,9 +9,6 @@ package frc.robot;
 
 import static frc.robot.subsystems.vision.VisionConstants.*;
 
-import frc.robot.subsystems.shooter.shooter;
-import frc.robot.subsystems.shooter.shooterIOTalonFX;
-import frc.robot.subsystems.shooter.shooterIOSim;
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -30,9 +27,11 @@ import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.intake.intake;
-import frc.robot.subsystems.intake.intakeIO;
 import frc.robot.subsystems.intake.intakeIOSim;
 import frc.robot.subsystems.intake.intakeIOTalonFX;
+import frc.robot.subsystems.shooter.shooter;
+import frc.robot.subsystems.shooter.shooterIOSim;
+import frc.robot.subsystems.shooter.shooterIOTalonFX;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOPhotonVision;
@@ -78,12 +77,9 @@ public class RobotContainer {
                 new VisionIOPhotonVision(camera0Name, robotToCamera0),
                 new VisionIOPhotonVision(camera1Name, robotToCamera1));
 
-        Intake = new intake(
-            new intakeIOTalonFX(0,0)
-        );
+        Intake = new intake(new intakeIOTalonFX(0, 0));
 
-        Shooter = new shooter(0.4, 
-            new shooterIOTalonFX(0,0));
+        Shooter = new shooter(0.4, new shooterIOTalonFX(0, 0));
 
         // The ModuleIOTalonFXS implementation provides an example implementation for
         // TalonFXS controller connected to a CANdi with a PWM encoder. The
@@ -105,12 +101,8 @@ public class RobotContainer {
         break;
 
       case SIM:
-        
-        Shooter = new shooter(0.4, 
-            new shooterIOSim());
-        Intake = new intake(
-            intakeIOSim()
-        );
+        Shooter = new shooter(0.4, new shooterIOSim());
+        Intake = new intake(intakeIOSim());
         // Sim robot, instantiate physics sim IO implementations
         drive =
             new Drive(
@@ -129,11 +121,8 @@ public class RobotContainer {
         break;
 
       default:
-        Shooter = new shooter(0.4, 
-            new shooterIOTalonFX(0,0));
-        Intake = new intake(
-            new intakeIOTalonFX(0,0)
-        );
+        Shooter = new shooter(0.4, new shooterIOTalonFX(0, 0));
+        Intake = new intake(new intakeIOTalonFX(0, 0));
         // Replayed robot, disable IO implementations
         drive =
             new Drive(
@@ -212,7 +201,7 @@ public class RobotContainer {
                 () -> -controller.getLeftX() * (1 - controller.getLeftTriggerAxis()),
                 () -> -controller.getRightX() * (1 - controller.getLeftTriggerAxis())));
 
-    // Reset gyro to 0° when B button is pressed
+    // Reset gyro to 0 when B button is pressed
     controller
         .b()
         .onTrue(

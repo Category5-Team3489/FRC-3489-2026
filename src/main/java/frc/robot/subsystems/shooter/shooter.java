@@ -20,7 +20,7 @@ public class shooter extends SubsystemBase {
 
   // Yo mentor anthony, if you can see this I was wondering
   // If you could check over this function. If its wrong,
-  // please tell me why 😭
+  // please tell me why
   public void moveToAngle(double degrees) {
     io.setShootAngle(degrees);
   }
