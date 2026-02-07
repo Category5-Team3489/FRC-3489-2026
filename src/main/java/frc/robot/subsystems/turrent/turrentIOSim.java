@@ -5,9 +5,15 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
+import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 
 public class turrentIOSim implements turrentIO {
   private final turrentIOInputs inputs = new turrentIOInputs();
+  private final Mechanism2d turnMechanism = new Mechanism2d(1,1);
+  private final MechanismRoot2d root = turnMechanism.getRoot("turn root thingamabobimajigger", 0,0);
+  private final MechanismLigament2d turentTurn = root.append(new MechanismLigament2d("turrent direction", 1, 0));
   private DCMotorSim topMotor;
   private final PIDController anglePID = new PIDController(1.0, 0.0, 0.0);
 
