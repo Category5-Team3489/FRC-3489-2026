@@ -9,7 +9,7 @@ public class index extends SubsystemBase{
         io = module;
     }
 
-    public void spinMotor(){
-        io.turnMotor();
+    public void spinMotor(double speed){
+        io.turnMotor(speed);
     }
 }
