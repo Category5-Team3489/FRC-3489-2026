@@ -8,11 +8,17 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class intake extends SubsystemBase {
   private final intakeIO parker;
-
+  private intakeIO.intakeIOInputs inputs = new intakeIO.intakeIOInputs();
   public intake(intakeIO given) {
     parker = given;
   }
-
+  @Override
+  public void periodic() {
+      // TODO Auto-generated method stub
+      super.periodic();
+      parker.updateInputs(inputs);
+      
+  }
   public Command spinTheStuff(double input) {
     return Commands.run(() -> parker.spinThatStuff(1));
   }

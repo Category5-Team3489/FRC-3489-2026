@@ -1,12 +1,18 @@
 package frc.robot.subsystems.intake;
 
+import org.littletonrobotics.junction.AutoLog;
+
 public interface intakeIO {
-  public class intakeIOInputs {
-    public double motorCurrent = 0.0;
-    public boolean isBallDetected = false;
-  }
+    @AutoLog
+    public class intakeIOInputs {
+        public double motorCurrent = 0.0;
+        public boolean isBallDetected = false;
+    }
 
-  public void spinThatStuff(double initialSpeed);
+    // added an update inputs class
+    public void updateInputs(intakeIOInputs inputs);
 
-  public void stopMotors();
+    public void spinThatStuff(double initialSpeed);
+
+    public void stopMotors();
 }

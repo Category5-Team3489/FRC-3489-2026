@@ -14,6 +14,12 @@ public class intakeIOTalonFX implements intakeIO {
   }
 
   @Override
+  public void updateInputs(intakeIOInputs inputs){
+    inputs.isBallDetected = false;
+    inputs.motorCurrent = intakeMotor.get();
+  }
+
+  @Override
   public void stopMotors() {
     intakeMotor.set(0);
   }
