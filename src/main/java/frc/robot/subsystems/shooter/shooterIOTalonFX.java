@@ -8,7 +8,7 @@ public class shooterIOTalonFX implements shooterIO {
   private final TalonFX angleMotor;
   private final TalonFX shooterMotor;
 
-  private final shooterIOInputs inputs = new shooterIOInputs();
+  private final shooterIOInputsAutoLogged inputs = new shooterIOInputsAutoLogged();
 
   public shooterIOTalonFX(int shooterMotorPort, int angleMotorPort) {
     angleMotor = new TalonFX(angleMotorPort);

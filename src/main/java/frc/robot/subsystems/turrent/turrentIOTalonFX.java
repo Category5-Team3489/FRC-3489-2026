@@ -5,7 +5,7 @@ import com.ctre.phoenix6.controls.PositionDutyCycle;
 public class turrentIOTalonFX implements turrentIO {
   // Create motors
   private final com.ctre.phoenix6.hardware.TalonFX topMotor;
-  private final turrentIOInputs inputs = new turrentIOInputs();
+  private final turrentIOInputsAutoLogged inputs = new turrentIOInputsAutoLogged();
 
   public turrentIOTalonFX(int topMotorPort) {
     topMotor = new com.ctre.phoenix6.hardware.TalonFX(topMotorPort);
