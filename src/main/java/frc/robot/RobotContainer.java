@@ -52,8 +52,8 @@ public class RobotContainer {
   private final Vision vision;
   private final intake Intake;
   private final shooter Shooter;
-  private final climber Climber;
-  private final index Index;
+//   private final climber Climber;
+//   private final index Index;
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
 

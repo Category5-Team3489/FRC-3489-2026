@@ -14,7 +14,7 @@ public class turrent extends SubsystemBase {
   @Override
   public void periodic() {
     // TODO Auto-generated method stub
-    io.updateInputs(inputs);    
+    io.updateInputs(inputs);
     super.periodic();
   }
 
