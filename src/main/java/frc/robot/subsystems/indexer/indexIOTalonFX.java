@@ -1,7 +1,7 @@
 package frc.robot.subsystems.indexer;
 
 public class indexIOTalonFX implements indexIO {
-  private final indexIOInputsAutoLogged inputs = new indexIOInputsAutoLogged();
+  private final indexIOInputs inputs = new indexIOInputs();
   private final com.ctre.phoenix6.hardware.TalonFX indexMotor;
 
   public indexIOTalonFX() {
