@@ -7,6 +7,7 @@ public interface turrentIO {
     public class turrentIOInputs {
         public double topMotorCurrent = 0.0;
         public double turrentAngle = 0.0;
+        public double gearRatio = 1.0;
     }
 
     // Update inputs
