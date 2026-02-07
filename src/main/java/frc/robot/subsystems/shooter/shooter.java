@@ -11,13 +11,17 @@ public class shooter extends SubsystemBase {
   private final double distanceFromGround;
   private final double HubHeight = 1.829;
   private shooterIO io;
-
+  private shooterIO.shooterIOInputs inputs = new shooterIO.shooterIOInputs();
   // When called, asks for motor's port and then  creates a motor with the port
   public shooter(double distanceFromG, shooterIO shooterIOIo) {
     this.distanceFromGround = distanceFromG;
     this.io = shooterIOIo;
   }
 
+  public void periodic() {
+    // This method will be called once per scheduler run
+    io.updateInputs(inputs);
+  }
   // Yo mentor anthony, if you can see this I was wondering
   // If you could check over this function. If its wrong,
   // please tell me why
