@@ -5,7 +5,7 @@ import frc.robot.subsystems.turrent.turrentIO.turrentIOInputs;
 
 public class turrent extends SubsystemBase {
   private turrentIO io;
-  private turrentIOInputs inputs = new turrentIOInputs();
+  private turrentIOInputsAutoLogged inputs = new turrentIOInputsAutoLogged();
 
   public turrent(turrentIO given) {
     io = given;

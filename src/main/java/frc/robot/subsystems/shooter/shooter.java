@@ -11,7 +11,7 @@ public class shooter extends SubsystemBase {
   private final double distanceFromGround;
   private final double HubHeight = 1.829;
   private shooterIO io;
-  private shooterIO.shooterIOInputs inputs = new shooterIO.shooterIOInputs();
+  private shooterIOInputsAutoLogged inputs = new shooterIOInputsAutoLogged();
   // When called, asks for motor's port and then  creates a motor with the port
   public shooter(double distanceFromG, shooterIO shooterIOIo) {
     this.distanceFromGround = distanceFromG;
