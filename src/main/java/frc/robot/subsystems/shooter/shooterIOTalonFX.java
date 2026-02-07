@@ -8,6 +8,8 @@ public class shooterIOTalonFX implements shooterIO {
   private final TalonFX angleMotor;
   private final TalonFX shooterMotor;
 
+  private final shooterIOInputs inputs = new shooterIOInputs();
+
   public shooterIOTalonFX(int shooterMotorPort, int angleMotorPort) {
     angleMotor = new TalonFX(angleMotorPort);
     shooterMotor = new TalonFX(shooterMotorPort);
@@ -39,7 +41,7 @@ public class shooterIOTalonFX implements shooterIO {
   @Override
   public void setShootAngle(double degrees) {
     // Check this code fs
-    double rotations = degrees / 360.0;
+    double rotations = (degrees / 360.0) * inputs.gearRatio; // Convert degrees to rotations, accounting for gear ratio
     PositionDutyCycle request = new PositionDutyCycle(rotations);
     angleMotor.setControl(request);
   }

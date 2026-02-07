@@ -9,6 +9,7 @@ public interface shooterIO {
     public double bottomMotorCurrent = 0.0;
     public double shootAngle = 0.0;
     public double distanceToTarget = 0.0;
+    public double gearRatio = 1.0;
   }
 
   // Update inputs
