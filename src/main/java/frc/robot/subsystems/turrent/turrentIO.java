@@ -6,9 +6,7 @@ public interface turrentIO {
     @AutoLog
     public class turrentIOInputs {
         public double topMotorCurrent = 0.0;
-        public double bottomMotorCurrent = 0.0;
         public double turrentAngle = 0.0;
-        public double distanceToTarget = 0.0;
     }
 
     // Update inputs
