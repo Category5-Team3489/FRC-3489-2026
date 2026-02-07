@@ -41,7 +41,9 @@ public class shooterIOTalonFXS implements shooterIO {
   @Override
   public void setShootAngle(double degrees) {
     // Check this code fs
-    double rotations = (degrees / 360.0) * inputs.gearRatio; // Convert degrees to rotations, accounting for gear ratio
+    double rotations =
+        (degrees / 360.0)
+            * inputs.gearRatio; // Convert degrees to rotations, accounting for gear ratio
     PositionDutyCycle request = new PositionDutyCycle(rotations);
     angleMotor.setControl(request);
   }

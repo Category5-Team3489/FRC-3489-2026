@@ -1,10 +1,13 @@
 package frc.robot.subsystems.climber;
 
-public interface climberIO {
-    public class climberIOInputs {
-        public final int motorPort = 0;
-    }
+import org.littletonrobotics.junction.AutoLog;
 
-    // Climbmotor void
-    public void setClimberSpeed(double speed);
+public interface climberIO {
+  @AutoLog
+  public class climberIOInputs {
+    public int motorPort = 0;
+  }
+
+  // Climbmotor void
+  public void setClimberSpeed(double speed);
 }

@@ -3,16 +3,16 @@ package frc.robot.subsystems.turrent;
 import org.littletonrobotics.junction.AutoLog;
 
 public interface turrentIO {
-    @AutoLog
-    public class turrentIOInputs {
-        public double topMotorCurrent = 0.0;
-        public double turrentAngle = 0.0;
-        public double gearRatio = 1.0;
-    }
+  @AutoLog
+  public class turrentIOInputs {
+    public double topMotorCurrent = 0.0;
+    public double turrentAngle = 0.0;
+    public double gearRatio = 1.0;
+  }
 
-    // Update inputs
-    public void updateInputs(turrentIOInputs inputs);
+  // Update inputs
+  public void updateInputs(turrentIOInputs inputs);
 
-    // Set motor to angle
-    public void setTurrentAngle(double degrees);
+  // Set motor to angle
+  public void setTurrentAngle(double degrees);
 }
