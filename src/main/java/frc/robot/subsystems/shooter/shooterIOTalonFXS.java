@@ -23,6 +23,7 @@ public class shooterIOTalonFXS implements shooterIO {
     inputs.shootAngle = angleMotor.getPosition().getValueAsDouble() * 360.0;
     inputs.bottomMotorCurrent = angleMotor.getSupplyCurrent().getValueAsDouble();
     inputs.distanceToTarget = 0.0; // This would need a sensor to be implemented
+    inputs.shooterTurn.setAngle(inputs.shootAngle);
   }
 
   @Override

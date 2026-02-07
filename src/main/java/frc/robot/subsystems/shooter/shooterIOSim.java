@@ -40,6 +40,7 @@ public class shooterIOSim implements shooterIO {
     inputs.shootAngle = Math.toDegrees(angleMotorSim.getAngularPositionRad());
     inputs.bottomMotorCurrent = angleMotorSim.getCurrentDrawAmps();
     inputs.distanceToTarget = 0.0; // This would need a sensor to be implemented
+    inputs.shooterTurn.setAngle(inputs.shootAngle);
   }
 
   @Override
