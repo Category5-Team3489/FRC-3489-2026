@@ -1,10 +1,8 @@
 package frc.robot.subsystems.turrent;
 
+// Mechanism2d and related classes are used by the subsystem implementation
+// for dashboard visualization and should not appear in the AutoLog inputs.
 import org.littletonrobotics.junction.AutoLog;
-
-import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 
 public interface turrentIO {
   @AutoLog
@@ -12,9 +10,9 @@ public interface turrentIO {
     public double topMotorCurrent = 0.0;
     public double turrentAngle = 0.0;
     public double gearRatio = 1.0;
-    public Mechanism2d turnMechanism = new Mechanism2d(1,1);
-    public MechanismRoot2d root = turnMechanism.getRoot("turn root thingamabobimajigger", 0,0);
-    public MechanismLigament2d turentTurn = root.append(new MechanismLigament2d("turrent direction", 1, 0));
+    // Mechanism2d visualization objects belong to the subsystem implementation
+    // and are not suitable for automatic logging. Create and manage them in
+    // the subsystem class instead of the AutoLog inputs.
   }
 
   // Update inputs

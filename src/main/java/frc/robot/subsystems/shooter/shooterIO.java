@@ -2,10 +2,6 @@ package frc.robot.subsystems.shooter;
 
 import org.littletonrobotics.junction.AutoLog;
 
-import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
-
 public interface shooterIO {
   @AutoLog
   public class shooterIOInputs {
@@ -14,9 +10,9 @@ public interface shooterIO {
     public double shootAngle = 0.0;
     public double distanceToTarget = 0.0;
     public double gearRatio = 1.0;
-    public Mechanism2d turnMechanism = new Mechanism2d(1,1);
-    public MechanismRoot2d root = turnMechanism.getRoot("root", 0,0);
-    public MechanismLigament2d shooterTurn = root.append(new MechanismLigament2d("shooter direction", 1, 0));
+    // Mechanism2d visualization objects belong to the subsystem implementation
+    // and are not suitable for automatic logging. Create and manage them in
+    // the subsystem class instead of the AutoLog inputs.
   }
 
   // Update inputs

@@ -2,6 +2,9 @@ package frc.robot.subsystems.shooter;
 
 import com.ctre.phoenix6.controls.PositionDutyCycle;
 import com.ctre.phoenix6.hardware.TalonFX;
+import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 
 public class shooterIOTalonFX implements shooterIO {
   // Create motors
@@ -9,6 +12,11 @@ public class shooterIOTalonFX implements shooterIO {
   private final TalonFX shooterMotor;
 
   private final shooterIOInputs inputs = new shooterIOInputs();
+  // Local dashboard visualization (do not include in AutoLog inputs)
+  private final Mechanism2d turnMechanism = new Mechanism2d(1, 1);
+  private final MechanismRoot2d root = turnMechanism.getRoot("shooter root", 0, 0);
+  private final MechanismLigament2d shooterTurn =
+      root.append(new MechanismLigament2d("shooter direction", 1, 0));
 
   public shooterIOTalonFX(int shooterMotorPort, int angleMotorPort) {
     angleMotor = new TalonFX(angleMotorPort);
@@ -23,7 +31,8 @@ public class shooterIOTalonFX implements shooterIO {
     inputs.shootAngle = angleMotor.getPosition().getValueAsDouble() * 360.0;
     inputs.bottomMotorCurrent = angleMotor.getSupplyCurrent().getValueAsDouble();
     inputs.distanceToTarget = 0.0; // This would need a sensor to be implemented
-    inputs.shooterTurn.setAngle(inputs.shootAngle);
+    // Update local visualization ligament
+    shooterTurn.setAngle(inputs.shootAngle);
   }
 
   @Override

@@ -5,6 +5,9 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
+import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 
 public class shooterIOSim implements shooterIO {
   // Simulated motors
@@ -29,6 +32,12 @@ public class shooterIOSim implements shooterIO {
     shooterPID = new PIDController(1.0, 0.0, 0.0);
   }
 
+  // Local dashboard visualization (do not include in AutoLog inputs)
+  private final Mechanism2d turnMechanism = new Mechanism2d(1, 1);
+  private final MechanismRoot2d root = turnMechanism.getRoot("shooter root", 0, 0);
+  private final MechanismLigament2d shooterTurn =
+      root.append(new MechanismLigament2d("shooter direction", 1, 0));
+
   @Override
   public void updateInputs(shooterIOInputs inputs) {
     // Advance sim by one timestep (20ms) then read values
@@ -40,7 +49,7 @@ public class shooterIOSim implements shooterIO {
     inputs.shootAngle = Math.toDegrees(angleMotorSim.getAngularPositionRad());
     inputs.bottomMotorCurrent = angleMotorSim.getCurrentDrawAmps();
     inputs.distanceToTarget = 0.0; // This would need a sensor to be implemented
-    inputs.shooterTurn.setAngle(inputs.shootAngle);
+    shooterTurn.setAngle(inputs.shootAngle);
   }
 
   @Override

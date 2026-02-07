@@ -8,11 +8,11 @@ public class index extends SubsystemBase {
   public index(indexIO module) {
     io = module;
   }
-  
+
   @Override
   public void periodic() {
-      // TODO Auto-generated method stub
-      super.periodic();
+    // TODO Auto-generated method stub
+    super.periodic();
   }
 
   public void spinMotor(double speed) {

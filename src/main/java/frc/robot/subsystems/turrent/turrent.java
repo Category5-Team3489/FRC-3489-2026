@@ -1,7 +1,6 @@
 package frc.robot.subsystems.turrent;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.turrent.turrentIO.turrentIOInputs;
 
 public class turrent extends SubsystemBase {
   private turrentIO io;

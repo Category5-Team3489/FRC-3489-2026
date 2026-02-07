@@ -8,11 +8,13 @@ public class climber extends SubsystemBase {
   public climber(climberIO given) {
     io = given;
   }
+
   @Override
   public void periodic() {
-      // TODO Auto-generated method stub
-      super.periodic();
+    // TODO Auto-generated method stub
+    super.periodic();
   }
+
   public void moveClimbMotor(double speed) {
     io.setClimberSpeed(speed);
   }
