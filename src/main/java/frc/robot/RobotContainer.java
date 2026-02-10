@@ -228,7 +228,7 @@ public class RobotContainer {
         .y()
         .whileTrue(
             Turrent.lockToTarget(
-                vision, 0)); // Lock to target from camera 0 while Y button is held
+                vision, vision.getLatestTagId(0))); // Lock to target from camera 0 while Y button is held
   }
 
   /**
