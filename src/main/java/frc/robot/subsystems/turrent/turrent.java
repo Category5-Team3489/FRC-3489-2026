@@ -1,6 +1,9 @@
 package frc.robot.subsystems.turrent;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.vision.Vision;
+import frc.robot.subsystems.vision.VisionIO;
 
 public class turrent extends SubsystemBase {
   private turrentIO io;
@@ -8,6 +11,10 @@ public class turrent extends SubsystemBase {
 
   public turrent(turrentIO given) {
     io = given;
+  }
+
+  public Command lockToTarget(Vision eyes, VisionIO eyesio){
+    
   }
 
   @Override
