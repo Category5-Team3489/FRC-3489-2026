@@ -32,6 +32,9 @@ import frc.robot.subsystems.intake.intakeIOTalonFX;
 import frc.robot.subsystems.shooter.shooter;
 import frc.robot.subsystems.shooter.shooterIOSim;
 import frc.robot.subsystems.shooter.shooterIOTalonFX;
+import frc.robot.subsystems.turrent.turrent;
+import frc.robot.subsystems.turrent.turrentIOSim;
+import frc.robot.subsystems.turrent.turrentIOTalonFX;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOPhotonVision;
@@ -50,6 +53,8 @@ public class RobotContainer {
   private final Vision vision;
   private final intake Intake;
   private final shooter Shooter;
+  private final turrent Turrent;
+
   //   private final climber Climber;
   //   private final index Index;
   // Controller
@@ -79,6 +84,8 @@ public class RobotContainer {
                 new VisionIOPhotonVision(camera0Name, robotToCamera0),
                 new VisionIOPhotonVision(camera1Name, robotToCamera1));
 
+        Turrent = new turrent(new turrentIOTalonFX(0));
+
         Intake = new intake(new intakeIOTalonFX(0));
 
         Shooter = new shooter(0.4, new shooterIOTalonFX(0, 0));
@@ -105,6 +112,8 @@ public class RobotContainer {
       case SIM:
         Shooter = new shooter(0.4, new shooterIOSim());
         Intake = new intake(new intakeIOSim());
+
+        Turrent = new turrent(new turrentIOSim(1));
         // Sim robot, instantiate physics sim IO implementations
         drive =
             new Drive(
@@ -123,6 +132,7 @@ public class RobotContainer {
         break;
 
       default:
+        Turrent = new turrent(new turrentIOTalonFX(0));
         Shooter = new shooter(0.4, new shooterIOTalonFX(0, 0));
         Intake = new intake(new intakeIOTalonFX(0));
         // Replayed robot, disable IO implementations
@@ -213,6 +223,12 @@ public class RobotContainer {
                             new Pose2d(drive.getPose().getTranslation(), Rotation2d.kZero)),
                     drive)
                 .ignoringDisable(true));
+
+    controller
+        .y()
+        .whileTrue(
+            Turrent.lockToTarget(
+                vision, 0)); // Lock to target from camera 0 while Y button is held
   }
 
   /**
