@@ -9,19 +9,19 @@ import frc.robot.subsystems.vision.VisionIO;
 
 public class turrent extends SubsystemBase {
   private turrentIO io;
-  private turrentIOInputsAutoLogged inputs = new turrentIOInputsAutoLogged();
+  // private turrentIOInputsAutoLogged inputs = new turrentIOInputsAutoLogged();
 
   public turrent(turrentIO given) {
     io = given;
   }
   
 
-  @Override
-  public void periodic() {
-    // TODO Auto-generated method stub
-    io.updateInputs(inputs);
-    super.periodic();
-  }
+  // @Override
+  // public void periodic() {
+  //   // TODO Auto-generated method stub
+  //   // io.updateInputs(inputs);
+  //   super.periodic();
+  // }
 
   public void setTurrentAngle(double degrees) {
     io.setTurrentAngle(degrees);

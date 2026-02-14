@@ -10,6 +10,7 @@ public class shooterIOTalonFX implements shooterIO {
   // Create motors
   private final TalonFX angleMotor;
   private final TalonFX shooterMotor;
+  private final TalonFX angleMotorOther; // Example of a second motor if needed
 
   private final shooterIOInputs inputs = new shooterIOInputs();
   // Local dashboard visualization (do not include in AutoLog inputs)
@@ -18,9 +19,10 @@ public class shooterIOTalonFX implements shooterIO {
   private final MechanismLigament2d shooterTurn =
       root.append(new MechanismLigament2d("shooter direction", 1, 0));
 
-  public shooterIOTalonFX(int shooterMotorPort, int angleMotorPort) {
+  public shooterIOTalonFX(int shooterMotorPort, int angleMotorPort, int angleMotorPortOther) {
     angleMotor = new TalonFX(angleMotorPort);
     shooterMotor = new TalonFX(shooterMotorPort);
+    angleMotorOther = new TalonFX(angleMotorPortOther); // Example of initializing a second motor
   }
 
   @Override
@@ -40,12 +42,14 @@ public class shooterIOTalonFX implements shooterIO {
     // TODO Auto-generated method stub
     shooterMotor.set(0);
     angleMotor.set(0);
+    angleMotorOther.set(0);
   }
 
   @Override
   public void shootBall(double speed) {
     // Check this code fs
-    shooterMotor.set(speed);
+    shooterMotor.set(0.2 * speed);
+    angleMotorOther.set(-0.2 * speed); // Example of controlling a second motor if needed
   }
 
   @Override
