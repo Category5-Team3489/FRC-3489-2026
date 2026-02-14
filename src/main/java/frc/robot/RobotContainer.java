@@ -88,7 +88,7 @@ public class RobotContainer {
 
         Intake = new intake(new intakeIOTalonFX(0));
 
-        Shooter = new shooter(0.4, new shooterIOTalonFX(17, 18));
+        Shooter = new shooter(0.4, new shooterIOTalonFX(17, 18, 15));
 
         // The ModuleIOTalonFXS implementation provides an example implementation for
         // TalonFXS controller connected to a CANdi with a PWM encoder. The
@@ -133,7 +133,7 @@ public class RobotContainer {
 
       default:
         Turrent = new turrent(new turrentIOTalonFX(0));
-        Shooter = new shooter(0.4, new shooterIOTalonFX(0, 0));
+        Shooter = new shooter(0.4, new shooterIOTalonFX(17, 18, 15)        Intake = new intake(new intakeIOTalonFX(0));
         Intake = new intake(new intakeIOTalonFX(0));
         // Replayed robot, disable IO implementations
         drive =
@@ -190,7 +190,7 @@ public class RobotContainer {
     Intake.setDefaultCommand(Intake.noSpin());
     // Lock to 0° when A button is held
     controller.rightTrigger().whileTrue(Intake.spinTheStuff(controller.getRightTriggerAxis()));
-
+    Shooter.setDefaultCommand(Shooter.noShoot());
     controller
         .a()
         .whileTrue(
@@ -223,16 +223,15 @@ public class RobotContainer {
                             new Pose2d(drive.getPose().getTranslation(), Rotation2d.kZero)),
                     drive)
                 .ignoringDisable(true));
-    
-    controller
-        .leftBumper()
-        .whileTrue(Shooter.shootAtDistance(2));
+
+    controller.leftBumper().whileTrue(Shooter.shootAtDistance(2));
 
     controller
         .y()
         .whileTrue(
             Turrent.lockToTarget(
-                vision, vision.getLatestTagId(0))); // Lock to target from camera 0 while Y button is held
+                vision,
+                vision.getLatestTagId(0))); // Lock to target from camera 0 while Y button is held
   }
 
   /**

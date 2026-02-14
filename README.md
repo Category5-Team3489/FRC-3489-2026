@@ -36,4 +36,3 @@
 ## [Turrent](/src/main/java/frc/robot/subsystems/turrent/turrent.java)
 - Number of motor(s): 1
     - Rotate shooter ([KrakenX44](/src/main/java/frc/robot/subsystems/turret/turretIOTalonFX.java))
-

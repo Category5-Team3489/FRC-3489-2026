@@ -62,11 +62,11 @@ public class Vision extends SubsystemBase {
     return (inputs[cameraIndex].poseObservations.length > 0);
   }
 
-public int getLatestTagId(int cameraIndex) {
-  if (cameraIndex < 0 || cameraIndex >= inputs.length) return -1;
-  int[] ids = inputs[cameraIndex].tagIds;
-  return (ids != null && ids.length > 0) ? ids[0] : -1;
-}
+  public int getLatestTagId(int cameraIndex) {
+    if (cameraIndex < 0 || cameraIndex >= inputs.length) return -1;
+    int[] ids = inputs[cameraIndex].tagIds;
+    return (ids != null && ids.length > 0) ? ids[0] : -1;
+  }
 
   @Override
   public void periodic() {

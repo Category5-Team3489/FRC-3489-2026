@@ -29,6 +29,10 @@ public class shooter extends SubsystemBase {
     io.setShootAngle(degrees);
   }
 
+  public Command noShoot(){
+    return Commands.runOnce(() -> io.stopMotors());
+  }
+
   public Command shootAtDistance(double distance) {
     return Commands.run(() -> io.shootBall(distance * 0.3 + 9));
   }

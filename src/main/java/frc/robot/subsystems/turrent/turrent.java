@@ -1,11 +1,9 @@
 package frc.robot.subsystems.turrent;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.vision.Vision;
-import frc.robot.subsystems.vision.VisionIO;
 
 public class turrent extends SubsystemBase {
   private turrentIO io;
@@ -14,7 +12,6 @@ public class turrent extends SubsystemBase {
   public turrent(turrentIO given) {
     io = given;
   }
-  
 
   // @Override
   // public void periodic() {
@@ -27,7 +24,7 @@ public class turrent extends SubsystemBase {
     io.setTurrentAngle(degrees);
   }
 
-  public Command lockToTarget(Vision eyes, int cameraIndex){
+  public Command lockToTarget(Vision eyes, int cameraIndex) {
     return Commands.run(() -> setTurrentAngle((eyes.getTargetX(cameraIndex).getDegrees())));
   }
 }

@@ -25,9 +25,10 @@ public interface VisionIO {
   public static record TargetObservation(Rotation2d tx, Rotation2d ty) {
 
     public int[] tagIds() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'tagIds'");
-    }}
+      // TODO Auto-generated method stub
+      throw new UnsupportedOperationException("Unimplemented method 'tagIds'");
+    }
+  }
 
   /** Represents a robot pose sample used for pose estimation. */
   public static record PoseObservation(
