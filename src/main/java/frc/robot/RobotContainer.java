@@ -187,7 +187,7 @@ public class RobotContainer {
     Intake.setDefaultCommand(Intake.noSpin());
     // Lock to 0° when A button is held
     controller.rightTrigger().whileTrue(Intake.spinTheStuff(controller.getRightTriggerAxis()));
-    Shooter.setDefaultCommand(Shooter.noShoot());
+    Shooter.setDefaultCommand(Commands.run(() -> Shooter.shootAtSpeed(1)));
     controller.leftBumper().whileTrue(Commands.run(() -> Index.spinMotor(0.5)));
     controller
         .a()
@@ -198,6 +198,7 @@ public class RobotContainer {
                 () -> -controller.getLeftX(),
                 () -> Rotation2d.kZero));
 
+    controller.y().whileTrue(Shooter.noShoot());
     // Switch to X pattern when X button is pressed
     controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
 
@@ -222,8 +223,6 @@ public class RobotContainer {
                             new Pose2d(drive.getPose().getTranslation(), Rotation2d.kZero)),
                     drive)
                 .ignoringDisable(true));
-
-    controller.y().whileTrue(Shooter.shootAtSpeed(12));
 
     // controller
     //     .y()

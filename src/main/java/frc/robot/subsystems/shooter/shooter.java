@@ -33,8 +33,8 @@ public class shooter extends SubsystemBase {
     return Commands.runOnce(() -> io.stopMotors(), this);
   }
 
-  public Command shootAtSpeed(double speed) {
-    return Commands.run(() -> io.shootBall(speed));
+  public void shootAtSpeed(double speed) {
+    io.shootBall(speed);
   }
 
   public double getNeededAngle(double distance, double initialSpeed, boolean PlusorMinus) {
