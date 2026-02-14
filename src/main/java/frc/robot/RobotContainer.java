@@ -32,13 +32,6 @@ import frc.robot.subsystems.intake.intakeIOTalonFX;
 import frc.robot.subsystems.shooter.shooter;
 import frc.robot.subsystems.shooter.shooterIOSim;
 import frc.robot.subsystems.shooter.shooterIOTalonFX;
-import frc.robot.subsystems.turrent.turrent;
-import frc.robot.subsystems.turrent.turrentIOSim;
-import frc.robot.subsystems.turrent.turrentIOTalonFX;
-import frc.robot.subsystems.vision.Vision;
-import frc.robot.subsystems.vision.VisionIO;
-import frc.robot.subsystems.vision.VisionIOPhotonVision;
-import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -50,10 +43,10 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
-  private final Vision vision;
+  //   private final Vision vision;
   private final intake Intake;
   private final shooter Shooter;
-  private final turrent Turrent;
+  //   private final turrent Turrent;
 
   //   private final climber Climber;
   //   private final index Index;
@@ -78,15 +71,15 @@ public class RobotContainer {
                 new ModuleIOTalonFX(TunerConstants.BackLeft),
                 new ModuleIOTalonFX(TunerConstants.BackRight));
         // Real robot, instantiate hardware IO implementations
-        vision =
-            new Vision(
-                drive::addVisionMeasurement,
-                new VisionIOPhotonVision(camera0Name, robotToCamera0),
-                new VisionIOPhotonVision(camera1Name, robotToCamera1));
+        // vision =
+        //     new Vision(
+        //         drive::addVisionMeasurement,
+        //         new VisionIOPhotonVision(camera0Name, robotToCamera0),
+        //         new VisionIOPhotonVision(camera1Name, robotToCamera1));
 
-        Turrent = new turrent(new turrentIOTalonFX(0));
+        // Turrent = new turrent(new turrentIOTalonFX(0));
 
-        Intake = new intake(new intakeIOTalonFX(0));
+        Intake = new intake(new intakeIOTalonFX(22));
 
         Shooter = new shooter(0.4, new shooterIOTalonFX(17, 18, 15));
 
@@ -113,7 +106,7 @@ public class RobotContainer {
         Shooter = new shooter(0.4, new shooterIOSim());
         Intake = new intake(new intakeIOSim());
 
-        Turrent = new turrent(new turrentIOSim(1));
+        // Turrent = new turrent(new turrentIOSim(1));
         // Sim robot, instantiate physics sim IO implementations
         drive =
             new Drive(
@@ -123,18 +116,18 @@ public class RobotContainer {
                 new ModuleIOSim(TunerConstants.BackLeft),
                 new ModuleIOSim(TunerConstants.BackRight));
         // Sim robot, instantiate physics sim IO implementations
-        vision =
-            new Vision(
-                drive::addVisionMeasurement,
-                new VisionIOPhotonVisionSim(camera0Name, robotToCamera0, drive::getPose),
-                new VisionIOPhotonVisionSim(camera1Name, robotToCamera1, drive::getPose));
+        // vision =
+        //     new Vision(
+        //         drive::addVisionMeasurement,
+        //         new VisionIOPhotonVisionSim(camera0Name, robotToCamera0, drive::getPose),
+        //         new VisionIOPhotonVisionSim(camera1Name, robotToCamera1, drive::getPose));
 
         break;
 
       default:
-        Turrent = new turrent(new turrentIOTalonFX(0));
+        // Turrent = new turrent(new turrentIOTalonFX(0));
         Shooter = new shooter(0.4, new shooterIOTalonFX(17, 18, 15));
-        Intake = new intake(new intakeIOTalonFX(0));
+        Intake = new intake(new intakeIOTalonFX(22));
         // Replayed robot, disable IO implementations
         drive =
             new Drive(
@@ -145,7 +138,7 @@ public class RobotContainer {
                 new ModuleIO() {});
 
         // (Use same number of dummy implementations as the real robot)
-        vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
+        // vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
 
         break;
     }
@@ -226,12 +219,13 @@ public class RobotContainer {
 
     controller.leftBumper().whileTrue(Shooter.shootAtDistance(2));
 
-    controller
-        .y()
-        .whileTrue(
-            Turrent.lockToTarget(
-                vision,
-                vision.getLatestTagId(0))); // Lock to target from camera 0 while Y button is held
+    // controller
+    //     .y()
+    //     .whileTrue(
+    //         Turrent.lockToTarget(
+    //             vision,
+    //             vision.getLatestTagId(0))); // Lock to target from camera 0 while Y button is
+    // held
   }
 
   /**
