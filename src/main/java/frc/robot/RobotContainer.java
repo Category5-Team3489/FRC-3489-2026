@@ -186,6 +186,7 @@ public class RobotContainer {
             () -> -controller.getRightX()));
     Intake.setDefaultCommand(Intake.noSpin());
     // Lock to 0° when A button is held
+    controller.y().whileTrue(Shooter.shootAtDistance(2));
     controller.rightTrigger().whileTrue(Intake.spinTheStuff(controller.getRightTriggerAxis()));
     Shooter.setDefaultCommand(Shooter.noShoot());
     controller.leftBumper().whileTrue(Commands.run(() -> Index.spinMotor(0.5)));
