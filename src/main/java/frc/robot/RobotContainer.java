@@ -133,7 +133,7 @@ public class RobotContainer {
 
       default:
         Turrent = new turrent(new turrentIOTalonFX(0));
-        Shooter = new shooter(0.4, new shooterIOTalonFX(17, 18, 15));    
+        Shooter = new shooter(0.4, new shooterIOTalonFX(17, 18, 15));
         Intake = new intake(new intakeIOTalonFX(0));
         // Replayed robot, disable IO implementations
         drive =

@@ -29,7 +29,7 @@ public class shooter extends SubsystemBase {
     io.setShootAngle(degrees);
   }
 
-  public Command noShoot(){
+  public Command noShoot() {
     return Commands.runOnce(() -> io.stopMotors());
   }
 
