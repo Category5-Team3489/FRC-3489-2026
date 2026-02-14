@@ -26,6 +26,9 @@ import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
+import frc.robot.subsystems.indexer.index;
+import frc.robot.subsystems.indexer.indexIOSim;
+import frc.robot.subsystems.indexer.indexIOTalonFX;
 import frc.robot.subsystems.intake.intake;
 import frc.robot.subsystems.intake.intakeIOSim;
 import frc.robot.subsystems.intake.intakeIOTalonFX;
@@ -43,13 +46,13 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
-  //   private final Vision vision;
+  // private final Vision vision;
   private final intake Intake;
   private final shooter Shooter;
-  //   private final turrent Turrent;
+  // private final turrent Turrent;
 
   //   private final climber Climber;
-  //   private final index Index;
+  private final index Index;
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
 
@@ -78,7 +81,7 @@ public class RobotContainer {
         //         new VisionIOPhotonVision(camera1Name, robotToCamera1));
 
         // Turrent = new turrent(new turrentIOTalonFX(0));
-
+        Index = new index(new indexIOTalonFX(14));
         Intake = new intake(new intakeIOTalonFX(22));
 
         Shooter = new shooter(0.4, new shooterIOTalonFX(17, 18, 15));
@@ -105,7 +108,7 @@ public class RobotContainer {
       case SIM:
         Shooter = new shooter(0.4, new shooterIOSim());
         Intake = new intake(new intakeIOSim());
-
+        Index = new index(new indexIOSim());
         // Turrent = new turrent(new turrentIOSim(1));
         // Sim robot, instantiate physics sim IO implementations
         drive =
@@ -129,6 +132,7 @@ public class RobotContainer {
         Shooter = new shooter(0.4, new shooterIOTalonFX(17, 18, 15));
         Intake = new intake(new intakeIOTalonFX(22));
         // Replayed robot, disable IO implementations
+        Index = new index(new indexIOTalonFX(14));
         drive =
             new Drive(
                 new GyroIO() {},
@@ -184,6 +188,7 @@ public class RobotContainer {
     // Lock to 0° when A button is held
     controller.rightTrigger().whileTrue(Intake.spinTheStuff(controller.getRightTriggerAxis()));
     Shooter.setDefaultCommand(Shooter.noShoot());
+    controller.leftBumper().whileTrue(Commands.run(() -> Index.spinMotor(0.5)));
     controller
         .a()
         .whileTrue(
