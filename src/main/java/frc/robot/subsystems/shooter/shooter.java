@@ -30,7 +30,7 @@ public class shooter extends SubsystemBase {
   }
 
   public Command noShoot() {
-    return Commands.runOnce(() -> io.stopMotors(),  this);
+    return Commands.runOnce(() -> io.stopMotors(), this);
   }
 
   public Command shootAtDistance(double distance) {
