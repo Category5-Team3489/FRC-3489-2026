@@ -48,8 +48,13 @@ public class shooterIOTalonFX implements shooterIO {
   @Override
   public void shootBall(double speed) {
     // Check this code fs
-    shooterMotor.set(0.2 * speed);
-    angleMotorOther.set(-0.2 * speed); // Example of controlling a second motor if needed
+    // shooterMotor.setVoltage(-1 * speed);
+    // The shooter flywheel is driven by `shooterMotor` — not the angle motor.
+    // Use the shooter motor here. `speed` is treated as voltage (0-12V) in
+    // RobotContainer where `shootAtSpeed(12)` is called, so forward that to the
+    // motor using setVoltage. If you instead want percent output ([-1,1]),
+    // call shooterMotor.set(speedFraction).
+    shooterMotor.setVoltage(speed);
   }
 
   @Override

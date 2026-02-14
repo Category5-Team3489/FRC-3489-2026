@@ -186,7 +186,6 @@ public class RobotContainer {
             () -> -controller.getRightX()));
     Intake.setDefaultCommand(Intake.noSpin());
     // Lock to 0° when A button is held
-    controller.y().whileTrue(Shooter.shootAtDistance(2));
     controller.rightTrigger().whileTrue(Intake.spinTheStuff(controller.getRightTriggerAxis()));
     Shooter.setDefaultCommand(Shooter.noShoot());
     controller.leftBumper().whileTrue(Commands.run(() -> Index.spinMotor(0.5)));
@@ -202,6 +201,7 @@ public class RobotContainer {
     // Switch to X pattern when X button is pressed
     controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
 
+    Index.setDefaultCommand(Commands.run(() -> Index.spinMotor(0), Index));
     // Change .leftTrigger to what you want it to be to half velocity.
     controller
         .leftTrigger()
@@ -223,7 +223,7 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
-    controller.leftBumper().whileTrue(Shooter.shootAtDistance(2));
+    controller.y().whileTrue(Shooter.shootAtSpeed(12));
 
     // controller
     //     .y()
