@@ -132,7 +132,7 @@ public class RobotContainer {
         break;
 
       default:
-        Turrent = new turrent(new turrentIOTalonFX(15));
+        Turrent = new turrent(new turrentIOTalonFX(15,18));
         // Turrent = new turrent(new turrentIOTalonFX(0));
         Shooter = new shooter(0.4, new shooterIOTalonFX(17, 18, 15));
         Intake = new intake(new intakeIOTalonFX(22, 1, 1));
@@ -183,7 +183,7 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     // Default command, normal field-relative drive
-    Turrent.setDefaultCommand(Turrent.turnTurrent(controller.getRightY()));
+    Turrent.setDefaultCommand(Turrent.turnTurrent(controller.getRightY()*0.2));
 
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
