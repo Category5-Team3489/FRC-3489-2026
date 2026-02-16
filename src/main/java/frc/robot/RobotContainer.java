@@ -182,7 +182,7 @@ public class RobotContainer {
   private void configureButtonBindings() {
     // Default command, normal field-relative drive
     // Use a supplier so the joystick is sampled each scheduler cycle.
-    Turrent.setDefaultCommand(Turrent.turnTurrent(() -> controller1.getLeftX()));
+    Turrent.setDefaultCommand(Turrent.turnTurrent(() -> (controller1.getLeftX()*0.2)));
 
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
