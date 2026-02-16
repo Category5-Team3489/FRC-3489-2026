@@ -58,6 +58,7 @@ public class RobotContainer {
   private final index Index;
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
+  private final CommandXboxController controller1 = new CommandXboxController(1);
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
@@ -132,7 +133,7 @@ public class RobotContainer {
         break;
 
       default:
-        Turrent = new turrent(new turrentIOTalonFX(15,18));
+        Turrent = new turrent(new turrentIOTalonFX(15, 18));
         // Turrent = new turrent(new turrentIOTalonFX(0));
         Shooter = new shooter(0.4, new shooterIOTalonFX(17, 18, 15));
         Intake = new intake(new intakeIOTalonFX(22, 1, 1));
@@ -183,7 +184,7 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     // Default command, normal field-relative drive
-    Turrent.setDefaultCommand(Turrent.turnTurrent(controller.getRightY()*0.2));
+    Turrent.setDefaultCommand(Turrent.turnTurrentYAY(controller1.getLeftY()));
 
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
