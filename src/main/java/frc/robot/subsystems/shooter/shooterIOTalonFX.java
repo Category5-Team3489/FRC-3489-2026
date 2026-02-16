@@ -48,9 +48,9 @@ public class shooterIOTalonFX implements shooterIO {
   @Override
   public void shootBall(double speed) {
     // Check this code fs
-    shooterMotor.set(0);
+    shooterMotor.set(speed);
     angleMotor.set(0);
-    angleMotorOther.set(0);
+    angleMotorOther.set(-speed);
   }
 
   @Override
