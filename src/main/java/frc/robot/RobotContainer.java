@@ -35,6 +35,10 @@ import frc.robot.subsystems.intake.intakeIOTalonFX;
 import frc.robot.subsystems.shooter.shooter;
 import frc.robot.subsystems.shooter.shooterIOSim;
 import frc.robot.subsystems.shooter.shooterIOTalonFX;
+import frc.robot.subsystems.turrent.turrent;
+import frc.robot.subsystems.turrent.turrentIOSim;
+import frc.robot.subsystems.turrent.turrentIOTalonFX;
+
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -49,7 +53,7 @@ public class RobotContainer {
   // private final Vision vision;
   private final intake Intake;
   private final shooter Shooter;
-  // private final turrent Turrent;
+  private final turrent Turrent;
 
   //   private final climber Climber;
   private final index Index;
@@ -64,8 +68,8 @@ public class RobotContainer {
     switch (Constants.currentMode) {
       case REAL:
         // Real robot, instantiate hardware IO implementations
-        // ModuleIOTalonFX is intended for modules with TalonFX drive, TalonFX turn, and
-        // a CANcoder
+        // ModuleIOTalonF
+        Turrent = new turrent(new turrentIOTalonFX(0));
         drive =
             new Drive(
                 new GyroIOPigeon2(),
@@ -106,6 +110,7 @@ public class RobotContainer {
         break;
 
       case SIM:
+        Turrent = new turrent(new turrentIOSim(1));
         Shooter = new shooter(0.4, new shooterIOSim());
         Intake = new intake(new intakeIOSim());
         Index = new index(new indexIOSim());
@@ -128,6 +133,7 @@ public class RobotContainer {
         break;
 
       default:
+        Turrent = new turrent(new turrentIOTalonFX(0));
         // Turrent = new turrent(new turrentIOTalonFX(0));
         Shooter = new shooter(0.4, new shooterIOTalonFX(17, 18, 15));
         Intake = new intake(new intakeIOTalonFX(22));
@@ -178,6 +184,8 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     // Default command, normal field-relative drive
+    Turrent.setDefaultCommand(Turrent.turnTurrent(controller.getRightY()));
+    
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
