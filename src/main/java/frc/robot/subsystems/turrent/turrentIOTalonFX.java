@@ -27,6 +27,11 @@ public class turrentIOTalonFX implements turrentIO {
   }
 
   @Override
+  public void turnTurrent(double speed){
+    topMotor.set(speed);
+  }
+
+  @Override
   public void setTurrentAngle(double degrees) {
     double rotations =
         (degrees / 360.0)

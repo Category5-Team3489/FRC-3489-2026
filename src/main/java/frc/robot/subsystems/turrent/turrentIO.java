@@ -18,6 +18,7 @@ public interface turrentIO {
   // Update inputs
   public void updateInputs(turrentIOInputs inputs);
 
+  public void turnTurrent(double speed);
   // Set motor to angle
   public void setTurrentAngle(double degrees);
 }

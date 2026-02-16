@@ -24,7 +24,11 @@ public class turrent extends SubsystemBase {
     io.setTurrentAngle(degrees);
   }
 
+  public Command turnTurrent(double speed){
+    return Commands.run(() -> io.turnTurrent(speed),this);
+  }
+
   public Command lockToTarget(Vision eyes, int cameraIndex) {
-    return Commands.run(() -> setTurrentAngle((eyes.getTargetX(cameraIndex).getDegrees())));
+    return Commands.run(() -> setTurrentAngle((eyes.getTargetX(cameraIndex).getDegrees())), this);
   }
 }

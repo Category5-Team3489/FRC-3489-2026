@@ -20,6 +20,11 @@ public class turrentIOTalonFXS implements turrentIO {
   }
 
   @Override
+  public void turnTurrent(double speed){
+    topMotor.set(speed);
+  }
+
+  @Override
   public void updateInputs(turrentIOInputs inputs) {
     inputs.topMotorCurrent = topMotor.getSupplyVoltage().getValueAsDouble();
     inputs.turrentAngle = topMotor.getPosition().getValueAsDouble();
