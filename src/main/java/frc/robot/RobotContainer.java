@@ -195,11 +195,12 @@ public class RobotContainer {
             () -> -controller.getRightX()));
     Intake.setDefaultCommand(Intake.noSpin());
     // Lock to 0° when A button is held
-    controller.rightTrigger().whileTrue(Intake.spinTheStuff(controller.getRightTriggerAxis()));
+    controller1.rightTrigger().whileTrue(Intake.spinTheStuff(controller.getRightTriggerAxis()));
     // Default shooter command: map controller1 right trigger to shooter
     // voltage. Multiply axis [0..1] by 12 to convert to volts.
     Shooter.setDefaultCommand(Shooter.shootAtSpeed(() -> controller1.getRightTriggerAxis() * 12.0));
-    controller.leftBumper().whileTrue(Commands.run(() -> Index.spinMotor(0.5)));
+    controller1.rightTrigger().whileTrue(Shooter.shootAtSpeed(0.7));
+    controller1.leftBumper().whileTrue(Commands.run(() -> Index.spinMotor(0.5)));
     controller
         .a()
         .whileTrue(

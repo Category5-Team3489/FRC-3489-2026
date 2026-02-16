@@ -14,6 +14,6 @@ public class indexIOTalonFX implements indexIO {
   @Override
   public void turnMotor(double speed) {
     indexMotor.set(-speed * 0.3);
-    kicker.set(-1 * speed);
+    kicker.set(1 * speed);
   }
 }
