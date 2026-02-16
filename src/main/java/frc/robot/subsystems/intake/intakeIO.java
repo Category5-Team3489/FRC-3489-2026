@@ -14,5 +14,7 @@ public interface intakeIO {
 
   public void spinThatStuff(double initialSpeed);
 
+  public void moveInorOut(double speed);
+
   public void stopMotors();
 }
