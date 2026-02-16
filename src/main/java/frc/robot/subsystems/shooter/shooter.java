@@ -31,7 +31,6 @@ public class shooter extends SubsystemBase {
 
   public Command noShoot() {
     return Commands.runOnce(() -> io.stopMotors(), this);
-    
   }
 
   // Returns a Command that runs the shooter at the requested speed while
