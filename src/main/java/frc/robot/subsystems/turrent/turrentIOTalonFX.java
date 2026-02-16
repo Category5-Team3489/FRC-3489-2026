@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import frc.robot.generated.TunerConstants;
+import com.ctre.phoenix6.hardware.TalonFX;
 
 public class turrentIOTalonFX implements turrentIO {
   // Create motors
@@ -38,7 +39,7 @@ public class turrentIOTalonFX implements turrentIO {
    * @param encoderChannelB DIO channel for encoder B
    */
   public turrentIOTalonFX(int topMotorPort, int cancoderId) {
-    topMotor = new com.ctre.phoenix6.hardware.TalonFX(topMotorPort);
+    topMotor = new TalonFX(topMotorPort);
     // Create CANcoder on the configured CAN bus
     tuffEncoder = new CANcoder(cancoderId, TunerConstants.kCANBus);
   }
@@ -60,6 +61,8 @@ public class turrentIOTalonFX implements turrentIO {
   @Override
   public void turnTurrent(double speed) {
     topMotor.set(speed);
+    topMotor.setVoltage(speed*12);
+    topMotor.set(1);
   }
 
   @Override
