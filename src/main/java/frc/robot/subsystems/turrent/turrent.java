@@ -24,8 +24,8 @@ public class turrent extends SubsystemBase {
     io.setTurrentAngle(degrees);
   }
 
-  public Command turnTurrentYAY(double speed) {
-    return Commands.run(() -> io.turnTurrent(speed), this);
+  public Command turnTurrentYAY(double speedy) {
+    return Commands.run(() -> io.turnTurrent(speedy), this);
   }
 
   public Command lockToTarget(Vision eyes, int cameraIndex) {

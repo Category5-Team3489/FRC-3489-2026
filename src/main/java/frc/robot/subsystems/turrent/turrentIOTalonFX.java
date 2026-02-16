@@ -2,11 +2,11 @@ package frc.robot.subsystems.turrent;
 
 import com.ctre.phoenix6.controls.PositionDutyCycle;
 import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import frc.robot.generated.TunerConstants;
-import com.ctre.phoenix6.hardware.TalonFX;
 
 public class turrentIOTalonFX implements turrentIO {
   // Create motors
@@ -61,8 +61,6 @@ public class turrentIOTalonFX implements turrentIO {
   @Override
   public void turnTurrent(double speed) {
     topMotor.set(speed);
-    topMotor.setVoltage(speed*12);
-    topMotor.set(1);
   }
 
   @Override
