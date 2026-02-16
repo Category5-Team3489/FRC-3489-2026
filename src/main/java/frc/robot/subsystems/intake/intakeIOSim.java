@@ -31,9 +31,9 @@ public class intakeIOSim implements intakeIO {
   }
 
   @Override
-  public void moveInorOut(double speed){
-    motor1.setInputVoltage(-12*speed);
-    motor2.setInputVoltage(12*speed);
+  public void moveInorOut(double speed) {
+    motor1.setInputVoltage(-12 * speed);
+    motor2.setInputVoltage(12 * speed);
   }
 
   @Override

@@ -68,7 +68,7 @@ public class RobotContainer {
       case REAL:
         // Real robot, instantiate hardware IO implementations
         // ModuleIOTalonF
-        Turrent = new turrent(new turrentIOTalonFX(0));
+        Turrent = new turrent(new turrentIOTalonFX(15, 18));
         drive =
             new Drive(
                 new GyroIOPigeon2(),
@@ -85,7 +85,7 @@ public class RobotContainer {
 
         // Turrent = new turrent(new turrentIOTalonFX(0));
         Index = new index(new indexIOTalonFX(14));
-        Intake = new intake(new intakeIOTalonFX(22,1,1));
+        Intake = new intake(new intakeIOTalonFX(22, 1, 1));
 
         Shooter = new shooter(0.4, new shooterIOTalonFX(17, 18, 15));
 
@@ -132,10 +132,10 @@ public class RobotContainer {
         break;
 
       default:
-        Turrent = new turrent(new turrentIOTalonFX(0));
+        Turrent = new turrent(new turrentIOTalonFX(15));
         // Turrent = new turrent(new turrentIOTalonFX(0));
         Shooter = new shooter(0.4, new shooterIOTalonFX(17, 18, 15));
-        Intake = new intake(new intakeIOTalonFX(22,1,1));
+        Intake = new intake(new intakeIOTalonFX(22, 1, 1));
         // Replayed robot, disable IO implementations
         Index = new index(new indexIOTalonFX(14));
         drive =

@@ -6,7 +6,7 @@ public class intakeIOTalonFX implements intakeIO {
   private final com.ctre.phoenix6.hardware.TalonFX actuatorMotor2;
   private final com.ctre.phoenix6.hardware.TalonFX actuatorMotor1;
 
-  public intakeIOTalonFX(int intakeMotorPort,int actmotorport1, int actmotorport2) {
+  public intakeIOTalonFX(int intakeMotorPort, int actmotorport1, int actmotorport2) {
     intakeMotor = new com.ctre.phoenix6.hardware.TalonFX(intakeMotorPort);
     actuatorMotor1 = new com.ctre.phoenix6.hardware.TalonFX(actmotorport1);
     actuatorMotor2 = new com.ctre.phoenix6.hardware.TalonFX(actmotorport2);
@@ -24,9 +24,9 @@ public class intakeIOTalonFX implements intakeIO {
   }
 
   @Override
-  public void moveInorOut(double speed){
+  public void moveInorOut(double speed) {
     actuatorMotor1.set(speed);
-    actuatorMotor2.set(-1*speed);
+    actuatorMotor2.set(-1 * speed);
   }
 
   @Override
