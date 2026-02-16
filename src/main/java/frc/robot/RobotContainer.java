@@ -32,9 +32,6 @@ import frc.robot.subsystems.indexer.indexIOTalonFX;
 import frc.robot.subsystems.intake.intake;
 import frc.robot.subsystems.intake.intakeIOSim;
 import frc.robot.subsystems.intake.intakeIOTalonFX;
-import frc.robot.subsystems.shooter.shooter;
-import frc.robot.subsystems.shooter.shooterIOSim;
-import frc.robot.subsystems.shooter.shooterIOTalonFX;
 import frc.robot.subsystems.turrent.turrent;
 import frc.robot.subsystems.turrent.turrentIOSim;
 import frc.robot.subsystems.turrent.turrentIOTalonFX;
@@ -51,7 +48,7 @@ public class RobotContainer {
   private final Drive drive;
   // private final Vision vision;
   private final intake Intake;
-//   private final shooter Shooter;
+  //   private final shooter Shooter;
   private final turrent Turrent;
 
   //   private final climber Climber;
@@ -198,7 +195,8 @@ public class RobotContainer {
     controller.rightTrigger().whileTrue(Intake.spinTheStuff(controller.getRightTriggerAxis()));
     // Default shooter command: map controller1 right trigger to shooter
     // voltage. Multiply axis [0..1] by 12 to convert to volts.
-    // Shooter.setDefaultCommand(Shooter.shootAtSpeed(() -> controller1.getRightTriggerAxis() * 12.0));
+    // Shooter.setDefaultCommand(Shooter.shootAtSpeed(() -> controller1.getRightTriggerAxis() *
+    // 12.0));
     controller.leftBumper().whileTrue(Commands.run(() -> Index.spinMotor(0.5)));
     controller
         .a()
