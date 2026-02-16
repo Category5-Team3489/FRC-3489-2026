@@ -184,7 +184,7 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     // Default command, normal field-relative drive
-    Turrent.setDefaultCommand(Turrent.turnTurrentYAY(controller1.getLeftY()));
+    Turrent.setDefaultCommand(Turrent.turnTurrentYAY(controller1.getLeftX()));
 
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
