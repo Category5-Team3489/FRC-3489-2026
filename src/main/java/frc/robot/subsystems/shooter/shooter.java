@@ -5,6 +5,7 @@ import static edu.wpi.first.units.Units.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import java.util.function.DoubleSupplier;
 
 public class shooter extends SubsystemBase {
 
@@ -38,6 +39,14 @@ public class shooter extends SubsystemBase {
   // default command.
   public Command shootAtSpeed(double speed) {
     return Commands.run(() -> io.shootBall(speed), this);
+  }
+
+  // Overload that accepts a DoubleSupplier so the controller axis can be
+  // sampled every scheduler run. The supplier should return volts (0..12)
+  // if your IO implementation expects voltage; multiply the axis by 12 in
+  // the supplier if passing trigger axis [0..1].
+  public Command shootAtSpeed(DoubleSupplier speedSupplier) {
+    return Commands.run(() -> io.shootBall(speedSupplier.getAsDouble()), this);
   }
 
   public double getNeededAngle(double distance, double initialSpeed, boolean PlusorMinus) {

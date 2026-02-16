@@ -196,10 +196,9 @@ public class RobotContainer {
     Intake.setDefaultCommand(Intake.noSpin());
     // Lock to 0° when A button is held
     controller.rightTrigger().whileTrue(Intake.spinTheStuff(controller.getRightTriggerAxis()));
-    // Default shooter command: run the shooter at a low speed (1 unit as
-    // defined by shooter.shootAtSpeed). The returned command already
-    // requires the `Shooter` subsystem.
-    Shooter.setDefaultCommand(Shooter.shootAtSpeed(1));
+    // Default shooter command: map controller1 right trigger to shooter
+    // voltage. Multiply axis [0..1] by 12 to convert to volts.
+    Shooter.setDefaultCommand(Shooter.shootAtSpeed(() -> controller1.getRightTriggerAxis() * 12.0));
     controller.leftBumper().whileTrue(Commands.run(() -> Index.spinMotor(0.5)));
     controller
         .a()
