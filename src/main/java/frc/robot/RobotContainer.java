@@ -88,7 +88,7 @@ public class RobotContainer {
         Index = new index(new indexIOTalonFX(14));
         Intake = new intake(new intakeIOTalonFX(22, 1, 1));
 
-        Shooter = new shooter(0.4, new shooterIOTalonFX(20, 18, 15));
+        Shooter = new shooter(0.4, new shooterIOTalonFX(20, 18, 17));
 
         // The ModuleIOTalonFXS implementation provides an example implementation for
         // TalonFXS controller connected to a CANdi with a PWM encoder. The
@@ -135,7 +135,7 @@ public class RobotContainer {
       default:
         Turrent = new turrent(new turrentIOTalonFX(15, 18));
         // Turrent = new turrent(new turrentIOTalonFX(0));
-        Shooter = new shooter(0.4, new shooterIOTalonFX(20, 18, 15));
+        Shooter = new shooter(0.4, new shooterIOTalonFX(20, 18, 17));
         Intake = new intake(new intakeIOTalonFX(22, 1, 1));
         // Replayed robot, disable IO implementations
         Index = new index(new indexIOTalonFX(14));
@@ -198,11 +198,11 @@ public class RobotContainer {
     controller1.rightTrigger().whileTrue(Intake.spinTheStuff(controller.getRightTriggerAxis()));
     // Default shooter command: map controller1 right trigger to shooter
     // voltage. Multiply axis [0..1] by 12 to convert to volts.
-    Shooter.setDefaultCommand(Shooter.shootAtSpeed(() -> controller1.getRightTriggerAxis()));
+    Shooter.setDefaultCommand(Shooter.shootAtSpeed(() -> controller1.getRightTriggerAxis()*12.0));
     controller1
         .rightTrigger()
         .whileTrue(
-            Commands.run(() -> Shooter.shootAtSpeed(() -> controller1.getRightTriggerAxis())));
+            Commands.run(() -> Shooter.shootAtSpeed(() -> controller1.getRightTriggerAxis()*12.0)));
     controller1.leftBumper().whileTrue(Commands.run(() -> Index.spinMotor(0.5)));
     controller
         .a()
