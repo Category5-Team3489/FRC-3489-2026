@@ -199,7 +199,10 @@ public class RobotContainer {
     // Default shooter command: map controller1 right trigger to shooter
     // voltage. Multiply axis [0..1] by 12 to convert to volts.
     Shooter.setDefaultCommand(Shooter.shootAtSpeed(() -> controller1.getRightTriggerAxis()));
-    controller1.rightTrigger().whileTrue(Commands.run(() -> Shooter.shootAtSpeed(() -> controller1.getRightTriggerAxis())));
+    controller1
+        .rightTrigger()
+        .whileTrue(
+            Commands.run(() -> Shooter.shootAtSpeed(() -> controller1.getRightTriggerAxis())));
     controller1.leftBumper().whileTrue(Commands.run(() -> Index.spinMotor(0.5)));
     controller
         .a()
