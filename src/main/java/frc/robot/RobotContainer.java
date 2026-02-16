@@ -32,6 +32,9 @@ import frc.robot.subsystems.indexer.indexIOTalonFX;
 import frc.robot.subsystems.intake.intake;
 import frc.robot.subsystems.intake.intakeIOSim;
 import frc.robot.subsystems.intake.intakeIOTalonFX;
+import frc.robot.subsystems.shooter.shooter;
+import frc.robot.subsystems.shooter.shooterIOSim;
+import frc.robot.subsystems.shooter.shooterIOTalonFX;
 import frc.robot.subsystems.turrent.turrent;
 import frc.robot.subsystems.turrent.turrentIOSim;
 import frc.robot.subsystems.turrent.turrentIOTalonFX;
@@ -48,7 +51,7 @@ public class RobotContainer {
   private final Drive drive;
   // private final Vision vision;
   private final intake Intake;
-  //   private final shooter Shooter;
+  private final shooter Shooter;
   private final turrent Turrent;
 
   //   private final climber Climber;
@@ -85,7 +88,7 @@ public class RobotContainer {
         Index = new index(new indexIOTalonFX(14));
         Intake = new intake(new intakeIOTalonFX(22, 1, 1));
 
-        // Shooter = new shooter(0.4, new shooterIOTalonFX(17, 18, 15));
+        Shooter = new shooter(0.4, new shooterIOTalonFX(20, 18, 15));
 
         // The ModuleIOTalonFXS implementation provides an example implementation for
         // TalonFXS controller connected to a CANdi with a PWM encoder. The
@@ -108,7 +111,7 @@ public class RobotContainer {
 
       case SIM:
         Turrent = new turrent(new turrentIOSim(1));
-        // Shooter = new shooter(0.4, new shooterIOSim());
+        Shooter = new shooter(0.4, new shooterIOSim());
         Intake = new intake(new intakeIOSim());
         Index = new index(new indexIOSim());
         // Turrent = new turrent(new turrentIOSim(1));
@@ -132,7 +135,7 @@ public class RobotContainer {
       default:
         Turrent = new turrent(new turrentIOTalonFX(15, 18));
         // Turrent = new turrent(new turrentIOTalonFX(0));
-        // Shooter = new shooter(0.4, new shooterIOTalonFX(17, 18, 15));
+        Shooter = new shooter(0.4, new shooterIOTalonFX(20, 18, 15));
         Intake = new intake(new intakeIOTalonFX(22, 1, 1));
         // Replayed robot, disable IO implementations
         Index = new index(new indexIOTalonFX(14));
@@ -182,7 +185,7 @@ public class RobotContainer {
   private void configureButtonBindings() {
     // Default command, normal field-relative drive
     // Use a supplier so the joystick is sampled each scheduler cycle.
-    Turrent.setDefaultCommand(Turrent.turnTurrent(() -> (controller1.getLeftX()*0.2)));
+    Turrent.setDefaultCommand(Turrent.turnTurrent(() -> (controller1.getLeftX() * 0.2)));
 
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
