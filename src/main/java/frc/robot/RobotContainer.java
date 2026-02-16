@@ -38,7 +38,6 @@ import frc.robot.subsystems.shooter.shooterIOTalonFX;
 import frc.robot.subsystems.turrent.turrent;
 import frc.robot.subsystems.turrent.turrentIOSim;
 import frc.robot.subsystems.turrent.turrentIOTalonFX;
-
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -185,7 +184,7 @@ public class RobotContainer {
   private void configureButtonBindings() {
     // Default command, normal field-relative drive
     Turrent.setDefaultCommand(Turrent.turnTurrent(controller.getRightY()));
-    
+
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
@@ -195,7 +194,10 @@ public class RobotContainer {
     Intake.setDefaultCommand(Intake.noSpin());
     // Lock to 0° when A button is held
     controller.rightTrigger().whileTrue(Intake.spinTheStuff(controller.getRightTriggerAxis()));
-    Shooter.setDefaultCommand(Commands.run(() -> Shooter.shootAtSpeed(1)));
+    // Default shooter command: run the shooter at a low speed (1 unit as
+    // defined by shooter.shootAtSpeed). The returned command already
+    // requires the `Shooter` subsystem.
+    Shooter.setDefaultCommand(Shooter.shootAtSpeed(1));
     controller.leftBumper().whileTrue(Commands.run(() -> Index.spinMotor(0.5)));
     controller
         .a()

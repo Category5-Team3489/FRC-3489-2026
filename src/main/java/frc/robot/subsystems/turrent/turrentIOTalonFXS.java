@@ -20,7 +20,7 @@ public class turrentIOTalonFXS implements turrentIO {
   }
 
   @Override
-  public void turnTurrent(double speed){
+  public void turnTurrent(double speed) {
     topMotor.set(speed);
   }
 

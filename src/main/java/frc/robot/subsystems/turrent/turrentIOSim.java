@@ -30,8 +30,8 @@ public class turrentIOSim implements turrentIO {
   }
 
   @Override
-  public void turnTurrent(double speed){
-    topMotor.setInputVoltage(speed*12);
+  public void turnTurrent(double speed) {
+    topMotor.setInputVoltage(speed * 12);
   }
 
   @Override

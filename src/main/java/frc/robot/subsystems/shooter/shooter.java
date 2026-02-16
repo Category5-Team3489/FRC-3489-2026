@@ -33,8 +33,11 @@ public class shooter extends SubsystemBase {
     return Commands.runOnce(() -> io.stopMotors(), this);
   }
 
-  public void shootAtSpeed(double speed) {
-    io.shootBall(speed);
+  // Returns a Command that runs the shooter at the requested speed while
+  // scheduled. The command requires this subsystem so it can be used as a
+  // default command.
+  public Command shootAtSpeed(double speed) {
+    return Commands.run(() -> io.shootBall(speed), this);
   }
 
   public double getNeededAngle(double distance, double initialSpeed, boolean PlusorMinus) {
