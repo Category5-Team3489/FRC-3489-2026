@@ -32,6 +32,9 @@ import frc.robot.subsystems.indexer.indexIOTalonFX;
 import frc.robot.subsystems.intake.intake;
 import frc.robot.subsystems.intake.intakeIOSim;
 import frc.robot.subsystems.intake.intakeIOTalonFX;
+import frc.robot.subsystems.kicker.kicker;
+import frc.robot.subsystems.kicker.kickerIOSim;
+import frc.robot.subsystems.kicker.kickerIOTalonFX;
 import frc.robot.subsystems.shooter.shooter;
 import frc.robot.subsystems.shooter.shooterIOSim;
 import frc.robot.subsystems.shooter.shooterIOTalonFX;
@@ -56,6 +59,7 @@ public class RobotContainer {
 
   //   private final climber Climber;
   private final index Index;
+  private final kicker Kicker;
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
   private final CommandXboxController controller1 = new CommandXboxController(1);
@@ -85,7 +89,8 @@ public class RobotContainer {
         //         new VisionIOPhotonVision(camera1Name, robotToCamera1));
 
         // Turrent = new turrent(new turrentIOTalonFX(0));
-        Index = new index(new indexIOTalonFX(14));
+        Index = new index(new indexIOTalonFX(16));
+        Kicker = new kicker(new kickerIOTalonFX(14));
         Intake = new intake(new intakeIOTalonFX(22, 1, 1));
 
         Shooter = new shooter(0.4, new shooterIOTalonFX(20, 18, 17));
@@ -114,6 +119,7 @@ public class RobotContainer {
         Shooter = new shooter(0.4, new shooterIOSim());
         Intake = new intake(new intakeIOSim());
         Index = new index(new indexIOSim());
+        Kicker = new kicker(new kickerIOSim());
         // Turrent = new turrent(new turrentIOSim(1));
         // Sim robot, instantiate physics sim IO implementations
         drive =
@@ -139,6 +145,7 @@ public class RobotContainer {
         Intake = new intake(new intakeIOTalonFX(22, 1, 1));
         // Replayed robot, disable IO implementations
         Index = new index(new indexIOTalonFX(14));
+        Kicker = new kicker(new kickerIOTalonFX(16));
         drive =
             new Drive(
                 new GyroIO() {},
@@ -195,15 +202,23 @@ public class RobotContainer {
             () -> -controller.getRightX()));
     Intake.setDefaultCommand(Intake.noSpin());
     // Lock to 0° when A button is held
-    controller1.rightTrigger().whileTrue(Intake.spinTheStuff(controller.getRightTriggerAxis()));
+    controller1.y().whileTrue(Intake.spinTheStuff(0.7));
+    controller1
+        .a()
+        .whileTrue(
+            Commands.parallel(
+                Shooter.shootAtSpeed(0.7), Commands.run(() -> Kicker.spinMotor(0.7))));
     // Default shooter command: map controller1 right trigger to shooter
     // voltage. Multiply axis [0..1] by 12 to convert to volts.
-    Shooter.setDefaultCommand(Shooter.shootAtSpeed(() -> controller1.getRightTriggerAxis() * 0.7));
-    controller1
-        .rightTrigger()
-        .whileTrue(
-            Commands.run(
-                () -> Shooter.shootAtSpeed(() -> controller1.getRightTriggerAxis() * 0.7)));
+
+    // Shooter.setDefaultCommand(Shooter.shootAtSpeed(() -> controller1.getRightTriggerAxis() *
+    // 0.7));
+    // controller1
+    //     .rightTrigger()
+    //     .whileTrue(
+    //         Commands.run(
+    //             () -> Shooter.shootAtSpeed(() -> controller1.getRightTriggerAxis() * 0.7)));
+
     controller1.leftBumper().whileTrue(Commands.run(() -> Index.spinMotor(0.5)));
     controller
         .a()
@@ -219,6 +234,8 @@ public class RobotContainer {
     controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
 
     Index.setDefaultCommand(Commands.run(() -> Index.spinMotor(0), Index));
+    Kicker.setDefaultCommand(Commands.run(() -> Kicker.spinMotor(0), Kicker));
+    Shooter.setDefaultCommand(Shooter.shootAtSpeed(0));
     // Change .leftTrigger to what you want it to be to half velocity.
     controller
         .leftTrigger()

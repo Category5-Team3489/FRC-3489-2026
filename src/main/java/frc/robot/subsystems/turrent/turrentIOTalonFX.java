@@ -60,6 +60,8 @@ public class turrentIOTalonFX implements turrentIO {
 
   @Override
   public void turnTurrent(double speed) {
+    System.out.println(tuffEncoder.getAbsolutePosition().getValueAsDouble());
+
     topMotor.set(speed);
   }
 

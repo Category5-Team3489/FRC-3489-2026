@@ -40,9 +40,9 @@ public class shooterIOTalonFX implements shooterIO {
   @Override
   public void stopMotors() {
     // TODO Auto-generated method stub
-    shooterMotor.set(-1);
+    shooterMotor.set(0);
     angleMotor.set(0);
-    angleMotorOther.set(1);
+    angleMotorOther.set(0);
   }
 
   @Override
