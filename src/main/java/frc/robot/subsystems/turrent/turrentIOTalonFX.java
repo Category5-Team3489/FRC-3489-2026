@@ -45,6 +45,11 @@ public class turrentIOTalonFX implements turrentIO {
   }
 
   @Override
+  public double getCurrentAngle(){
+    return topMotor.getPosition().getValueAsDouble();
+  }
+
+  @Override
   public void updateInputs(turrentIOInputs inputs) {
     inputs.topMotorCurrent = topMotor.getSupplyVoltage().getValueAsDouble();
     // Read CANCoder absolute position (returns rotations). Convert motor
