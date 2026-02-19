@@ -24,6 +24,11 @@ public class shooterIOTalonFXS implements shooterIO {
   }
 
   @Override
+  public void setShooterVoltage(double volts){
+    shooterMotor.setVoltage(volts);
+  }
+
+  @Override
   public void updateInputs(shooterIOInputs inputs) {
     // TODO Auto-generated method stub
     // Phoenix6 StatusSignal APIs return signal objects; read numeric values

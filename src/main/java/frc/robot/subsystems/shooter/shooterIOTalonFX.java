@@ -54,6 +54,11 @@ public class shooterIOTalonFX implements shooterIO {
   }
 
   @Override
+  public void setShooterVoltage(double volts){
+    shooterMotor.setVoltage(volts);
+  }
+
+  @Override
   public void setShootAngle(double degrees) {
     // Check this code fs
     double rotations =

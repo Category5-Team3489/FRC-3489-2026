@@ -53,6 +53,11 @@ public class shooterIOSim implements shooterIO {
   }
 
   @Override
+  public void setShooterVoltage(double volts){
+    shooterMotorSim.setInputVoltage(volts);
+  }
+
+  @Override
   public void stopMotors() {
     shooterMotorSim.setInputVoltage(0);
     angleMotorSim.setInputVoltage(0);

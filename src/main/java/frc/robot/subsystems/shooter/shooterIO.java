@@ -18,6 +18,7 @@ public interface shooterIO {
   // Update inputs
   public void updateInputs(shooterIOInputs inputs);
 
+  public void setShooterVoltage(double volts);
   // Set motor to angle
   public void stopMotors();
 
