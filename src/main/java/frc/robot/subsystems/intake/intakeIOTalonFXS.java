@@ -18,6 +18,11 @@ public class intakeIOTalonFXS implements intakeIO {
   }
 
   @Override
+  public void setIntakeVoltage(double volts){
+    intakeMotor.setVoltage(volts);
+  }
+
+  @Override
   public void updateInputs(intakeIOInputs inputs) {
     inputs.isBallDetected = false;
     inputs.motorCurrent = intakeMotor.get();

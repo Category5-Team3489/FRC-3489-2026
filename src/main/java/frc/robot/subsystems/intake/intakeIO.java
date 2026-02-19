@@ -14,6 +14,8 @@ public interface intakeIO {
 
   public void spinThatStuff(double initialSpeed);
 
+  public void setIntakeVoltage(double volts);
+
   public void moveInorOut(double speed);
 
   public void stopMotors();

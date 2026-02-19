@@ -25,6 +25,11 @@ public class intakeIOSim implements intakeIO {
   }
 
   @Override
+  public void setIntakeVoltage(double volts){
+    motor.setInputVoltage(volts);
+  };
+
+  @Override
   public void updateInputs(intakeIOInputs inputs) {
     inputs.isBallDetected = false;
     inputs.motorCurrent = motor.getCurrentDrawAmps();
