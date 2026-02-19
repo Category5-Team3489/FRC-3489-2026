@@ -62,7 +62,19 @@ public class turrentIOTalonFX implements turrentIO {
   public void turnTurrent(double speed) {
     System.out.println(tuffEncoder.getAbsolutePosition().getValueAsDouble());
 
-    topMotor.set(speed);
+    // supposed to make it so that you can only move if it is at 0.7 rotations and -0.7
+    // lowk i am NOT confident in ts
+    if (tuffEncoder.getAbsolutePosition().getValueAsDouble() > -0.7) {
+      topMotor.set(speed);
+    } else if (speed < 0) {
+      topMotor.set(0);
+    }
+
+    if (tuffEncoder.getAbsolutePosition().getValueAsDouble() < 0.7) {
+      topMotor.set(speed);
+    } else if (speed > 0) {
+      topMotor.set(0);
+    }
   }
 
   @Override
