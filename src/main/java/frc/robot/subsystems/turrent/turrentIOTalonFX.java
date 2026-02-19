@@ -15,6 +15,10 @@ public class turrentIOTalonFX implements turrentIO {
   // The mechanical gear ratio between the encoder (motor/shaft) and the turret
   // output: 50 encoder/motor rotations == 1 turret rotation.
   private static final double ENCODER_TO_TURRET_RATIO = 50.0;
+  // Allowed absolute-position window (rotations) for turret travel.
+  // Requested range is -0.75 to 0.75 on a -1 to 1 scale.
+  private static final double MIN_TURRET_POS = -0.75;
+  private static final double MAX_TURRET_POS = 0.75;
   private final turrentIOInputs inputs = new turrentIOInputs();
   // Local dashboard visualization (do not include in AutoLog inputs)
   private final Mechanism2d turnMechanism = new Mechanism2d(1, 1);
@@ -65,21 +69,17 @@ public class turrentIOTalonFX implements turrentIO {
 
   @Override
   public void turnTurrent(double speed) {
-    System.out.println(tuffEncoder.getAbsolutePosition().getValueAsDouble());
+    double turretPos = tuffEncoder.getAbsolutePosition().getValueAsDouble();
+    double commandedSpeed = speed;
 
-    // supposed to make it so that you can only move if it is at 0.7 rotations and -0.7
-    // lowk i am NOT confident in ts
-    if (tuffEncoder.getAbsolutePosition().getValueAsDouble() > -0.025) {
-      topMotor.set(speed);
-    } else if (speed < 0) {
-      topMotor.set(0);
+    // Only block motion that would drive farther outside the allowed window.
+    if (turretPos <= MIN_TURRET_POS && speed < 0) {
+      commandedSpeed = 0.0;
+    } else if (turretPos >= MAX_TURRET_POS && speed > 0) {
+      commandedSpeed = 0.0;
     }
 
-    if (tuffEncoder.getAbsolutePosition().getValueAsDouble() < 0.025) {
-      topMotor.set(speed);
-    } else if (speed > 0) {
-      topMotor.set(0);
-    }
+    topMotor.set(commandedSpeed);
   }
 
   @Override
