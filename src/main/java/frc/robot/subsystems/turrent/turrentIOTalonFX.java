@@ -45,7 +45,7 @@ public class turrentIOTalonFX implements turrentIO {
   public turrentIOTalonFX(int topMotorPort, int cancoderId) {
     topMotor = new TalonFX(topMotorPort);
     // Create CANcoder on the configured CAN bus
-    tuffEncoder = new CANcoder(cancoderId, TunerConstants.kCANBus);
+    tuffEncoder = new CANcoder(cancoderId);
   }
 
   @Override
