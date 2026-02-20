@@ -17,8 +17,8 @@ public class turrentIOTalonFX implements turrentIO {
   private static final double ENCODER_TO_TURRET_RATIO = 50.0;
   // Allowed absolute-position window (rotations) for turret travel.
   // Requested range is -0.75 to 0.75 on a -1 to 1 scale.
-  private static final double MIN_TURRET_POS = -0.75*16384;
-  private static final double MAX_TURRET_POS = 0.75*16384;
+  private static final double MIN_TURRET_POS = -10;
+  private static final double MAX_TURRET_POS = 10;
   private final turrentIOInputs inputs = new turrentIOInputs();
   // Local dashboard visualization (do not include in AutoLog inputs)
   private final Mechanism2d turnMechanism = new Mechanism2d(1, 1);
@@ -73,9 +73,9 @@ public class turrentIOTalonFX implements turrentIO {
     double commandedSpeed = speed;
 
     // Only block motion that would drive farther outside the allowed window.
-    if (turretPos <= MIN_TURRET_POS && speed < 0) {
+    if (turretPos <= MIN_TURRET_POS && speed > 0) {
       commandedSpeed = 0.0;
-    } else if (turretPos >= MAX_TURRET_POS && speed > 0) {
+    } else if (turretPos >= MAX_TURRET_POS && speed < 0) {
       commandedSpeed = 0.0;
     }
 
