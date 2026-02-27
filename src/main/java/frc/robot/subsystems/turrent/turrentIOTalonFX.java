@@ -6,7 +6,6 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
-import frc.robot.generated.TunerConstants;
 
 public class turrentIOTalonFX implements turrentIO {
   // Create motors
@@ -49,7 +48,7 @@ public class turrentIOTalonFX implements turrentIO {
   }
 
   @Override
-  public double getCurrentAngle(){
+  public double getCurrentAngle() {
     return topMotor.getPosition().getValueAsDouble();
   }
 

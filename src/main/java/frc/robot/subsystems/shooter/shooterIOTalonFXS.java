@@ -24,7 +24,7 @@ public class shooterIOTalonFXS implements shooterIO {
   }
 
   @Override
-  public void setShooterVoltage(double volts){
+  public void setShooterVoltage(double volts) {
     shooterMotor.setVoltage(volts);
   }
 

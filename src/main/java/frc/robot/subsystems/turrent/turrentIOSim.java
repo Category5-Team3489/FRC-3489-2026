@@ -30,7 +30,7 @@ public class turrentIOSim implements turrentIO {
   }
 
   @Override
-  public double getCurrentAngle(){
+  public double getCurrentAngle() {
     return topMotor.getAngularPositionRotations();
   }
 

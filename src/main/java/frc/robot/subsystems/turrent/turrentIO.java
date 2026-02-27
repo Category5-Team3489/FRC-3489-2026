@@ -21,5 +21,6 @@ public interface turrentIO {
   public void turnTurrent(double speed);
   // Set motor to angle
   public void setTurrentAngle(double degrees);
+
   public double getCurrentAngle();
 }
