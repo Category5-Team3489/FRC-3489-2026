@@ -10,6 +10,7 @@ package frc.robot;
 import static frc.robot.subsystems.vision.VisionConstants.*;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -170,6 +171,10 @@ public class RobotContainer {
 
         break;
     }
+
+    NamedCommands.registerCommand("intakeOn", Intake.spinTheStuff(0.7));
+
+    NamedCommands.registerCommand("shooterOn", Shooter.shootAtSpeed(0.7));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
