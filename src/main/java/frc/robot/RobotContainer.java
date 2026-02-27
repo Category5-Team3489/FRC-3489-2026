@@ -172,9 +172,9 @@ public class RobotContainer {
         break;
     }
 
-    NamedCommands.registerCommand("intakeOn", Intake.spinTheStuff(0.7));
+    NamedCommands.registerCommand("intakeOn", Intake.spinTheStuff(0.4));
 
-    NamedCommands.registerCommand("shooterOn", Shooter.shootAtSpeed(0.7));
+    NamedCommands.registerCommand("shooterOn", Shooter.shootAtSpeed(0.4));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -218,12 +218,12 @@ public class RobotContainer {
             () -> -controller.getRightX()));
     Intake.setDefaultCommand(Intake.noSpin());
     // Lock to 0° when A button is held
-    controller1.y().whileTrue(Intake.spinTheStuff(0.7));
+    controller1.y().whileTrue(Intake.spinTheStuff(0.3));
     controller1
         .a()
         .whileTrue(
             Commands.parallel(
-                Shooter.shootAtSpeed(0.7), Commands.run(() -> Kicker.spinMotor(0.7))));
+                Shooter.shootAtSpeed(0.3), Commands.run(() -> Kicker.spinMotor(0.3))));
     // Default shooter command: map controller1 right trigger to shooter
     // voltage. Multiply axis [0..1] by 12 to convert to volts.
 
@@ -235,7 +235,7 @@ public class RobotContainer {
     //         Commands.run(
     //             () -> Shooter.shootAtSpeed(() -> controller1.getRightTriggerAxis() * 0.7)));
 
-    controller1.leftBumper().whileTrue(Commands.run(() -> Index.spinMotor(0.5)));
+    controller1.leftBumper().whileTrue(Commands.run(() -> Index.spinMotor(0.3)));
     controller
         .a()
         .whileTrue(
