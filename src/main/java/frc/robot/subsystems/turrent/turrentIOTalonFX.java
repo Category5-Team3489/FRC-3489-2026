@@ -84,6 +84,11 @@ public class turrentIOTalonFX implements turrentIO {
   }
 
   @Override
+  public void resetTurrentAngle() {
+    tuffEncoder.setPosition(0);
+  }
+
+  @Override
   public void setTurrentAngle(double degrees) {
     // Convert requested angle to turret rotations.
     double targetTurretRotations = degrees / 360.0;
