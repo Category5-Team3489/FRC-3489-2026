@@ -55,11 +55,8 @@ public class turrentIOTalonFX implements turrentIO {
   @Override
   public void updateInputs(turrentIOInputs inputs) {
     inputs.topMotorCurrent = topMotor.getSupplyVoltage().getValueAsDouble();
-    // Read CANCoder absolute position (returns rotations). Convert motor
-    // rotations to turret rotations using ENCODER_TO_TURRET_RATIO, then to
-    // degrees.
-    double motorRotations = tuffEncoder.getAbsolutePosition().getValueAsDouble();
-    double turretRotations = motorRotations / ENCODER_TO_TURRET_RATIO;
+    // CANCoder absolute position is in turret rotations (0 to 1).
+    double turretRotations = tuffEncoder.getAbsolutePosition().getValueAsDouble();
     double turretDegrees = turretRotations * 360.0;
     inputs.turrentAngle = turretDegrees;
     // Update visualization
@@ -83,12 +80,28 @@ public class turrentIOTalonFX implements turrentIO {
 
   @Override
   public void setTurrentAngle(double degrees) {
-    // Convert turret degrees to motor rotations. ENCODER_TO_TURRET_RATIO is the
-    // number of encoder/motor rotations per one turret rotation (50:1).
-    double motorRotations = (degrees / 360.0) * ENCODER_TO_TURRET_RATIO;
+    // Convert requested angle to turret rotations.
+    double targetTurretRotations = degrees / 360.0;
 
-    // PositionDutyCycle expects motor rotations as the position setpoint.
-    PositionDutyCycle request = new PositionDutyCycle(motorRotations);
+    // Use the CANCoder as the turret reference and compute the nearest rotation
+    // error from current position to target.
+    double currentTurretRotations = tuffEncoder.getAbsolutePosition().getValueAsDouble();
+    double wrappedTarget = targetTurretRotations % 1.0;
+    if (wrappedTarget < 0.0) {
+      wrappedTarget += 1.0;
+    }
+    double turretError = wrappedTarget - currentTurretRotations;
+    if (turretError > 0.5) {
+      turretError -= 1.0;
+    } else if (turretError < -0.5) {
+      turretError += 1.0;
+    }
+
+    // Convert turret-rotation error to motor-rotation error and apply it as a
+    // position target relative to current motor position.
+    double currentMotorRotations = topMotor.getPosition().getValueAsDouble();
+    double targetMotorRotations = currentMotorRotations + (turretError * ENCODER_TO_TURRET_RATIO);
+    PositionDutyCycle request = new PositionDutyCycle(targetMotorRotations);
     topMotor.setControl(request);
   }
 }
