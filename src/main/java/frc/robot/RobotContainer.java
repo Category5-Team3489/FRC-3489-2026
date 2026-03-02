@@ -236,6 +236,8 @@ public class RobotContainer {
     //             () -> Shooter.shootAtSpeed(() -> controller1.getRightTriggerAxis() * 0.7)));
 
     controller1.leftBumper().whileTrue(Commands.run(() -> Index.spinMotor(0.3)));
+    controller1.rightBumper().whileTrue(Commands.run(() -> Index.spinMotor(-0.3)));
+    controller1.a().onTrue(Commands.runOnce(() -> Turrent.resetTurrentAngle()));
     controller
         .a()
         .whileTrue(

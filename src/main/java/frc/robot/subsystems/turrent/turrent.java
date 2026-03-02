@@ -25,6 +25,10 @@ public class turrent extends SubsystemBase {
     io.setTurrentAngle(degrees);
   }
 
+  public void resetTurrentAngle() {
+    io.resetTurrentAngle();
+  }
+
   public Command turnTurrentYAY(double speedy) {
     return Commands.run(() -> io.turnTurrent(speedy), this);
   }
