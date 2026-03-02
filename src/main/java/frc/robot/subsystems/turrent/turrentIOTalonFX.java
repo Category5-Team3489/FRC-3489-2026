@@ -9,11 +9,10 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 
 public class turrentIOTalonFX implements turrentIO {
   // Create motors
+  private static final double DEFAULT_GEAR_RATIO = 50.0;
+  private final double gearRatio;
   private final com.ctre.phoenix6.hardware.TalonFX topMotor;
   private final CANcoder tuffEncoder;
-  // The mechanical gear ratio between the encoder (motor/shaft) and the turret
-  // output: 50 encoder/motor rotations == 1 turret rotation.
-  private static final double ENCODER_TO_TURRET_RATIO = 50.0;
   // Allowed absolute-position window (rotations) for turret travel.
   // Requested range is -0.75 to 0.75 on a -1 to 1 scale.
   private static final double MIN_TURRET_POS = -10;
@@ -31,7 +30,7 @@ public class turrentIOTalonFX implements turrentIO {
    * custom channels.
    */
   public turrentIOTalonFX(int topMotorPort) {
-    this(topMotorPort, 0);
+    this(topMotorPort, 0, DEFAULT_GEAR_RATIO);
   }
 
   /**
@@ -42,9 +41,14 @@ public class turrentIOTalonFX implements turrentIO {
    * @param encoderChannelB DIO channel for encoder B
    */
   public turrentIOTalonFX(int topMotorPort, int cancoderId) {
+    this(topMotorPort, cancoderId, DEFAULT_GEAR_RATIO);
+  }
+
+  public turrentIOTalonFX(int topMotorPort, int cancoderId, double gearRatio) {
     topMotor = new TalonFX(topMotorPort);
     // Create CANcoder on the configured CAN bus
     tuffEncoder = new CANcoder(cancoderId);
+    this.gearRatio = gearRatio;
   }
 
   @Override
@@ -55,6 +59,7 @@ public class turrentIOTalonFX implements turrentIO {
   @Override
   public void updateInputs(turrentIOInputs inputs) {
     inputs.topMotorCurrent = topMotor.getSupplyVoltage().getValueAsDouble();
+    inputs.gearRatio = gearRatio;
     // CANCoder absolute position is in turret rotations (0 to 1).
     double turretRotations = tuffEncoder.getAbsolutePosition().getValueAsDouble();
     double turretDegrees = turretRotations * 360.0;
@@ -100,7 +105,7 @@ public class turrentIOTalonFX implements turrentIO {
     // Convert turret-rotation error to motor-rotation error and apply it as a
     // position target relative to current motor position.
     double currentMotorRotations = topMotor.getPosition().getValueAsDouble();
-    double targetMotorRotations = currentMotorRotations + (turretError * ENCODER_TO_TURRET_RATIO);
+    double targetMotorRotations = currentMotorRotations + (turretError * gearRatio);
     PositionDutyCycle request = new PositionDutyCycle(targetMotorRotations);
     topMotor.setControl(request);
   }
