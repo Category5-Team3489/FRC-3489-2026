@@ -1,7 +1,5 @@
 package frc.robot.subsystems.shooter;
 
-import java.io.Console;
-
 import com.ctre.phoenix6.controls.PositionDutyCycle;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
@@ -32,12 +30,22 @@ public class shooterIOTalonFX implements shooterIO {
     // TODO Auto-generated method stub
     // Phoenix6 StatusSignal APIs return signal objects; read numeric values
     inputs.topMotorCurrent = shooterMotor.getSupplyCurrent().getValueAsDouble();
-    inputs.shootAngle = angleMotor.getPosition().getValueAsDouble() * 360.0 * inputs.gearRatio; // Convert rotations to degrees, accounting for gear ratio
+    inputs.shootAngle =
+        angleMotor.getPosition().getValueAsDouble()
+            * 360.0
+            * inputs.gearRatio; // Convert rotations to degrees, accounting for gear ratio
     inputs.bottomMotorCurrent = angleMotor.getSupplyCurrent().getValueAsDouble();
     inputs.distanceToTarget = 0.0; // This would need a sensor to be implemented
     // Update local visualization ligament
     shooterTurn.setAngle(inputs.shootAngle);
-    System.out.println("Angle: " + inputs.shootAngle + " degrees, Shooter Current: " + inputs.topMotorCurrent + " A, Angle Motor Current: " + inputs.bottomMotorCurrent + " A");
+    System.out.println(
+        "Angle: "
+            + inputs.shootAngle
+            + " degrees, Shooter Current: "
+            + inputs.topMotorCurrent
+            + " A, Angle Motor Current: "
+            + inputs.bottomMotorCurrent
+            + " A");
   }
 
   @Override
@@ -71,7 +79,7 @@ public class shooterIOTalonFX implements shooterIO {
     angleMotor.setControl(request);
   }
 
-  public String simplify(String input){
+  public String simplify(String input) {
     double value = new ExpressionParser(input).parse();
     if (Math.abs(value - Math.rint(value)) < 1e-9) {
       return Long.toString((long) Math.rint(value));

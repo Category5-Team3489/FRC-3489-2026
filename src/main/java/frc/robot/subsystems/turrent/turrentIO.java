@@ -14,7 +14,7 @@ public interface turrentIO {
     // and are not suitable for automatic logging. Create and manage them in
     // the subsystem class instead of the AutoLog inputs.
   }
-  
+
   // Reset turrent angle to 0
   public void resetTurrentAngle();
 
