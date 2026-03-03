@@ -29,7 +29,7 @@ public class intake extends SubsystemBase {
     return Commands.run(() -> parker.stopMotors(), this);
   }
 
-  public Command actuate(double speed){
+  public Command actuate(double speed) {
     return Commands.run(() -> parker.moveInorOut(speed));
   }
 }
