@@ -15,6 +15,9 @@ public interface turrentIO {
     // the subsystem class instead of the AutoLog inputs.
   }
 
+  // Reset turrent angle to 0
+  public void resetTurrentAngle();
+
   // Update inputs
   public void updateInputs(turrentIOInputs inputs);
 

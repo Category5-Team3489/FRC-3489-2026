@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>FRC Sim Chess</title>
+    <style>
+      :root {
+        --light: #f0d9b5;
+        --dark: #b58863;
+        --select: #f6f669;
+        --move: #9be564;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Arial, sans-serif;
+        background: #1f2328;
+        color: #f6f8fa;
+        display: flex;
+        justify-content: center;
+        padding: 24px;
+      }
+
+      .wrap {
+        width: min(95vw, 720px);
+      }
+
+      .top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      .status {
+        font-size: 18px;
+        font-weight: 600;
+      }
+
+      button {
+        background: #2ea043;
+        border: none;
+        color: white;
+        padding: 10px 14px;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background: #3fb950;
+      }
+
+      #board {
+        display: grid;
+        grid-template-columns: repeat(8, 1fr);
+        border: 3px solid #30363d;
+        user-select: none;
+      }
+
+      .square {
+        aspect-ratio: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: clamp(26px, 5vw, 44px);
+        cursor: pointer;
+      }
+
+      .light {
+        background: var(--light);
+      }
+
+      .dark {
+        background: var(--dark);
+      }
+
+      .selected {
+        box-shadow: inset 0 0 0 5px var(--select);
+      }
+
+      .hint {
+        box-shadow: inset 0 0 0 5px var(--move);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="top">
+        <div class="status" id="status">White to move</div>
+        <button id="reset">Reset Game</button>
+      </div>
+      <div id="board"></div>
+    </div>
+
+    <script>
+      const SYMBOLS = {
+        wp: "♙",
+        wr: "♖",
+        wn: "♘",
+        wb: "♗",
+        wq: "♕",
+        wk: "♔",
+        bp: "♟",
+        br: "♜",
+        bn: "♞",
+        bb: "♝",
+        bq: "♛",
+        bk: "♚",
+      };
+
+      const boardEl = document.getElementById("board");
+      const statusEl = document.getElementById("status");
+      const resetBtn = document.getElementById("reset");
+
+      let board;
+      let turn;
+      let selected = null;
+
+      function initialBoard() {
+        return [
+          ["br", "bn", "bb", "bq", "bk", "bb", "bn", "br"],
+          ["bp", "bp", "bp", "bp", "bp", "bp", "bp", "bp"],
+          [null, null, null, null, null, null, null, null],
+          [null, null, null, null, null, null, null, null],
+          [null, null, null, null, null, null, null, null],
+          [null, null, null, null, null, null, null, null],
+          ["wp", "wp", "wp", "wp", "wp", "wp", "wp", "wp"],
+          ["wr", "wn", "wb", "wq", "wk", "wb", "wn", "wr"],
+        ];
+      }
+
+      function resetGame() {
+        board = initialBoard();
+        turn = "w";
+        selected = null;
+        draw();
+        updateStatus();
+      }
+
+      function updateStatus(message) {
+        if (message) {
+          statusEl.textContent = message;
+        } else {
+          statusEl.textContent = `${turn === "w" ? "White" : "Black"} to move`;
+        }
+      }
+
+      function inBounds(r, c) {
+        return r >= 0 && r < 8 && c >= 0 && c < 8;
+      }
+
+      function pieceAt(r, c) {
+        if (!inBounds(r, c)) return null;
+        return board[r][c];
+      }
+
+      function isOwn(piece) {
+        return piece && piece[0] === turn;
+      }
+
+      function isEnemy(piece) {
+        return piece && piece[0] !== turn;
+      }
+
+      function addRayMoves(moves, r, c, dr, dc) {
+        let nr = r + dr;
+        let nc = c + dc;
+        while (inBounds(nr, nc)) {
+          const p = pieceAt(nr, nc);
+          if (!p) {
+            moves.push([nr, nc]);
+          } else {
+            if (isEnemy(p)) moves.push([nr, nc]);
+            break;
+          }
+          nr += dr;
+          nc += dc;
+        }
+      }
+
+      function legalMoves(r, c) {
+        const piece = pieceAt(r, c);
+        if (!piece) return [];
+        const color = piece[0];
+        const type = piece[1];
+        const moves = [];
+        const dir = color === "w" ? -1 : 1;
+        const startRow = color === "w" ? 6 : 1;
+
+        if (type === "p") {
+          if (!pieceAt(r + dir, c)) {
+            moves.push([r + dir, c]);
+            if (r === startRow && !pieceAt(r + 2 * dir, c)) {
+              moves.push([r + 2 * dir, c]);
+            }
+          }
+          for (const dc of [-1, 1]) {
+            const target = pieceAt(r + dir, c + dc);
+            if (target && target[0] !== color) {
+              moves.push([r + dir, c + dc]);
+            }
+          }
+        } else if (type === "n") {
+          const jumps = [
+            [-2, -1],
+            [-2, 1],
+            [-1, -2],
+            [-1, 2],
+            [1, -2],
+            [1, 2],
+            [2, -1],
+            [2, 1],
+          ];
+          for (const [dr, dc] of jumps) {
+            const nr = r + dr;
+            const nc = c + dc;
+            if (!inBounds(nr, nc)) continue;
+            const target = pieceAt(nr, nc);
+            if (!target || target[0] !== color) moves.push([nr, nc]);
+          }
+        } else if (type === "b" || type === "q") {
+          addRayMoves(moves, r, c, -1, -1);
+          addRayMoves(moves, r, c, -1, 1);
+          addRayMoves(moves, r, c, 1, -1);
+          addRayMoves(moves, r, c, 1, 1);
+        }
+
+        if (type === "r" || type === "q") {
+          addRayMoves(moves, r, c, -1, 0);
+          addRayMoves(moves, r, c, 1, 0);
+          addRayMoves(moves, r, c, 0, -1);
+          addRayMoves(moves, r, c, 0, 1);
+        }
+
+        if (type === "k") {
+          for (let dr = -1; dr <= 1; dr++) {
+            for (let dc = -1; dc <= 1; dc++) {
+              if (dr === 0 && dc === 0) continue;
+              const nr = r + dr;
+              const nc = c + dc;
+              if (!inBounds(nr, nc)) continue;
+              const target = pieceAt(nr, nc);
+              if (!target || target[0] !== color) moves.push([nr, nc]);
+            }
+          }
+        }
+
+        return moves.filter(([mr, mc]) => inBounds(mr, mc));
+      }
+
+      function movePiece(fr, fc, tr, tc) {
+        const piece = board[fr][fc];
+        board[tr][tc] = piece;
+        board[fr][fc] = null;
+
+        if (piece[1] === "p" && (tr === 0 || tr === 7)) {
+          board[tr][tc] = `${piece[0]}q`;
+        }
+
+        turn = turn === "w" ? "b" : "w";
+      }
+
+      function hasKing(color) {
+        for (let r = 0; r < 8; r++) {
+          for (let c = 0; c < 8; c++) {
+            if (board[r][c] === `${color}k`) return true;
+          }
+        }
+        return false;
+      }
+
+      function isLegalTarget(moves, r, c) {
+        return moves.some(([mr, mc]) => mr === r && mc === c);
+      }
+
+      function onSquareClick(r, c) {
+        const clicked = pieceAt(r, c);
+        if (!selected) {
+          if (isOwn(clicked)) {
+            selected = [r, c];
+          }
+          draw();
+          return;
+        }
+
+        const [sr, sc] = selected;
+        if (sr === r && sc === c) {
+          selected = null;
+          draw();
+          return;
+        }
+
+        const moves = legalMoves(sr, sc);
+        if (isLegalTarget(moves, r, c)) {
+          movePiece(sr, sc, r, c);
+          selected = null;
+          draw();
+          if (!hasKing("w")) {
+            updateStatus("Black wins");
+          } else if (!hasKing("b")) {
+            updateStatus("White wins");
+          } else {
+            updateStatus();
+          }
+          return;
+        }
+
+        if (isOwn(clicked)) {
+          selected = [r, c];
+        } else {
+          selected = null;
+        }
+        draw();
+      }
+
+      function draw() {
+        boardEl.innerHTML = "";
+        const hints = selected ? legalMoves(selected[0], selected[1]) : [];
+
+        for (let r = 0; r < 8; r++) {
+          for (let c = 0; c < 8; c++) {
+            const sq = document.createElement("div");
+            sq.className = `square ${(r + c) % 2 === 0 ? "light" : "dark"}`;
+            if (selected && selected[0] === r && selected[1] === c) {
+              sq.classList.add("selected");
+            }
+            if (hints.some(([hr, hc]) => hr === r && hc === c)) {
+              sq.classList.add("hint");
+            }
+            const piece = board[r][c];
+            sq.textContent = piece ? SYMBOLS[piece] : "";
+            sq.addEventListener("click", () => onSquareClick(r, c));
+            boardEl.appendChild(sq);
+          }
+        }
+      }
+
+      resetBtn.addEventListener("click", resetGame);
+      resetGame();
+    </script>
+  </body>
+</html>

@@ -8,21 +8,25 @@ import java.util.function.DoubleSupplier;
 
 public class turrent extends SubsystemBase {
   private turrentIO io;
-  // private turrentIOInputsAutoLogged inputs = new turrentIOInputsAutoLogged();
+  private turrentIOInputsAutoLogged inputs = new turrentIOInputsAutoLogged();
 
   public turrent(turrentIO given) {
     io = given;
   }
 
-  // @Override
-  // public void periodic() {
-  //   // TODO Auto-generated method stub
-  //   // io.updateInputs(inputs);
-  //   super.periodic();
-  // }
+  @Override
+  public void periodic() {
+    // TODO Auto-generated method stub
+    io.updateInputs(inputs);
+    super.periodic();
+  }
 
   public void setTurrentAngle(double degrees) {
     io.setTurrentAngle(degrees);
+  }
+
+  public void resetTurrentAngle() {
+    io.resetTurrentAngle();
   }
 
   public Command turnTurrentYAY(double speedy) {
@@ -34,7 +38,13 @@ public class turrent extends SubsystemBase {
     return Commands.run(() -> io.turnTurrent(speedSupplier.getAsDouble()), this);
   }
 
-  public Command lockToTarget(Vision eyes, int cameraIndex) {
-    return Commands.run(() -> setTurrentAngle((eyes.getTargetX(cameraIndex).getDegrees())), this);
+  public Command lockToTarget(Vision eyes1, int cameraIndex, Vision eyes2, int cameraIndex2) {
+    return Commands.run(
+        () ->
+            setTurrentAngle(
+                (eyes1.getTargetX(cameraIndex).getDegrees()
+                        + eyes2.getTargetX(cameraIndex2).getDegrees())
+                    / 2),
+        this);
   }
 }

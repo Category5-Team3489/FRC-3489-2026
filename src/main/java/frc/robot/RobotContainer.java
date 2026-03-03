@@ -236,6 +236,8 @@ public class RobotContainer {
     // manipulatorController.povCenter().whileTrue(Intake.actuate(0));
 
     manipulatorController.leftBumper().whileTrue(Commands.run(() -> Index.spinMotor(0.99)));
+    manipulatorController.rightBumper().whileTrue(Commands.run(() -> Index.spinMotor(-0.3)));
+    manipulatorController.x().onTrue(Commands.runOnce(() -> Turrent.resetTurrentAngle()));
     controller
         .a()
         .whileTrue(
