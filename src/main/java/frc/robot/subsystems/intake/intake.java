@@ -22,7 +22,7 @@ public class intake extends SubsystemBase {
   }
 
   public Command spinTheStuff(double input) {
-    return Commands.run(() -> parker.spinThatStuff(1));
+    return Commands.run(() -> parker.spinThatStuff(input));
   }
 
   public Command noSpin() {

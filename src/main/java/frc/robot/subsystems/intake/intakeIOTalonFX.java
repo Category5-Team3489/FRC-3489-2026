@@ -30,8 +30,30 @@ public class intakeIOTalonFX implements intakeIO {
 
   @Override
   public void moveInorOut(double speed) {
-    actuatorMotor1.set(speed);
-    actuatorMotor2.set(-1 * speed);
+    double maxActPos = 82.5;
+    double minActPos = 0.5;
+    double actPos = actuatorMotor1.getPosition().getValueAsDouble();
+    if (actPos >= maxActPos) {
+      if (speed > 0) {
+        actuatorMotor1.set(0);
+        actuatorMotor2.set(-1 * 0);
+      } else {
+        actuatorMotor1.set(speed);
+        actuatorMotor2.set(-1 * speed);
+      }
+    } else if (actPos <= minActPos) {
+      if (speed < 0) {
+        actuatorMotor1.set(0);
+        actuatorMotor2.set(-1 * 0);
+      } else {
+        actuatorMotor1.set(speed);
+        actuatorMotor2.set(-1 * speed);
+      }
+    } else {
+      actuatorMotor1.set(speed);
+      actuatorMotor2.set(-1 * speed);
+      actuatorMotor2.setPosition(0);
+    }
   }
 
   @Override

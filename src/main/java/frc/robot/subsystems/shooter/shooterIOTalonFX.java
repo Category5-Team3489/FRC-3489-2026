@@ -38,14 +38,14 @@ public class shooterIOTalonFX implements shooterIO {
     inputs.distanceToTarget = 0.0; // This would need a sensor to be implemented
     // Update local visualization ligament
     shooterTurn.setAngle(inputs.shootAngle);
-    System.out.println(
-        "Angle: "
-            + inputs.shootAngle
-            + " degrees, Shooter Current: "
-            + inputs.topMotorCurrent
-            + " A, Angle Motor Current: "
-            + inputs.bottomMotorCurrent
-            + " A");
+    // System.out.println(
+    //     "Angle: "
+    //         + inputs.shootAngle
+    //         + " degrees, Shooter Current: "
+    //         + inputs.topMotorCurrent
+    //         + " A, Angle Motor Current: "
+    //         + inputs.bottomMotorCurrent
+    //         + " A");
   }
 
   @Override
@@ -59,9 +59,9 @@ public class shooterIOTalonFX implements shooterIO {
   @Override
   public void shootBall(double speed) {
     // Check this code fs
-    shooterMotor.set(speed);
+    shooterMotor.set(-speed);
     angleMotor.set(0);
-    shootMotorOther.set(-speed);
+    shootMotorOther.set(speed);
   }
 
   @Override
@@ -77,6 +77,11 @@ public class shooterIOTalonFX implements shooterIO {
             * inputs.gearRatio; // Convert degrees to rotations, accounting for gear ratio
     PositionDutyCycle request = new PositionDutyCycle(rotations);
     angleMotor.setControl(request);
+  }
+
+  @Override
+  public void setHoodSpeed(double speed) {
+    angleMotor.set(speed);
   }
 
   public String simplify(String input) {

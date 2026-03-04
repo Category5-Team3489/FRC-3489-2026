@@ -204,7 +204,7 @@ public class RobotContainer {
   private void configureButtonBindings() {
     // Default command, normal field-relative drive
     // Use a supplier so the joystick is sampled each scheduler cycle.
-    Turrent.setDefaultCommand(Turrent.turnTurrent(() -> (manipulatorController.getLeftX() * 0.2)));
+    Turrent.setDefaultCommand(Turrent.turnTurrent(() -> (-manipulatorController.getLeftX() * 0.2)));
 
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
@@ -214,7 +214,8 @@ public class RobotContainer {
             () -> -controller.getRightX()));
     Intake.setDefaultCommand(Intake.noSpin().andThen(Intake.actuate(0)));
     // Lock to 0° when A button is held
-    manipulatorController.y().whileTrue(Intake.spinTheStuff(0.3));
+    manipulatorController.y().whileTrue(Intake.spinTheStuff(0.5));
+
     manipulatorController
         .a()
         .whileTrue(
@@ -232,8 +233,8 @@ public class RobotContainer {
     //             () -> Shooter.shootAtSpeed(() -> controller1.getRightTriggerAxis() * 0.7)));
 
     manipulatorController.povUp().whileTrue(Intake.actuate(0.3));
-    manipulatorController.povDown().whileTrue(Intake.actuate(0.3));
-    // manipulatorController.povCenter().whileTrue(Intake.actuate(0));
+    manipulatorController.povDown().whileTrue(Intake.actuate(-0.3));
+    manipulatorController.povCenter().whileTrue(Intake.actuate(0));
 
     manipulatorController.leftBumper().whileTrue(Commands.run(() -> Index.spinMotor(0.99)));
     manipulatorController.rightBumper().whileTrue(Commands.run(() -> Index.spinMotor(-0.3)));
@@ -254,7 +255,10 @@ public class RobotContainer {
     Index.setDefaultCommand(Commands.run(() -> Index.spinMotor(0), Index));
     Kicker.setDefaultCommand(Commands.run(() -> Kicker.spinMotor(0), Kicker));
     Shooter.setDefaultCommand(Shooter.shootAtSpeed(0));
-    // Change .leftTrigger to what you want it to be to half velocity.
+    manipulatorController
+        .b()
+        .whileTrue(Shooter.turnHood(() -> manipulatorController.getLeftY() * 0.5));
+    // Change .leftTrigger to what you want it to be to half vel]=ocity.
     controller
         .leftTrigger()
         .whileTrue(

@@ -32,6 +32,11 @@ public class shooterIOSim implements shooterIO {
     shooterPID = new PIDController(1.0, 0.0, 0.0);
   }
 
+  @Override
+  public void setHoodSpeed(double speed) {
+    angleMotorSim.setInputVoltage(speed * 12);
+  }
+
   // Local dashboard visualization (do not include in AutoLog inputs)
   private final Mechanism2d turnMechanism = new Mechanism2d(1, 1);
   private final MechanismRoot2d root = turnMechanism.getRoot("shooter root", 0, 0);

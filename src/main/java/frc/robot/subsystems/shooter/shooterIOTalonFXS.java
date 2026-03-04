@@ -41,6 +41,11 @@ public class shooterIOTalonFXS implements shooterIO {
   }
 
   @Override
+  public void setHoodSpeed(double speed) {
+    angleMotor.set(speed);
+  }
+
+  @Override
   public void stopMotors() {
     // TODO Auto-generated method stub
     shooterMotor.set(0);
