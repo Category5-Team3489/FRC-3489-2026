@@ -244,7 +244,7 @@ public class RobotContainer {
     manipulatorController.leftBumper().whileTrue(Commands.run(() -> Index.spinMotor(0.99)));
     manipulatorController.rightBumper().whileTrue(Commands.run(() -> Index.spinMotor(-0.3)));
     manipulatorController.x().onTrue(Commands.runOnce(() -> Turrent.resetTurrentAngle()));
-    manipulatorController.y().whileTrue(Commands.run(() -> Shooter.moveToAngle(() -> Vision.getTargetY(0).getDegrees())));
+    manipulatorController.y().whileTrue(Commands.run(() -> Shooter.moveToAngle(() -> vision.getTargetX(0).getDegrees())));
     controller
         .a()
         .whileTrue(

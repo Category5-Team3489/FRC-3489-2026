@@ -71,7 +71,8 @@ public class shooterIOTalonFX implements shooterIO {
 
   @Override
   public void setShootAngle(double degrees) {
-    angleMotor.setPosition(degrees);
+    PositionDutyCycle request = new PositionDutyCycle(degrees / 360.0 * inputs.gearRatio);
+    angleMotor.setControl(request);
   }
 
   @Override
