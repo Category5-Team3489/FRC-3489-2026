@@ -46,7 +46,6 @@ import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOPhotonVision;
 import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
-
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -58,7 +57,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
-    private final Vision vision;
+  private final Vision vision;
   private final intake Intake;
   private final shooter Shooter;
   private final turrent Turrent;
@@ -244,7 +243,10 @@ public class RobotContainer {
     manipulatorController.leftBumper().whileTrue(Commands.run(() -> Index.spinMotor(0.99)));
     manipulatorController.rightBumper().whileTrue(Commands.run(() -> Index.spinMotor(-0.3)));
     manipulatorController.x().onTrue(Commands.runOnce(() -> Turrent.resetTurrentAngle()));
-    manipulatorController.y().whileTrue(Commands.run(() -> Shooter.moveToAngle(() -> vision.getTargetX(0).getDegrees())));
+    manipulatorController
+        .y()
+        .whileTrue(
+            Commands.run(() -> Shooter.moveToAngle(() -> vision.getTargetX(0).getDegrees())));
     controller
         .a()
         .whileTrue(
