@@ -26,8 +26,12 @@ public class shooter extends SubsystemBase {
   // Yo mentor anthony, if you can see this I was wondering
   // If you could check over this function. If its wrong,
   // please tell me why
-  public void moveToAngle(double degrees) {
-    io.setShootAngle(degrees);
+  public Command moveToAngle(DoubleSupplier degrees) {
+    return Commands.run(() -> io.setShootAngle(degrees.getAsDouble()));
+  }
+
+  public Command turnHood(DoubleSupplier parker) {
+    return Commands.run(() -> io.setHoodSpeed(parker.getAsDouble()));
   }
 
   public Command noShoot() {

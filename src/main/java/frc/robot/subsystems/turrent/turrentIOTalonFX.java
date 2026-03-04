@@ -16,7 +16,8 @@ public class turrentIOTalonFX implements turrentIO {
   // Allowed absolute-position window (rotations) for turret travel.
   // Requested range is -0.75 to 0.75 on a -1 to 1 scale.
   private static final double MIN_TURRET_POS = -10;
-  private static final double MAX_TURRET_POS = 10;
+  private static final double MAX_TURRET_POS = 0;
+  // private final double ENCODER_START_POSITION = -5;
   private final turrentIOInputs inputs = new turrentIOInputs();
   // Local dashboard visualization (do not include in AutoLog inputs)
   private final Mechanism2d turnMechanism = new Mechanism2d(1, 1);
@@ -45,9 +46,10 @@ public class turrentIOTalonFX implements turrentIO {
   }
 
   public turrentIOTalonFX(int topMotorPort, int cancoderId, double gearRatio) {
-    topMotor = new TalonFX(topMotorPort);
+    this.topMotor = new TalonFX(topMotorPort);
     // Create CANcoder on the configured CAN bus
     tuffEncoder = new CANcoder(cancoderId);
+    // tuffEncoder.setPosition(0);
     this.gearRatio = gearRatio;
   }
 
@@ -73,10 +75,13 @@ public class turrentIOTalonFX implements turrentIO {
     double turretPos = tuffEncoder.getPosition().getValueAsDouble();
     double commandedSpeed = speed;
 
+    System.out.println("turrent speed: " + speed);
     // Only block motion that would drive farther outside the allowed window.
-    if (turretPos <= MIN_TURRET_POS && speed > 0) {
+    if (turretPos <= MIN_TURRET_POS && speed < 0) {
+      // this.topMotor.clearStickyFault_ForwardSoftLimit();
       commandedSpeed = 0.0;
-    } else if (turretPos >= MAX_TURRET_POS && speed < 0) {
+    } else if (turretPos >= MAX_TURRET_POS && speed > 0) {
+      // this.topMotor.clearStickyFault_ReverseSoftLimit();
       commandedSpeed = 0.0;
     }
 

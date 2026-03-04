@@ -11,6 +11,6 @@ public class kickerIOTalonFX implements kickerIO {
 
   @Override
   public void turnMotor(double speed) {
-    kicker.set(1 * speed);
+    kicker.set(-1 * speed);
   }
 }

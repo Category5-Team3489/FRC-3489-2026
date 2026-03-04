@@ -10,7 +10,7 @@ public class shooterIOTalonFX implements shooterIO {
   // Create motors
   private final TalonFX angleMotor;
   private final TalonFX shooterMotor;
-  private final TalonFX angleMotorOther; // Example of a second motor if needed
+  private final TalonFX shootMotorOther; // Example of a second motor if needed
 
   private final shooterIOInputs inputs = new shooterIOInputs();
   // Local dashboard visualization (do not include in AutoLog inputs)
@@ -22,7 +22,7 @@ public class shooterIOTalonFX implements shooterIO {
   public shooterIOTalonFX(int shooterMotorPort, int angleMotorPort, int angleMotorPortOther) {
     angleMotor = new TalonFX(angleMotorPort);
     shooterMotor = new TalonFX(shooterMotorPort);
-    angleMotorOther = new TalonFX(angleMotorPortOther); // Example of initializing a second motor
+    shootMotorOther = new TalonFX(angleMotorPortOther); // Example of initializing a second motor
   }
 
   @Override
@@ -38,14 +38,14 @@ public class shooterIOTalonFX implements shooterIO {
     inputs.distanceToTarget = 0.0; // This would need a sensor to be implemented
     // Update local visualization ligament
     shooterTurn.setAngle(inputs.shootAngle);
-    System.out.println(
-        "Angle: "
-            + inputs.shootAngle
-            + " degrees, Shooter Current: "
-            + inputs.topMotorCurrent
-            + " A, Angle Motor Current: "
-            + inputs.bottomMotorCurrent
-            + " A");
+    // System.out.println(
+    //     "Angle: "
+    //         + inputs.shootAngle
+    //         + " degrees, Shooter Current: "
+    //         + inputs.topMotorCurrent
+    //         + " A, Angle Motor Current: "
+    //         + inputs.bottomMotorCurrent
+    //         + " A");
   }
 
   @Override
@@ -53,15 +53,15 @@ public class shooterIOTalonFX implements shooterIO {
     // TODO Auto-generated method stub
     shooterMotor.set(0);
     angleMotor.set(0);
-    angleMotorOther.set(0);
+    shootMotorOther.set(0);
   }
 
   @Override
   public void shootBall(double speed) {
     // Check this code fs
-    shooterMotor.set(speed);
+    shooterMotor.set(-speed);
     angleMotor.set(0);
-    angleMotorOther.set(-speed);
+    shootMotorOther.set(speed);
   }
 
   @Override
@@ -72,6 +72,11 @@ public class shooterIOTalonFX implements shooterIO {
   @Override
   public void setShootAngle(double degrees) {
     angleMotor.setPosition(degrees);
+  }
+
+  @Override
+  public void setHoodSpeed(double speed) {
+    angleMotor.set(speed);
   }
 
   public String simplify(String input) {

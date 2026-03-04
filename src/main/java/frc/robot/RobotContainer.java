@@ -42,10 +42,6 @@ import frc.robot.subsystems.shooter.shooterIOTalonFX;
 import frc.robot.subsystems.turrent.turrent;
 import frc.robot.subsystems.turrent.turrentIOSim;
 import frc.robot.subsystems.turrent.turrentIOTalonFX;
-import frc.robot.subsystems.vision.Vision;
-import frc.robot.subsystems.vision.VisionIO;
-import frc.robot.subsystems.vision.VisionIOPhotonVision;
-import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -57,7 +53,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
-  private final Vision vision;
+  //   private final Vision vision;
   private final intake Intake;
   private final shooter Shooter;
   private final turrent Turrent;
@@ -67,7 +63,7 @@ public class RobotContainer {
   private final kicker Kicker;
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
-  private final CommandXboxController controller1 = new CommandXboxController(1);
+  private final CommandXboxController manipulatorController = new CommandXboxController(1);
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
@@ -87,17 +83,17 @@ public class RobotContainer {
                 new ModuleIOTalonFX(TunerConstants.BackLeft),
                 new ModuleIOTalonFX(TunerConstants.BackRight));
         // Real robot, instantiate hardware IO implementations
-        vision =
-            new Vision(
-                drive::addVisionMeasurement,
-                new VisionIOPhotonVision(camera0Name, robotToCamera0),
-                new VisionIOPhotonVision(camera1Name, robotToCamera1),
-                new VisionIOPhotonVision(camera2Name, robotToCamera2));
+        // vision =
+        //     new Vision(
+        //         drive::addVisionMeasurement,
+        //         new VisionIOPhotonVision(camera0Name, robotToCamera0),
+        //         new VisionIOPhotonVision(camera1Name, robotToCamera1),
+        //         new VisionIOPhotonVision(camera2Name, robotToCamera2));
 
         // Turrent = new turrent(new turrentIOTalonFX(0));
         Index = new index(new indexIOTalonFX(16));
         Kicker = new kicker(new kickerIOTalonFX(14));
-        Intake = new intake(new intakeIOTalonFX(22, 1, 1));
+        Intake = new intake(new intakeIOTalonFX(22, 23, 24));
 
         Shooter = new shooter(0.4, new shooterIOTalonFX(20, 18, 17));
 
@@ -136,12 +132,12 @@ public class RobotContainer {
                 new ModuleIOSim(TunerConstants.BackLeft),
                 new ModuleIOSim(TunerConstants.BackRight));
         // Sim robot, instantiate physics sim IO implementations
-        vision =
-            new Vision(
-                drive::addVisionMeasurement,
-                new VisionIOPhotonVisionSim(camera0Name, robotToCamera0, drive::getPose),
-                new VisionIOPhotonVisionSim(camera1Name, robotToCamera1, drive::getPose),
-                new VisionIOPhotonVisionSim(camera2Name, robotToCamera2, drive::getPose));
+        // vision =
+        //     new Vision(
+        //         drive::addVisionMeasurement,
+        //         new VisionIOPhotonVisionSim(camera0Name, robotToCamera0, drive::getPose),
+        //         new VisionIOPhotonVisionSim(camera1Name, robotToCamera1, drive::getPose),
+        //         new VisionIOPhotonVisionSim(camera2Name, robotToCamera2, drive::getPose));
 
         break;
 
@@ -162,12 +158,12 @@ public class RobotContainer {
                 new ModuleIO() {});
 
         // (Use same number of dummy implementations as the real robot)
-        vision =
-            new Vision(
-                drive::addVisionMeasurement,
-                new VisionIO() {},
-                new VisionIO() {},
-                new VisionIO() {});
+        // vision =
+        //     new Vision(
+        //         drive::addVisionMeasurement,
+        //         new VisionIO() {},
+        //         new VisionIO() {},
+        //         new VisionIO() {});
 
         break;
     }
@@ -208,7 +204,7 @@ public class RobotContainer {
   private void configureButtonBindings() {
     // Default command, normal field-relative drive
     // Use a supplier so the joystick is sampled each scheduler cycle.
-    Turrent.setDefaultCommand(Turrent.turnTurrent(() -> (controller1.getLeftX() * 0.2)));
+    Turrent.setDefaultCommand(Turrent.turnTurrent(() -> (-manipulatorController.getLeftX() * 0.2)));
 
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
@@ -216,14 +212,15 @@ public class RobotContainer {
             () -> -controller.getLeftY(),
             () -> -controller.getLeftX(),
             () -> -controller.getRightX()));
-    Intake.setDefaultCommand(Intake.noSpin());
+    Intake.setDefaultCommand(Intake.noSpin().andThen(Intake.actuate(0)));
     // Lock to 0° when A button is held
-    controller1.y().whileTrue(Intake.spinTheStuff(0.3));
-    controller1
+    manipulatorController.y().whileTrue(Intake.spinTheStuff(0.5));
+
+    manipulatorController
         .a()
         .whileTrue(
             Commands.parallel(
-                Shooter.shootAtSpeed(0.3), Commands.run(() -> Kicker.spinMotor(0.3))));
+                Shooter.shootAtSpeed(0.99), Commands.run(() -> Kicker.spinMotor(0.99))));
     // Default shooter command: map controller1 right trigger to shooter
     // voltage. Multiply axis [0..1] by 12 to convert to volts.
 
@@ -235,9 +232,13 @@ public class RobotContainer {
     //         Commands.run(
     //             () -> Shooter.shootAtSpeed(() -> controller1.getRightTriggerAxis() * 0.7)));
 
-    controller1.leftBumper().whileTrue(Commands.run(() -> Index.spinMotor(0.3)));
-    controller1.rightBumper().whileTrue(Commands.run(() -> Index.spinMotor(-0.3)));
-    controller1.a().onTrue(Commands.runOnce(() -> Turrent.resetTurrentAngle()));
+    manipulatorController.povUp().whileTrue(Intake.actuate(0.3));
+    manipulatorController.povDown().whileTrue(Intake.actuate(-0.3));
+    manipulatorController.povCenter().whileTrue(Intake.actuate(0));
+
+    manipulatorController.leftBumper().whileTrue(Commands.run(() -> Index.spinMotor(0.99)));
+    manipulatorController.rightBumper().whileTrue(Commands.run(() -> Index.spinMotor(-0.3)));
+    manipulatorController.x().onTrue(Commands.runOnce(() -> Turrent.resetTurrentAngle()));
     controller
         .a()
         .whileTrue(
@@ -254,7 +255,10 @@ public class RobotContainer {
     Index.setDefaultCommand(Commands.run(() -> Index.spinMotor(0), Index));
     Kicker.setDefaultCommand(Commands.run(() -> Kicker.spinMotor(0), Kicker));
     Shooter.setDefaultCommand(Shooter.shootAtSpeed(0));
-    // Change .leftTrigger to what you want it to be to half velocity.
+    manipulatorController
+        .b()
+        .whileTrue(Shooter.turnHood(() -> manipulatorController.getLeftY() * 0.5));
+    // Change .leftTrigger to what you want it to be to half vel]=ocity.
     controller
         .leftTrigger()
         .whileTrue(
