@@ -2,6 +2,7 @@ package frc.robot.subsystems.shooter;
 
 import static edu.wpi.first.units.Units.*;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -22,6 +23,8 @@ public class shooter extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     io.updateInputs(inputs);
+    SmartDashboard.putNumber("Shooter/HoodAngleDeg", inputs.shootAngle);
+    SmartDashboard.putNumber("Shooter/HoodCalOffsetDeg", io.getHoodCalibrationOffset());
   }
   // Yo mentor anthony, if you can see this I was wondering
   // If you could check over this function. If its wrong,
@@ -51,6 +54,14 @@ public class shooter extends SubsystemBase {
   // the supplier if passing trigger axis [0..1].
   public Command shootAtSpeed(DoubleSupplier speedSupplier) {
     return Commands.run(() -> io.shootBall(speedSupplier.getAsDouble()), this);
+  }
+
+  public Command zeroHoodCalibration() {
+    return Commands.runOnce(io::zeroHoodCalibration, this);
+  }
+
+  public Command nudgeHoodCalibration(double deltaDegrees) {
+    return Commands.runOnce(() -> io.addHoodCalibrationOffset(deltaDegrees), this);
   }
 
   public double getNeededAngle(double distance, double initialSpeed, boolean PlusorMinus) {

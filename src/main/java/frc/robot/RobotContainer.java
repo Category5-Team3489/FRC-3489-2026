@@ -239,6 +239,9 @@ public class RobotContainer {
     manipulatorController.povUp().whileTrue(Intake.actuate(0.3));
     manipulatorController.povDown().whileTrue(Intake.actuate(-0.3));
     manipulatorController.povCenter().whileTrue(Intake.actuate(0));
+    manipulatorController.povLeft().onTrue(Shooter.nudgeHoodCalibration(-0.5));
+    manipulatorController.povRight().onTrue(Shooter.nudgeHoodCalibration(0.5));
+    manipulatorController.start().onTrue(Shooter.zeroHoodCalibration());
 
     manipulatorController.leftBumper().whileTrue(Commands.run(() -> Index.spinMotor(0.99)));
     manipulatorController.rightBumper().whileTrue(Commands.run(() -> Index.spinMotor(-0.3)));

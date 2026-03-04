@@ -12,6 +12,7 @@ public class shooterIOTalonFX implements shooterIO {
   private final TalonFX angleMotor;
   private final TalonFX shooterMotor;
   private final TalonFX shootMotorOther; // Example of a second motor if needed
+  private double hoodCalibrationOffsetDeg = 0.0;
 
   private final shooterIOInputs inputs = new shooterIOInputs();
   // Local dashboard visualization (do not include in AutoLog inputs)
@@ -32,7 +33,9 @@ public class shooterIOTalonFX implements shooterIO {
     // Phoenix6 StatusSignal APIs return signal objects; read numeric values
     inputs.topMotorCurrent = shooterMotor.getSupplyCurrent().getValueAsDouble();
     inputs.gearRatio = ANGLE_GEAR_RATIO;
-    inputs.shootAngle = angleMotor.getPosition().getValueAsDouble() * 360.0 / ANGLE_GEAR_RATIO;
+    inputs.shootAngle =
+        (angleMotor.getPosition().getValueAsDouble() * 360.0 / ANGLE_GEAR_RATIO)
+            + hoodCalibrationOffsetDeg;
     inputs.bottomMotorCurrent = angleMotor.getSupplyCurrent().getValueAsDouble();
     inputs.distanceToTarget = 0.0; // This would need a sensor to be implemented
     // Update local visualization ligament
@@ -70,7 +73,7 @@ public class shooterIOTalonFX implements shooterIO {
 
   @Override
   public void setShootAngle(double degrees) {
-    double targetRotations = (degrees / 360.0) * ANGLE_GEAR_RATIO;
+    double targetRotations = ((degrees - hoodCalibrationOffsetDeg) / 360.0) * ANGLE_GEAR_RATIO;
     PositionDutyCycle request = new PositionDutyCycle(targetRotations);
     angleMotor.setControl(request);
   }
@@ -78,6 +81,22 @@ public class shooterIOTalonFX implements shooterIO {
   @Override
   public void setHoodSpeed(double speed) {
     angleMotor.set(speed);
+  }
+
+  @Override
+  public void zeroHoodCalibration() {
+    double rawAngleDegrees = angleMotor.getPosition().getValueAsDouble() * 360.0 / ANGLE_GEAR_RATIO;
+    hoodCalibrationOffsetDeg = -rawAngleDegrees;
+  }
+
+  @Override
+  public void addHoodCalibrationOffset(double deltaDegrees) {
+    hoodCalibrationOffsetDeg += deltaDegrees;
+  }
+
+  @Override
+  public double getHoodCalibrationOffset() {
+    return hoodCalibrationOffsetDeg;
   }
 
   public String simplify(String input) {

@@ -10,9 +10,11 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 
 public class shooterIOSim implements shooterIO {
+  private static final double ANGLE_GEAR_RATIO = 6.0;
   // Simulated motors
   private final DCMotorSim angleMotorSim;
   private final DCMotorSim shooterMotorSim;
+  private double hoodCalibrationOffsetDeg = 0.0;
 
   // PID Controllers for simulation
   private final PIDController anglePID;
@@ -51,7 +53,9 @@ public class shooterIOSim implements shooterIO {
 
     inputs.topMotorCurrent = shooterMotorSim.getCurrentDrawAmps();
     // convert radians to degrees for shooter angle
-    inputs.shootAngle = Math.toDegrees(angleMotorSim.getAngularPositionRad());
+    inputs.gearRatio = ANGLE_GEAR_RATIO;
+    inputs.shootAngle =
+        Math.toDegrees(angleMotorSim.getAngularPositionRad()) + hoodCalibrationOffsetDeg;
     inputs.bottomMotorCurrent = angleMotorSim.getCurrentDrawAmps();
     inputs.distanceToTarget = 0.0; // This would need a sensor to be implemented
     shooterTurn.setAngle(inputs.shootAngle);
@@ -76,10 +80,25 @@ public class shooterIOSim implements shooterIO {
 
   @Override
   public void setShootAngle(double degrees) {
-    double targetRad = Math.toRadians(degrees);
+    double targetRad = Math.toRadians(degrees - hoodCalibrationOffsetDeg);
     double currentRad = angleMotorSim.getAngularPositionRad();
     double outputVoltage = anglePID.calculate(currentRad, targetRad);
     outputVoltage = MathUtil.clamp(outputVoltage, -12.0, 12.0);
     angleMotorSim.setInputVoltage(outputVoltage);
+  }
+
+  @Override
+  public void zeroHoodCalibration() {
+    hoodCalibrationOffsetDeg = -Math.toDegrees(angleMotorSim.getAngularPositionRad());
+  }
+
+  @Override
+  public void addHoodCalibrationOffset(double deltaDegrees) {
+    hoodCalibrationOffsetDeg += deltaDegrees;
+  }
+
+  @Override
+  public double getHoodCalibrationOffset() {
+    return hoodCalibrationOffsetDeg;
   }
 }
