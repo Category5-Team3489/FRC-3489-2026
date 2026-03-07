@@ -33,6 +33,7 @@ public class intakeIOTalonFX implements intakeIO {
     double maxActPos = 82.5;
     double minActPos = 0.5;
     double actPos = actuatorMotor1.getPosition().getValueAsDouble();
+    System.out.println("Actuator position: " + actPos);
     if (actPos >= maxActPos) {
       if (speed > 0) {
         actuatorMotor1.set(0);

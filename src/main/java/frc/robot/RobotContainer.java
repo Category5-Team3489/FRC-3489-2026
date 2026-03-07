@@ -212,15 +212,27 @@ public class RobotContainer {
             () -> -controller.getLeftY(),
             () -> -controller.getLeftX(),
             () -> -controller.getRightX()));
-    Intake.setDefaultCommand(Intake.noSpin().andThen(Intake.actuate(0)));
+
+    controller.povUp().whileTrue(DriveCommands.joystickDrive(drive, () -> 10, () -> 0, () -> 0));
+    controller.povDown().whileTrue(DriveCommands.joystickDrive(drive, () -> -10, () -> 0, () -> 0));
+    controller.povLeft().whileTrue(DriveCommands.joystickDrive(drive, () -> 0, () -> -10, () -> 0));
+    controller.povRight().whileTrue(DriveCommands.joystickDrive(drive, () -> 0, () -> 10, () -> 0));
+    Intake.setDefaultCommand(
+        Intake.noSpin()
+        // .andThen(Intake.actuate(0))
+        );
+    manipulatorController
+        .leftTrigger(0.5)
+        .whileTrue(Shooter.moveToAngle(() -> manipulatorController.getLeftTriggerAxis()));
     // Lock to 0° when A button is held
-    manipulatorController.y().whileTrue(Intake.spinTheStuff(0.5));
+    manipulatorController.y().whileTrue(Intake.spinTheStuff(0.55));
 
     manipulatorController
-        .a()
+        .rightTrigger(0.1)
         .whileTrue(
             Commands.parallel(
-                Shooter.shootAtSpeed(0.99), Commands.run(() -> Kicker.spinMotor(0.99))));
+                Shooter.shootAtSpeed(() -> manipulatorController.getRightTriggerAxis()),
+                Commands.run(() -> Kicker.spinMotor(0.99))));
     // Default shooter command: map controller1 right trigger to shooter
     // voltage. Multiply axis [0..1] by 12 to convert to volts.
 
@@ -233,7 +245,7 @@ public class RobotContainer {
     //             () -> Shooter.shootAtSpeed(() -> controller1.getRightTriggerAxis() * 0.7)));
 
     manipulatorController.povUp().whileTrue(Intake.actuate(0.3));
-    manipulatorController.povDown().whileTrue(Intake.actuate(-0.3));
+    // manipulatorController.povDown().whileTrue(Intake.actuate(-0.3));
     manipulatorController.povCenter().whileTrue(Intake.actuate(0));
 
     manipulatorController.leftBumper().whileTrue(Commands.run(() -> Index.spinMotor(0.99)));
@@ -259,14 +271,14 @@ public class RobotContainer {
         .b()
         .whileTrue(Shooter.turnHood(() -> manipulatorController.getLeftY() * 0.5));
     // Change .leftTrigger to what you want it to be to half vel]=ocity.
-    controller
-        .leftTrigger()
-        .whileTrue(
-            DriveCommands.joystickDrive(
-                drive,
-                () -> -controller.getLeftY() * (1 - controller.getLeftTriggerAxis()),
-                () -> -controller.getLeftX() * (1 - controller.getLeftTriggerAxis()),
-                () -> -controller.getRightX() * (1 - controller.getLeftTriggerAxis())));
+    // controller
+    //     .leftTrigger()
+    //     .whileTrue(
+    //         DriveCommands.joystickDrive(
+    //             drive,
+    //             () -> -controller.getLeftY() * (1 - controller.getLeftTriggerAxis()),
+    //             () -> -controller.getLeftX() * (1 - controller.getLeftTriggerAxis()),
+    //             () -> -controller.getRightX() * (1 - controller.getLeftTriggerAxis())));
 
     // Reset gyro to 0 when B button is pressed
     controller

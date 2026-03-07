@@ -1,5 +1,6 @@
 package frc.robot.subsystems.shooter;
 
+import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.AutoLog;
 
 public interface shooterIO {
@@ -14,6 +15,8 @@ public interface shooterIO {
     // and are not suitable for automatic logging. Create and manage them in
     // the subsystem class instead of the AutoLog inputs.
   }
+
+  public void setShootVoltageSupp(DoubleSupplier why);
 
   public void setHoodSpeed(double speed);
 

@@ -1,10 +1,10 @@
 package frc.robot.subsystems.shooter;
 
-import com.ctre.phoenix6.controls.PositionDutyCycle;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
+import java.util.function.DoubleSupplier;
 
 public class shooterIOTalonFX implements shooterIO {
   // Create motors
@@ -57,6 +57,12 @@ public class shooterIOTalonFX implements shooterIO {
   }
 
   @Override
+  public void setShootVoltageSupp(DoubleSupplier why) {
+    shooterMotor.set(-why.getAsDouble());
+    shootMotorOther.set(why.getAsDouble());
+  }
+
+  @Override
   public void shootBall(double speed) {
     // Check this code fs
     shooterMotor.set(-speed);
@@ -71,17 +77,33 @@ public class shooterIOTalonFX implements shooterIO {
 
   @Override
   public void setShootAngle(double degrees) {
-    // Check this code fs
-    double rotations =
-        (degrees / 360.0)
-            * inputs.gearRatio; // Convert degrees to rotations, accounting for gear ratio
-    PositionDutyCycle request = new PositionDutyCycle(rotations);
-    angleMotor.setControl(request);
+    angleMotor.setPosition(degrees * 10);
   }
 
   @Override
   public void setHoodSpeed(double speed) {
-    angleMotor.set(speed);
+    // max is -0.3
+    // min is -9
+    double maxHdPos = -0.5;
+    double minHdPos = -8;
+    double actPos = angleMotor.getPosition().getValueAsDouble();
+    System.out.println("Hood speed: " + speed);
+    System.out.println("Hood position: " + actPos);
+    if (actPos >= maxHdPos) {
+      if (speed > 0) {
+        angleMotor.set(0);
+      } else {
+        angleMotor.set(speed);
+      }
+    } else if (actPos <= minHdPos) {
+      if (speed < 0) {
+        angleMotor.set(0);
+      } else {
+        angleMotor.set(speed);
+      }
+    } else {
+      angleMotor.set(speed);
+    }
   }
 
   public String simplify(String input) {
