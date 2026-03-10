@@ -296,7 +296,7 @@ public class RobotContainer {
 
     Index.setDefaultCommand(Commands.run(() -> Index.spinMotor(0), Index));
     Kicker.setDefaultCommand(Commands.run(() -> Kicker.spinMotor(0), Kicker));
-    Shooter.setDefaultCommand(Shooter.shootAtSpeed(0.1.1));
+    Shooter.setDefaultCommand(Shooter.shootAtSpeed(0.1));
     manipulatorController
         .b()
         .whileTrue(Shooter.turnHood(() -> manipulatorController.getLeftY() * 0.5));
