@@ -1,5 +1,7 @@
 package frc.robot.subsystems.intake;
 
+import edu.wpi.first.math.MathUtil;
+
 public class intakeIOTalonFX implements intakeIO {
   // Create motors
   private final com.ctre.phoenix6.hardware.TalonFX intakeMotor;
@@ -14,7 +16,10 @@ public class intakeIOTalonFX implements intakeIO {
 
   @Override
   public void spinThatStuff(double initialSpeed) {
-    intakeMotor.set(initialSpeed);
+    double currentSpeed = initialSpeed * 12.0;
+    currentSpeed = MathUtil.clamp(currentSpeed, -10, 10);
+
+    intakeMotor.setVoltage(currentSpeed);
   }
 
   @Override
@@ -29,10 +34,19 @@ public class intakeIOTalonFX implements intakeIO {
   }
 
   @Override
-  public void moveInorOut(double speed) {
+  public void moveInorOut(double speed1) {
     double maxActPos = 82.5;
     double minActPos = 0.5;
     double actPos = actuatorMotor1.getPosition().getValueAsDouble();
+    double speed = speed1;
+    speed = MathUtil.clamp(speed, -0.8, 0.8);
+
+    if (actuatorMotor1.getSupplyCurrent().getValueAsDouble() > 20
+        || actuatorMotor1.getSupplyCurrent().getValueAsDouble() < -20) {
+      speed = 0;
+    }
+
+    System.out.println("Actuator position: " + actPos);
     if (actPos >= maxActPos) {
       if (speed > 0) {
         actuatorMotor1.set(0);

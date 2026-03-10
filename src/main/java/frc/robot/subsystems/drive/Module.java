@@ -75,7 +75,7 @@ public class Module {
   public void runSetpoint(SwerveModuleState state) {
     // Optimize velocity setpoint
     state.optimize(getAngle());
-    state.cosineScale(inputs.turnPosition);
+    // Disabled to keep wheel speed from dropping while modules rotate to new angles.
 
     // Apply setpoints
     io.setDriveVelocity(state.speedMetersPerSecond / constants.WheelRadius);

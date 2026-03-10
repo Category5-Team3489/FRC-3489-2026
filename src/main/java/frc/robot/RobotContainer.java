@@ -222,15 +222,28 @@ public class RobotContainer {
             () -> -controller.getLeftY(),
             () -> -controller.getLeftX(),
             () -> -controller.getRightX()));
-    Intake.setDefaultCommand(Intake.noSpin().andThen(Intake.actuate(0)));
-    // Lock to 0° when A button is held
-    manipulatorController.y().whileTrue(Intake.spinTheStuff(0.5));
 
+    controller.povUp().whileTrue(DriveCommands.joystickDrive(drive, () -> 10, () -> 0, () -> 0));
+    controller.povDown().whileTrue(DriveCommands.joystickDrive(drive, () -> -10, () -> 0, () -> 0));
+    controller.povLeft().whileTrue(DriveCommands.joystickDrive(drive, () -> 0, () -> -10, () -> 0));
+    controller.povRight().whileTrue(DriveCommands.joystickDrive(drive, () -> 0, () -> 10, () -> 0));
+    Intake.setDefaultCommand(
+        Intake.noSpin()
+        // .andThen(Intake.actuate(0))
+        );
     manipulatorController
-        .a()
+        .leftTrigger(0.5)
         .whileTrue(
             Commands.parallel(
-                Shooter.shootAtSpeed(0.99), Commands.run(() -> Kicker.spinMotor(0.99))));
+                Shooter.shootAtSpeed(0.4), Commands.run(() -> Kicker.spinMotor(0.99))));
+    // Lock to 0° when A button is held
+    manipulatorController.y().whileTrue(Intake.spinTheStuff(0.60));
+
+    manipulatorController
+        .rightTrigger(0.1)
+        .whileTrue(
+            Commands.parallel(
+                Shooter.shootAtSpeed(() -> 0.70), Commands.run(() -> Kicker.spinMotor(0.99))));
     // Default shooter command: map controller1 right trigger to shooter
     // voltage. Multiply axis [0..1] by 12 to convert to volts.
 
@@ -275,17 +288,19 @@ public class RobotContainer {
                 () -> -controller.getLeftX(),
                 () -> Rotation2d.kZero));
 
+    manipulatorController.povLeft().whileTrue(Intake.spinTheStuff(-0.55));
+
     // controller.y().whileTrue(Shooter.noShoot());
     // Switch to X pattern when X button is pressed
     controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
 
     Index.setDefaultCommand(Commands.run(() -> Index.spinMotor(0), Index));
     Kicker.setDefaultCommand(Commands.run(() -> Kicker.spinMotor(0), Kicker));
-    Shooter.setDefaultCommand(Shooter.shootAtSpeed(0.1));
+    Shooter.setDefaultCommand(Shooter.shootAtSpeed(0.1.1));
     manipulatorController
         .b()
-        .whileTrue(Hood.setHoodPosCommand(() -> manipulatorController.getLeftTriggerAxis() * 10));
-    // Change .leftTrigger to what you want it to be to half velocity.
+        .whileTrue(Shooter.turnHood(() -> manipulatorController.getLeftY() * 0.5));
+    // Change .leftTrigger to what you want it to be to half vel]=ocity.
     controller
         .leftTrigger()
         .whileTrue(

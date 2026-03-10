@@ -72,7 +72,7 @@ public class turrentIOTalonFX implements turrentIO {
 
   @Override
   public void turnTurrent(double speed) {
-    double turretPos = tuffEncoder.getPosition().getValueAsDouble();
+    double turretPos = topMotor.getPosition().getValueAsDouble();
     double commandedSpeed = speed;
 
     // System.out.println("turrent speed: " + speed);

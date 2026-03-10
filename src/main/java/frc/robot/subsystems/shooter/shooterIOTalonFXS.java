@@ -5,6 +5,7 @@ import com.ctre.phoenix6.hardware.TalonFXS;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
+import java.util.function.DoubleSupplier;
 
 public class shooterIOTalonFXS implements shooterIO {
   // Create motors
@@ -42,6 +43,11 @@ public class shooterIOTalonFXS implements shooterIO {
     inputs.distanceToTarget = 0.0; // This would need a sensor to be implemented
     // Update local visualization ligand
     shooterTurn.setAngle(inputs.shootAngle);
+  }
+
+  @Override
+  public void setShootVoltageSupp(DoubleSupplier why) {
+    shooterMotor.set(-why.getAsDouble());
   }
 
   @Override

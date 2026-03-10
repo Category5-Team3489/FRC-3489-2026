@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
+import java.util.function.DoubleSupplier;
 
 public class shooterIOSim implements shooterIO {
   private static final double ANGLE_GEAR_RATIO = 6.0;
@@ -32,6 +33,11 @@ public class shooterIOSim implements shooterIO {
     // Initialize PID controllers
     anglePID = new PIDController(1.0, 0.0, 0.0);
     shooterPID = new PIDController(1.0, 0.0, 0.0);
+  }
+
+  @Override
+  public void setShootVoltageSupp(DoubleSupplier why) {
+    shooterMotorSim.setInputVoltage(why.getAsDouble());
   }
 
   @Override
