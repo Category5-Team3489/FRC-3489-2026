@@ -42,6 +42,10 @@ import frc.robot.subsystems.shooter.shooterIOTalonFX;
 import frc.robot.subsystems.turrent.turrent;
 import frc.robot.subsystems.turrent.turrentIOSim;
 import frc.robot.subsystems.turrent.turrentIOTalonFX;
+import frc.robot.subsystems.vision.Vision;
+import frc.robot.subsystems.vision.VisionIO;
+import frc.robot.subsystems.vision.VisionIOPhotonVision;
+import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -53,7 +57,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
-  //   private final Vision vision;
+  private final Vision vision;
   private final intake Intake;
   private final shooter Shooter;
   private final turrent Turrent;
@@ -83,12 +87,12 @@ public class RobotContainer {
                 new ModuleIOTalonFX(TunerConstants.BackLeft),
                 new ModuleIOTalonFX(TunerConstants.BackRight));
         // Real robot, instantiate hardware IO implementations
-        // vision =
-        //     new Vision(
-        //         drive::addVisionMeasurement,
-        //         new VisionIOPhotonVision(camera0Name, robotToCamera0),
-        //         new VisionIOPhotonVision(camera1Name, robotToCamera1),
-        //         new VisionIOPhotonVision(camera2Name, robotToCamera2));
+        vision =
+            new Vision(
+                drive::addVisionMeasurement,
+                new VisionIOPhotonVision(camera0Name, robotToCamera0),
+                new VisionIOPhotonVision(camera1Name, robotToCamera1),
+                new VisionIOPhotonVision(camera2Name, robotToCamera2));
 
         // Turrent = new turrent(new turrentIOTalonFX(0));
         Index = new index(new indexIOTalonFX(16));
@@ -132,12 +136,12 @@ public class RobotContainer {
                 new ModuleIOSim(TunerConstants.BackLeft),
                 new ModuleIOSim(TunerConstants.BackRight));
         // Sim robot, instantiate physics sim IO implementations
-        // vision =
-        //     new Vision(
-        //         drive::addVisionMeasurement,
-        //         new VisionIOPhotonVisionSim(camera0Name, robotToCamera0, drive::getPose),
-        //         new VisionIOPhotonVisionSim(camera1Name, robotToCamera1, drive::getPose),
-        //         new VisionIOPhotonVisionSim(camera2Name, robotToCamera2, drive::getPose));
+        vision =
+            new Vision(
+                drive::addVisionMeasurement,
+                new VisionIOPhotonVisionSim(camera0Name, robotToCamera0, drive::getPose),
+                new VisionIOPhotonVisionSim(camera1Name, robotToCamera1, drive::getPose),
+                new VisionIOPhotonVisionSim(camera2Name, robotToCamera2, drive::getPose));
 
         break;
 
@@ -158,12 +162,12 @@ public class RobotContainer {
                 new ModuleIO() {});
 
         // (Use same number of dummy implementations as the real robot)
-        // vision =
-        //     new Vision(
-        //         drive::addVisionMeasurement,
-        //         new VisionIO() {},
-        //         new VisionIO() {},
-        //         new VisionIO() {});
+        vision =
+            new Vision(
+                drive::addVisionMeasurement,
+                new VisionIO() {},
+                new VisionIO() {},
+                new VisionIO() {});
 
         break;
     }
@@ -248,10 +252,17 @@ public class RobotContainer {
     manipulatorController.povUp().whileTrue(Intake.actuate(0.3));
     manipulatorController.povDown().whileTrue(Intake.actuate(-0.3));
     manipulatorController.povCenter().whileTrue(Intake.actuate(0));
+    manipulatorController.povLeft().onTrue(Shooter.nudgeHoodCalibration(-0.5));
+    manipulatorController.povRight().onTrue(Shooter.nudgeHoodCalibration(0.5));
+    manipulatorController.start().onTrue(Shooter.zeroHoodCalibration());
 
     manipulatorController.leftBumper().whileTrue(Commands.run(() -> Index.spinMotor(0.99)));
     manipulatorController.rightBumper().whileTrue(Commands.run(() -> Index.spinMotor(-0.3)));
     manipulatorController.x().onTrue(Commands.runOnce(() -> Turrent.resetTurrentAngle()));
+    manipulatorController
+        .y()
+        .whileTrue(
+            Commands.run(() -> Shooter.moveToAngle(() -> vision.getTargetX(0).getDegrees())));
     controller
         .a()
         .whileTrue(
