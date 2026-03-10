@@ -75,7 +75,7 @@ public class turrentIOTalonFX implements turrentIO {
     double turretPos = tuffEncoder.getPosition().getValueAsDouble();
     double commandedSpeed = speed;
 
-    System.out.println("turrent speed: " + speed);
+    // System.out.println("turrent speed: " + speed);
     // Only block motion that would drive farther outside the allowed window.
     if (turretPos <= MIN_TURRET_POS && speed < 0) {
       // this.topMotor.clearStickyFault_ForwardSoftLimit();

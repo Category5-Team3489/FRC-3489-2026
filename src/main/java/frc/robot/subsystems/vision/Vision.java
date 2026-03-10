@@ -50,30 +50,31 @@ public class Vision extends SubsystemBase {
   }
 
   /**
- * Gets the distance to a specific AprilTag ID seen by a specific camera.
- * @return Distance in meters, or -1.0 if the tag is not currently visible.
- */
-public double getDistanceToSpecificTag(int cameraIndex, int targetTagId) {
+   * Gets the distance to a specific AprilTag ID seen by a specific camera.
+   *
+   * @return Distance in meters, or -1.0 if the tag is not currently visible.
+   */
+  public double getDistanceToSpecificTag(int cameraIndex, int targetTagId) {
     // 1. Safety check for valid camera index
     if (cameraIndex < 0 || cameraIndex >= inputs.length) return -1.0;
 
     // 2. Check if the tag we want is actually in the list of seen IDs
     boolean tagVisible = false;
     for (int id : inputs[cameraIndex].tagIds) {
-        if (id == targetTagId) {
-            tagVisible = true;
-            break;
-        }
+      if (id == targetTagId) {
+        tagVisible = true;
+        break;
+      }
     }
 
     // 3. If visible, calculate distance from the Camera to the Tag
     if (tagVisible && inputs[cameraIndex].poseObservations.length > 0) {
-        // In this subsystem, poseObservations[0] is the primary result
-        // .averageTagDistance() is the most direct way to get meters
-        return inputs[cameraIndex].poseObservations[0].averageTagDistance();
+      // In this subsystem, poseObservations[0] is the primary result
+      // .averageTagDistance() is the most direct way to get meters
+      return inputs[cameraIndex].poseObservations[0].averageTagDistance();
     }
 
-    return -1.0; 
+    return -1.0;
   }
 
   /**
@@ -155,8 +156,6 @@ public double getDistanceToSpecificTag(int cameraIndex, int targetTagId) {
         if (rejectPose) {
           continue;
         }
-
-        
 
         // Calculate standard deviations
         double stdDevFactor =

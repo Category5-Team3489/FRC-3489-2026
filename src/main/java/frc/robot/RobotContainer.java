@@ -243,13 +243,23 @@ public class RobotContainer {
     manipulatorController.povRight().onTrue(Shooter.nudgeHoodCalibration(0.5));
     manipulatorController.start().onTrue(Shooter.zeroHoodCalibration());
 
-    manipulatorController.leftBumper().whileTrue(Commands.run(() -> Index.spinMotor(0.99)));
-    manipulatorController.rightBumper().whileTrue(Commands.run(() -> Index.spinMotor(-0.3)));
+    manipulatorController.leftBumper().whileTrue(Commands.run(() -> Index.spinMotor(-0.99)));
+    manipulatorController.rightBumper().whileTrue(Commands.run(() -> Index.spinMotor(0.3)));
     manipulatorController.x().onTrue(Commands.runOnce(() -> Turrent.resetTurrentAngle()));
     manipulatorController
-        .y()
+        .rightTrigger()
         .whileTrue(
-            Commands.run(() -> Shooter.moveToAngle(() -> vision.getTargetX(0).getDegrees())));
+            Commands.parallel(
+                Shooter.shootAtSpeed(0.7), Commands.run(() -> Kicker.spinMotor(0.99))));
+    manipulatorController
+        .b()
+        .whileTrue(
+            Commands.run(
+                () ->
+                    Shooter.moveToAngle(
+                        () ->
+                            // vision.getTargetX(0).getDegrees())));
+                            manipulatorController.getLeftTriggerAxis() * 100)));
     controller
         .a()
         .whileTrue(
@@ -265,7 +275,7 @@ public class RobotContainer {
 
     Index.setDefaultCommand(Commands.run(() -> Index.spinMotor(0), Index));
     Kicker.setDefaultCommand(Commands.run(() -> Kicker.spinMotor(0), Kicker));
-    Shooter.setDefaultCommand(Shooter.shootAtSpeed(0));
+    Shooter.setDefaultCommand(Shooter.shootAtSpeed(0.1));
     manipulatorController
         .b()
         .whileTrue(Shooter.turnHood(() -> manipulatorController.getLeftY() * 0.5));

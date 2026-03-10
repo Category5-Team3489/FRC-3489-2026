@@ -1,6 +1,5 @@
 package frc.robot.subsystems.shooter;
 
-import com.ctre.phoenix6.controls.PositionDutyCycle;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
@@ -73,9 +72,8 @@ public class shooterIOTalonFX implements shooterIO {
 
   @Override
   public void setShootAngle(double degrees) {
-    double targetRotations = ((degrees - hoodCalibrationOffsetDeg) / 360.0) * ANGLE_GEAR_RATIO;
-    PositionDutyCycle request = new PositionDutyCycle(targetRotations);
-    angleMotor.setControl(request);
+    System.out.println("Angle position: " + angleMotor.getPosition());
+    angleMotor.setPosition(degrees);
   }
 
   @Override
