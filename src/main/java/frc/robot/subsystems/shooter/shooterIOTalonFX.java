@@ -72,24 +72,15 @@ public class shooterIOTalonFX implements shooterIO {
 
   @Override
   public void setShootAngle(double degrees) {
-    System.out.println("Angle position: " + angleMotor.getPosition());
-    angleMotor.setPosition(degrees);
+    // double targetRotations = ((degrees - hoodCalibrationOffsetDeg) / 360.0) * ANGLE_GEAR_RATIO;
+    // PositionDutyCycle request = new PositionDutyCycle(targetRotations);
+    // System.out.println(angleMotor.getPosition);
+    // angleMotor.setControl(request);
   }
 
   @Override
   public void setHoodSpeed(double speed) {
-    angleMotor.set(speed);
-  }
-
-  @Override
-  public void zeroHoodCalibration() {
-    double rawAngleDegrees = angleMotor.getPosition().getValueAsDouble() * 360.0 / ANGLE_GEAR_RATIO;
-    hoodCalibrationOffsetDeg = -rawAngleDegrees;
-  }
-
-  @Override
-  public void addHoodCalibrationOffset(double deltaDegrees) {
-    hoodCalibrationOffsetDeg += deltaDegrees;
+    // angleMotor.set(speed);
   }
 
   @Override

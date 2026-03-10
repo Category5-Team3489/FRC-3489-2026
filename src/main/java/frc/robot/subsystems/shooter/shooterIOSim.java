@@ -88,16 +88,6 @@ public class shooterIOSim implements shooterIO {
   }
 
   @Override
-  public void zeroHoodCalibration() {
-    hoodCalibrationOffsetDeg = -Math.toDegrees(angleMotorSim.getAngularPositionRad());
-  }
-
-  @Override
-  public void addHoodCalibrationOffset(double deltaDegrees) {
-    hoodCalibrationOffsetDeg += deltaDegrees;
-  }
-
-  @Override
   public double getHoodCalibrationOffset() {
     return hoodCalibrationOffsetDeg;
   }

@@ -27,6 +27,8 @@ import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
+import frc.robot.subsystems.hood.hood;
+import frc.robot.subsystems.hood.hoodIOTalonFX;
 import frc.robot.subsystems.indexer.index;
 import frc.robot.subsystems.indexer.indexIOSim;
 import frc.robot.subsystems.indexer.indexIOTalonFX;
@@ -61,6 +63,7 @@ public class RobotContainer {
   private final intake Intake;
   private final shooter Shooter;
   private final turrent Turrent;
+  private final hood Hood;
 
   //   private final climber Climber;
   private final index Index;
@@ -76,6 +79,7 @@ public class RobotContainer {
   public RobotContainer() {
     switch (Constants.currentMode) {
       case REAL:
+        Hood = new hood(new hoodIOTalonFX(18));
         // Real robot, instantiate hardware IO implementations
         // ModuleIOTalonF
         Turrent = new turrent(new turrentIOTalonFX(15, 18));
@@ -121,6 +125,7 @@ public class RobotContainer {
         break;
 
       case SIM:
+        Hood = new hood(new hoodIOTalonFX(18));
         Turrent = new turrent(new turrentIOSim(1));
         Shooter = new shooter(0.4, new shooterIOSim());
         Intake = new intake(new intakeIOSim());
@@ -146,6 +151,7 @@ public class RobotContainer {
         break;
 
       default:
+        Hood = new hood(new hoodIOTalonFX(18));
         Turrent = new turrent(new turrentIOTalonFX(15, 18));
         // Turrent = new turrent(new turrentIOTalonFX(0));
         Shooter = new shooter(0.4, new shooterIOTalonFX(20, 18, 17));
@@ -239,9 +245,9 @@ public class RobotContainer {
     manipulatorController.povUp().whileTrue(Intake.actuate(0.3));
     manipulatorController.povDown().whileTrue(Intake.actuate(-0.3));
     manipulatorController.povCenter().whileTrue(Intake.actuate(0));
-    manipulatorController.povLeft().onTrue(Shooter.nudgeHoodCalibration(-0.5));
-    manipulatorController.povRight().onTrue(Shooter.nudgeHoodCalibration(0.5));
-    manipulatorController.start().onTrue(Shooter.zeroHoodCalibration());
+    // manipulatorController.povLeft().onTrue(Shooter.nudgeHoodCalibration(-0.5));
+    // manipulatorController.povRight().onTrue(Shooter.nudgeHoodCalibration(0.5));
+    // manipulatorController.start().onTrue(Shooter.zeroHoodCalibration());
 
     manipulatorController.leftBumper().whileTrue(Commands.run(() -> Index.spinMotor(-0.99)));
     manipulatorController.rightBumper().whileTrue(Commands.run(() -> Index.spinMotor(0.3)));
@@ -278,7 +284,7 @@ public class RobotContainer {
     Shooter.setDefaultCommand(Shooter.shootAtSpeed(0.1));
     manipulatorController
         .b()
-        .whileTrue(Shooter.turnHood(() -> manipulatorController.getLeftY() * 0.5));
+        .whileTrue(Hood.setHoodPosCommand(() -> manipulatorController.getLeftTriggerAxis() * 10));
     // Change .leftTrigger to what you want it to be to half velocity.
     controller
         .leftTrigger()

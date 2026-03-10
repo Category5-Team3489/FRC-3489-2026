@@ -28,6 +28,10 @@ public class shooterIOTalonFXS implements shooterIO {
     shooterMotor.setVoltage(volts);
   }
 
+  public double getHoodCalibrationOffset() {
+    return 0.0;
+  }
+
   @Override
   public void updateInputs(shooterIOInputs inputs) {
     // TODO Auto-generated method stub

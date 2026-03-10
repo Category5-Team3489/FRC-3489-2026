@@ -56,13 +56,13 @@ public class shooter extends SubsystemBase {
     return Commands.run(() -> io.shootBall(speedSupplier.getAsDouble()), this);
   }
 
-  public Command zeroHoodCalibration() {
-    return Commands.runOnce(io::zeroHoodCalibration, this);
-  }
+  // public Command zeroHoodCalibration() {
+  //   return Commands.runOnce(io::zeroHoodCalibration, this);
+  // }
 
-  public Command nudgeHoodCalibration(double deltaDegrees) {
-    return Commands.runOnce(() -> io.addHoodCalibrationOffset(deltaDegrees), this);
-  }
+  // public Command nudgeHoodCalibration(double deltaDegrees) {
+  //   return Commands.runOnce(() -> io.addHoodCalibrationOffset(deltaDegrees), this);
+  // }
 
   public double getNeededAngle(double distance, double initialSpeed, boolean PlusorMinus) {
     // True is plus, false is minus.

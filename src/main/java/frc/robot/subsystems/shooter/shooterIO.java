@@ -28,11 +28,5 @@ public interface shooterIO {
 
   public void setShootAngle(double angle);
 
-  public default void zeroHoodCalibration() {}
-
-  public default void addHoodCalibrationOffset(double deltaDegrees) {}
-
-  public default double getHoodCalibrationOffset() {
-    return 0.0;
-  }
+  public double getHoodCalibrationOffset();
 }
