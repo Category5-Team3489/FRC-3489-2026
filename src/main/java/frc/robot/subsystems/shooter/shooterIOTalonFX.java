@@ -111,16 +111,17 @@ public class shooterIOTalonFX implements shooterIO {
     }
   }
 
-  @Override
-  public void zeroHoodCalibration() {
-    double rawAngleDegrees = angleMotor.getPosition().getValueAsDouble() * 360.0 / ANGLE_GEAR_RATIO;
-    hoodCalibrationOffsetDeg = -rawAngleDegrees;
-  }
+  // @Override
+  // public void zeroHoodCalibration() {
+  //   double rawAngleDegrees = angleMotor.getPosition().getValueAsDouble() * 360.0 /
+  // ANGLE_GEAR_RATIO;
+  //   hoodCalibrationOffsetDeg = -rawAngleDegrees;
+  // }
 
-  @Override
-  public void addHoodCalibrationOffset(double deltaDegrees) {
-    hoodCalibrationOffsetDeg += deltaDegrees;
-  }
+  // @Override
+  // public void addHoodCalibrationOffset(double deltaDegrees) {
+  //   hoodCalibrationOffsetDeg += deltaDegrees;
+  // }
 
   @Override
   public double getHoodCalibrationOffset() {
