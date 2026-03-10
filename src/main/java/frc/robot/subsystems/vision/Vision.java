@@ -50,6 +50,33 @@ public class Vision extends SubsystemBase {
   }
 
   /**
+ * Gets the distance to a specific AprilTag ID seen by a specific camera.
+ * @return Distance in meters, or -1.0 if the tag is not currently visible.
+ */
+public double getDistanceToSpecificTag(int cameraIndex, int targetTagId) {
+    // 1. Safety check for valid camera index
+    if (cameraIndex < 0 || cameraIndex >= inputs.length) return -1.0;
+
+    // 2. Check if the tag we want is actually in the list of seen IDs
+    boolean tagVisible = false;
+    for (int id : inputs[cameraIndex].tagIds) {
+        if (id == targetTagId) {
+            tagVisible = true;
+            break;
+        }
+    }
+
+    // 3. If visible, calculate distance from the Camera to the Tag
+    if (tagVisible && inputs[cameraIndex].poseObservations.length > 0) {
+        // In this subsystem, poseObservations[0] is the primary result
+        // .averageTagDistance() is the most direct way to get meters
+        return inputs[cameraIndex].poseObservations[0].averageTagDistance();
+    }
+
+    return -1.0; 
+  }
+
+  /**
    * Returns the X angle to the best target, which can be used for simple servoing with vision.
    *
    * @param cameraIndex The index of the camera to use.
@@ -128,6 +155,8 @@ public class Vision extends SubsystemBase {
         if (rejectPose) {
           continue;
         }
+
+        
 
         // Calculate standard deviations
         double stdDevFactor =

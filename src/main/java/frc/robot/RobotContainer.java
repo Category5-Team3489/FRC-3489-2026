@@ -269,7 +269,7 @@ public class RobotContainer {
     manipulatorController
         .b()
         .whileTrue(Shooter.turnHood(() -> manipulatorController.getLeftY() * 0.5));
-    // Change .leftTrigger to what you want it to be to half vel]=ocity.
+    // Change .leftTrigger to what you want it to be to half velocity.
     controller
         .leftTrigger()
         .whileTrue(
