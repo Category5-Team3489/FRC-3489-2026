@@ -1,14 +1,21 @@
 package frc.robot.subsystems.hood;
 
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionDutyCycle;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 public class hoodIOTalonFX implements hoodIO {
   private static final double ANGLE_GEAR_RATIO = 6.0;
   private TalonFX motor;
+  private final PositionDutyCycle positionRequest = new PositionDutyCycle(0.0);
 
   public hoodIOTalonFX(int motorID) {
     motor = new TalonFX(motorID);
+    TalonFXConfiguration config = new TalonFXConfiguration();
+    config.Slot0.kP = 40.0;
+    config.Slot0.kI = 0.0;
+    config.Slot0.kD = 0.0;
+    motor.getConfigurator().apply(config);
   }
 
   @Override
@@ -18,12 +25,12 @@ public class hoodIOTalonFX implements hoodIO {
 
   @Override
   public void setHoodPos(double pos) {
-    motor.setPosition(pos);
+    motor.setControl(positionRequest.withPosition(pos));
   }
 
   @Override
   public void setHoodAngleDegrees(double degrees) {
     double targetRotations = (degrees / 360.0) * ANGLE_GEAR_RATIO;
-    motor.setControl(new PositionDutyCycle(targetRotations));
+    motor.setControl(positionRequest.withPosition(targetRotations));
   }
 }
