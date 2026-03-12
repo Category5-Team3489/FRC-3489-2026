@@ -236,6 +236,9 @@ public class RobotContainer {
         .whileTrue(
             Commands.parallel(
                 Shooter.shootAtSpeed(0.4), Commands.run(() -> Kicker.spinMotor(0.99))));
+
+    manipulatorController
+        .rightStick().whileTrue(Hood.setHoodPosCommand(() -> manipulatorController.getRightY()));
     // Lock to 0° when A button is held
     manipulatorController.y().whileTrue(Intake.spinTheStuff(0.60));
 
