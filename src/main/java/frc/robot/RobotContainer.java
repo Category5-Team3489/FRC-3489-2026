@@ -103,7 +103,7 @@ public class RobotContainer {
         Kicker = new kicker(new kickerIOTalonFX(14));
         Intake = new intake(new intakeIOTalonFX(22, 23, 24));
 
-        Shooter = new shooter(0.4, new shooterIOTalonFX(20, 18, 17));
+        Shooter = new shooter(0.4, new shooterIOTalonFX(20, 17));
 
         // The ModuleIOTalonFXS implementation provides an example implementation for
         // TalonFXS controller connected to a CANdi with a PWM encoder. The
@@ -154,7 +154,7 @@ public class RobotContainer {
         Hood = new hood(new hoodIOTalonFX(18));
         Turrent = new turrent(new turrentIOTalonFX(15, 18));
         // Turrent = new turrent(new turrentIOTalonFX(0));
-        Shooter = new shooter(0.4, new shooterIOTalonFX(20, 18, 17));
+        Shooter = new shooter(0.4, new shooterIOTalonFX(20, 17));
         Intake = new intake(new intakeIOTalonFX(22, 1, 1));
         // Replayed robot, disable IO implementations
         Index = new index(new indexIOTalonFX(14));
@@ -272,13 +272,7 @@ public class RobotContainer {
                 Shooter.shootAtSpeed(0.7), Commands.run(() -> Kicker.spinMotor(0.99))));
     manipulatorController
         .b()
-        .whileTrue(
-            Commands.run(
-                () ->
-                    Shooter.moveToAngle(
-                        () ->
-                            // vision.getTargetX(0).getDegrees())));
-                            manipulatorController.getLeftTriggerAxis() * 100)));
+        .whileTrue(Hood.setHoodAngle(() -> manipulatorController.getLeftTriggerAxis() * 100));
     controller
         .a()
         .whileTrue(
@@ -297,9 +291,6 @@ public class RobotContainer {
     Index.setDefaultCommand(Commands.run(() -> Index.spinMotor(0), Index));
     Kicker.setDefaultCommand(Commands.run(() -> Kicker.spinMotor(0), Kicker));
     Shooter.setDefaultCommand(Shooter.shootAtSpeed(0.1));
-    manipulatorController
-        .b()
-        .whileTrue(Shooter.turnHood(() -> manipulatorController.getLeftY() * 0.5));
     // Change .leftTrigger to what you want it to be to half vel]=ocity.
     controller
         .leftTrigger()

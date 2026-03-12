@@ -4,4 +4,6 @@ public interface hoodIO {
   public void turnHood(double speed);
 
   public void setHoodPos(double pos);
+
+  public void setHoodAngleDegrees(double degrees);
 }

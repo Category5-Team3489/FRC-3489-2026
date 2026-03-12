@@ -18,4 +18,8 @@ public class hood {
   public Command setHoodPosCommand(DoubleSupplier pos) {
     return Commands.run(() -> io.setHoodPos(pos.getAsDouble()));
   }
+
+  public Command setHoodAngle(DoubleSupplier degrees) {
+    return Commands.run(() -> io.setHoodAngleDegrees(degrees.getAsDouble()));
+  }
 }

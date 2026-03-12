@@ -8,17 +8,13 @@ public interface shooterIO {
   public class shooterIOInputs {
     public double topMotorCurrent = 0.0;
     public double bottomMotorCurrent = 0.0;
-    public double shootAngle = 0.0;
     public double distanceToTarget = 0.0;
-    public double gearRatio = 6.0;
     // Mechanism2d visualization objects belong to the subsystem implementation
     // and are not suitable for automatic logging. Create and manage them in
     // the subsystem class instead of the AutoLog inputs.
   }
 
   public void setShootVoltageSupp(DoubleSupplier why);
-
-  public void setHoodSpeed(double speed);
 
   // Update inputs
   public void updateInputs(shooterIOInputs inputs);
@@ -28,8 +24,4 @@ public interface shooterIO {
   public void stopMotors();
 
   public void shootBall(double speed);
-
-  public void setShootAngle(double angle);
-
-  public double getHoodCalibrationOffset();
 }
