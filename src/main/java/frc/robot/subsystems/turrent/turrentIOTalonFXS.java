@@ -26,7 +26,7 @@ public class turrentIOTalonFXS implements turrentIO {
 
   @Override
   public void resetTurrentAngle() {
-    topMotor.set(0);
+    topMotor.setPosition(0);
   }
 
   @Override

@@ -241,7 +241,7 @@ public class RobotContainer {
         .rightStick()
         .whileTrue(Hood.setHoodPosCommand(() -> manipulatorController.getRightY()));
     // Lock to 0° when A button is held
-    manipulatorController.y().whileTrue(Intake.spinTheStuff(0.60));
+    manipulatorController.y().onTrue(Commands.run(() -> Turrent.resetTurrentAngle()));
 
     manipulatorController
         .rightTrigger(0.1)
@@ -287,7 +287,7 @@ public class RobotContainer {
                 () -> Rotation2d.kZero));
 
     manipulatorController.povLeft().whileTrue(Intake.spinTheStuff(-0.55));
-
+    manipulatorController.povRight().whileTrue(Intake.spinTheStuff(0.8));
     // controller.y().whileTrue(Shooter.noShoot());
     // Switch to X pattern when X button is pressed
     controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
