@@ -2,9 +2,10 @@ package frc.robot.subsystems.hood;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.util.function.DoubleSupplier;
 
-public class hood {
+public class hood extends SubsystemBase {
   public hoodIO io;
 
   public hood(hoodIO givenIo) {
@@ -16,7 +17,7 @@ public class hood {
   }
 
   public Command setHoodPosCommand(DoubleSupplier pos) {
-    return Commands.run(() -> io.setHoodPos(pos.getAsDouble()));
+    return Commands.run(() -> io.setHoodPos(pos.getAsDouble()), this);
   }
 
   public Command setHoodAngle(DoubleSupplier degrees) {

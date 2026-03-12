@@ -237,9 +237,8 @@ public class RobotContainer {
             Commands.parallel(
                 Shooter.shootAtSpeed(0.4), Commands.run(() -> Kicker.spinMotor(0.99))));
 
-    manipulatorController
-        .rightStick()
-        .whileTrue(Hood.setHoodPosCommand(() -> manipulatorController.getRightY()));
+    Hood.setDefaultCommand(
+        Hood.setHoodPosCommand(() -> -Math.abs(manipulatorController.getRightY() * 10)));
     // Lock to 0° when A button is held
     manipulatorController.y().onTrue(Commands.run(() -> Turrent.resetTurrentAngle()));
 
