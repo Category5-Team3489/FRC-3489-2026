@@ -47,6 +47,7 @@ import frc.robot.subsystems.turrent.turrentIOTalonFX;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIOPhotonVision;
 import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
+import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -63,6 +64,28 @@ public class RobotContainer {
   private final shooter Shooter;
   private final turrent Turrent;
   private final hood Hood;
+
+  public double distToDeg(DoubleSupplier dist) {
+    return (dist.getAsDouble() - 242) / (-2.6955);
+  }
+
+  public double calculateLaunchAngle(
+      DoubleSupplier distanceMeters, DoubleSupplier heightMeters, double velocity) {
+    double g = 9.81;
+    double x = distanceMeters.getAsDouble();
+    double y = heightMeters.getAsDouble();
+    double v2 = velocity * velocity;
+    double v4 = v2 * v2;
+
+    double discriminant = v4 - g * (g * x * x + 2 * y * v2);
+
+    if (discriminant < 0) {
+      return 0; // Target out of range
+    }
+
+    // Using the '-' sign for a lower, flatter trajectory
+    return Math.atan((v2 - Math.sqrt(discriminant)) / (g * x));
+  }
 
   //   private final climber Climber;
   private final index Index;
@@ -219,7 +242,7 @@ public class RobotContainer {
         DriveCommands.joystickDrive(
             drive,
             () -> -controller.getLeftY(),
-            () -> -controller.getLeftX(),
+            () -> -controller.getLeftX() * -1,
             () -> -controller.getRightX()));
 
     controller.povUp().whileTrue(DriveCommands.joystickDrive(drive, () -> 10, () -> 0, () -> 0));
@@ -263,9 +286,25 @@ public class RobotContainer {
     // manipulatorController.povLeft().onTrue(Shooter.nudgeHoodCalibration(-0.5));
     // manipulatorController.povRight().onTrue(Shooter.nudgeHoodCalibration(0.5));
     // manipulatorController.start().onTrue(Shooter.zeroHoodCalibration());
+
+    double INITIAL_VELOCITY = 12.5;
     manipulatorController
         .a()
-        .whileTrue(Hood.setHoodAngle(() -> vision.getDistanceToSpecificTag(0, 3) * 5));
+        .whileTrue(
+            Hood.setHoodPosCommand(
+                () -> distToDeg(() -> vision.getDistanceToSpecificTag(0, 3) / (39.37))));
+    // () ->
+    //     MathUtil.clamp(
+    //         Hood.degToPos(
+    //             () ->
+    //                 Math.toDegrees(
+    //                         calculateLaunchAngle(
+    //                             () -> vision.getDistanceToSpecificTag(0, 3),
+    //                             () -> 200,
+    //                             INITIAL_VELOCITY))
+    //                     * -1),
+    //         -10,
+    //         0)));
     manipulatorController.leftBumper().whileTrue(Commands.run(() -> Index.spinMotor(-0.99)));
     manipulatorController.rightBumper().whileTrue(Commands.run(() -> Index.spinMotor(0.99)));
     manipulatorController.x().onTrue(Commands.runOnce(() -> Turrent.resetTurrentAngle()));

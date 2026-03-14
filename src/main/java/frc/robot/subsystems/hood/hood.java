@@ -9,7 +9,17 @@ import java.util.function.DoubleSupplier;
 public class hood extends SubsystemBase {
   public hoodIO io;
 
-  public void periodic() {}
+  public void periodic() {
+    System.out.println("Degrees: " + posToDeg(() -> io.getDegrees()));
+  }
+
+  public double posToDeg(DoubleSupplier yeah) {
+    return (3.48) * yeah.getAsDouble() + 63.035;
+  }
+
+  public double degToPos(DoubleSupplier no) {
+    return (no.getAsDouble() - 63.035) / 3.48;
+  }
 
   public hood(hoodIO givenIo) {
     io = givenIo;

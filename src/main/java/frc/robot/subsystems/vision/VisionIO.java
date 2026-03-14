@@ -9,6 +9,7 @@ package frc.robot.subsystems.vision;
 
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform3d;
 import org.littletonrobotics.junction.AutoLog;
 
 public interface VisionIO {
@@ -16,13 +17,14 @@ public interface VisionIO {
   public static class VisionIOInputs {
     public boolean connected = false;
     public TargetObservation latestTargetObservation =
-        new TargetObservation(0, Rotation2d.kZero, Rotation2d.kZero);
+        new TargetObservation(0, Rotation2d.kZero, Rotation2d.kZero, new Transform3d());
     public PoseObservation[] poseObservations = new PoseObservation[0];
     public int[] tagIds = new int[0];
   }
 
   /** Represents the angle to a simple target, not used for pose estimation. */
-  public static record TargetObservation(int id, Rotation2d tx, Rotation2d ty) {}
+  public static record TargetObservation(
+      int id, Rotation2d tx, Rotation2d ty, Transform3d transform3d) {}
 
   /** Represents a robot pose sample used for pose estimation. */
   public static record PoseObservation(

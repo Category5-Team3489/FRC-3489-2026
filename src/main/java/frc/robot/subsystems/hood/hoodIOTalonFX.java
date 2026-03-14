@@ -5,7 +5,7 @@ import com.ctre.phoenix6.controls.PositionDutyCycle;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 public class hoodIOTalonFX implements hoodIO {
-  private static final double ANGLE_GEAR_RATIO = 6.0;
+  private static final double ANGLE_GEAR_RATIO = 9.0;
   private TalonFX motor;
   private final PositionDutyCycle positionRequest = new PositionDutyCycle(0.0);
 
@@ -16,6 +16,11 @@ public class hoodIOTalonFX implements hoodIO {
     config.Slot0.kI = 0.0;
     config.Slot0.kD = 0.0;
     motor.getConfigurator().apply(config);
+  }
+
+  @Override
+  public double getDegrees() {
+    return motor.getPosition().getValueAsDouble();
   }
 
   @Override
@@ -33,7 +38,7 @@ public class hoodIOTalonFX implements hoodIO {
 
   @Override
   public void setHoodAngleDegrees(double degrees) {
-    double targetRotations = (degrees / 360.0) * ANGLE_GEAR_RATIO;
+    double targetRotations = ((70 + degrees) / 360.0) * ANGLE_GEAR_RATIO;
     motor.setControl(positionRequest.withPosition(targetRotations));
   }
 }

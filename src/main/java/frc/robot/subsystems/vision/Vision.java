@@ -73,15 +73,12 @@ public class Vision extends SubsystemBase {
     // 2. If the ID is found and the observation is valid, calculate distance
     if (idFound) {
       // ty() is a Rotation2d representing the vertical offset
-      double tyRadians = targetObs.ty().getRadians();
+      // double tyRadians = targetObs.ty().getRadians();
+      double xd = Math.abs(targetObs.transform3d().getX());
+      double yd = Math.abs(targetObs.transform3d().getY());
+      double zd = Math.abs(targetObs.transform3d().getZ());
 
-      double denominator = Math.tan(cameraPitchRadians + tyRadians);
-
-      // Prevent division by zero if camera is looking perfectly horizontal/down
-      if (denominator != 0) {
-        double distance = (targetHeightMeters - cameraHeightMeters) / denominator;
-        return Math.abs(distance); // Return absolute distance
-      }
+      return Math.sqrt((xd * xd) + (yd * yd)) * (2.1844 / 0.069);
     }
 
     // Fallback: Check pose observations if trig fails
@@ -142,13 +139,7 @@ public class Vision extends SubsystemBase {
       List<Pose3d> robotPosesRejected = new LinkedList<>();
 
       // Add tag poses
-      for (int tagId : inputs[cameraIndex].tagIds) {
-        var tagPose = aprilTagLayout.getTagPose(tagId);
-        if (tagPose.isPresent()) {
-          tagPoses.add(tagPose.get());
-        }
-        System.out.println("TagIDS: " + tagId);
-      }
+      //  System.out.println("Observed tag: " + getLatestTagId(0));
       // Loop over pose observations
       for (var observation : inputs[cameraIndex].poseObservations) {
         // Check whether to reject pose

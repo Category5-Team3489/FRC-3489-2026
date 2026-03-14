@@ -6,4 +6,6 @@ public interface hoodIO {
   public void setHoodPos(double pos);
 
   public void setHoodAngleDegrees(double degrees);
+
+  public double getDegrees();
 }

@@ -10,6 +10,7 @@ package frc.robot.subsystems.vision;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.DoubleArrayPublisher;
 import edu.wpi.first.networktables.DoubleArraySubscriber;
@@ -63,7 +64,8 @@ public class VisionIOLimelight implements VisionIO {
         new TargetObservation(
             0,
             Rotation2d.fromDegrees(txSubscriber.get()),
-            Rotation2d.fromDegrees(tySubscriber.get()));
+            Rotation2d.fromDegrees(tySubscriber.get()),
+            new Transform3d());
 
     // Update orientation for MegaTag 2
     orientationPublisher.accept(
