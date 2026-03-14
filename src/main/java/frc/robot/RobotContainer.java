@@ -45,7 +45,6 @@ import frc.robot.subsystems.turrent.turrent;
 import frc.robot.subsystems.turrent.turrentIOSim;
 import frc.robot.subsystems.turrent.turrentIOTalonFX;
 import frc.robot.subsystems.vision.Vision;
-import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOPhotonVision;
 import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
@@ -94,8 +93,8 @@ public class RobotContainer {
         vision =
             new Vision(
                 drive::addVisionMeasurement,
-                new VisionIOPhotonVision(camera0Name, robotToCamera0),
-                new VisionIOPhotonVision(camera1Name, robotToCamera1),
+                // new VisionIOPhotonVision(camera0Name, robotToCamera0),
+                // new VisionIOPhotonVision(camera1Name, robotToCamera1),
                 new VisionIOPhotonVision(camera2Name, robotToCamera2));
 
         // Turrent = new turrent(new turrentIOTalonFX(0));
@@ -144,8 +143,8 @@ public class RobotContainer {
         vision =
             new Vision(
                 drive::addVisionMeasurement,
-                new VisionIOPhotonVisionSim(camera0Name, robotToCamera0, drive::getPose),
-                new VisionIOPhotonVisionSim(camera1Name, robotToCamera1, drive::getPose),
+                // new VisionIOPhotonVisionSim(camera0Name, robotToCamera0, drive::getPose),
+                // new VisionIOPhotonVisionSim(camera1Name, robotToCamera1, drive::getPose),
                 new VisionIOPhotonVisionSim(camera2Name, robotToCamera2, drive::getPose));
 
         break;
@@ -171,9 +170,9 @@ public class RobotContainer {
         vision =
             new Vision(
                 drive::addVisionMeasurement,
-                new VisionIO() {},
-                new VisionIO() {},
-                new VisionIO() {});
+                // new VisionIOPhotonVision(camera0Name, robotToCamera0),
+                // new VisionIOPhotonVision(camera1Name, robotToCamera1),
+                new VisionIOPhotonVision(camera2Name, robotToCamera2));
 
         break;
     }
@@ -264,18 +263,20 @@ public class RobotContainer {
     // manipulatorController.povLeft().onTrue(Shooter.nudgeHoodCalibration(-0.5));
     // manipulatorController.povRight().onTrue(Shooter.nudgeHoodCalibration(0.5));
     // manipulatorController.start().onTrue(Shooter.zeroHoodCalibration());
-
+    manipulatorController
+        .a()
+        .whileTrue(Hood.setHoodAngle(() -> vision.getDistanceToSpecificTag(0, 3) * 5));
     manipulatorController.leftBumper().whileTrue(Commands.run(() -> Index.spinMotor(-0.99)));
-    manipulatorController.rightBumper().whileTrue(Commands.run(() -> Index.spinMotor(0.3)));
+    manipulatorController.rightBumper().whileTrue(Commands.run(() -> Index.spinMotor(0.99)));
     manipulatorController.x().onTrue(Commands.runOnce(() -> Turrent.resetTurrentAngle()));
     manipulatorController
         .rightTrigger()
         .whileTrue(
             Commands.parallel(
                 Shooter.shootAtSpeed(0.7), Commands.run(() -> Kicker.spinMotor(0.99))));
-    manipulatorController
-        .b()
-        .whileTrue(Hood.setHoodAngle(() -> manipulatorController.getLeftTriggerAxis() * 100));
+    // manipulatorController
+    //     .b()
+    //     .whileTrue(Intake.spinTheStuff(0.8));
     controller
         .a()
         .whileTrue(

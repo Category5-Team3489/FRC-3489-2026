@@ -12,7 +12,7 @@ public class hoodIOTalonFX implements hoodIO {
   public hoodIOTalonFX(int motorID) {
     motor = new TalonFX(motorID);
     TalonFXConfiguration config = new TalonFXConfiguration();
-    config.Slot0.kP = 0.2;
+    config.Slot0.kP = 0.09;
     config.Slot0.kI = 0.0;
     config.Slot0.kD = 0.0;
     motor.getConfigurator().apply(config);

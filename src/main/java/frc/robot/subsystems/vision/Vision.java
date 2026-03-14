@@ -55,28 +55,44 @@ public class Vision extends SubsystemBase {
    * @return Distance in meters, or -1.0 if the tag is not currently visible.
    */
   public double getDistanceToSpecificTag(int cameraIndex, int targetTagId) {
-    // 1. Safety check for valid camera index
     if (cameraIndex < 0 || cameraIndex >= inputs.length) return -1.0;
 
-    // 2. Check if the tag we want is actually in the list of seen IDs
-    boolean tagVisible = false;
-    for (int id : inputs[cameraIndex].tagIds) {
-      if (id == targetTagId) {
-        tagVisible = true;
-        break;
+    var targetObs = inputs[cameraIndex].latestTargetObservation;
+
+    // --- ROBOT SPECIFIC CONSTANTS (Update these!) ---
+    double cameraHeightMeters = 0.5; // Height of lens center from ground
+    double cameraPitchRadians = Math.toRadians(20.0); // Angle camera is tilted up
+    double targetHeightMeters = 1.32; // Height of AprilTag center (check year manual)
+
+    // 1. Check if the target is in the list of IDs seen this frame
+    boolean idFound = false;
+    if (targetObs.id() == targetTagId) {
+      idFound = true;
+    }
+
+    // 2. If the ID is found and the observation is valid, calculate distance
+    if (idFound) {
+      // ty() is a Rotation2d representing the vertical offset
+      double tyRadians = targetObs.ty().getRadians();
+
+      double denominator = Math.tan(cameraPitchRadians + tyRadians);
+
+      // Prevent division by zero if camera is looking perfectly horizontal/down
+      if (denominator != 0) {
+        double distance = (targetHeightMeters - cameraHeightMeters) / denominator;
+        return Math.abs(distance); // Return absolute distance
       }
     }
 
-    // 3. If visible, calculate distance from the Camera to the Tag
-    if (tagVisible && inputs[cameraIndex].poseObservations.length > 0) {
-      // In this subsystem, poseObservations[0] is the primary result
-      // .averageTagDistance() is the most direct way to get meters
-      return inputs[cameraIndex].poseObservations[0].averageTagDistance();
+    // Fallback: Check pose observations if trig fails
+    for (var obs : inputs[cameraIndex].poseObservations) {
+      if (obs.tagCount() > 0 && obs.averageTagDistance() > 0) {
+        return obs.averageTagDistance();
+      }
     }
 
     return -1.0;
   }
-
   /**
    * Returns the X angle to the best target, which can be used for simple servoing with vision.
    *
@@ -102,7 +118,12 @@ public class Vision extends SubsystemBase {
       io[i].updateInputs(inputs[i]);
       Logger.processInputs("Vision/Camera" + Integer.toString(i), inputs[i]);
     }
+    // System.out.println("Index 0: " + getDistanceToSpecificTag(0, 10));
+    // System.out.println("Index 1: " + getDistanceToSpecificTag(1, 10));
+    // System.out.println("Index 2: " + getDistanceToSpecificTag(2, 10));
+    // System.out.println("Index 3: " + getDistanceToSpecificTag(3, 10));
 
+    // System.out.println("Length of inputs: " + inputs.length);
     // Initialize logging values
     List<Pose3d> allTagPoses = new LinkedList<>();
     List<Pose3d> allRobotPoses = new LinkedList<>();
@@ -126,8 +147,8 @@ public class Vision extends SubsystemBase {
         if (tagPose.isPresent()) {
           tagPoses.add(tagPose.get());
         }
+        System.out.println("TagIDS: " + tagId);
       }
-
       // Loop over pose observations
       for (var observation : inputs[cameraIndex].poseObservations) {
         // Check whether to reject pose
@@ -204,6 +225,14 @@ public class Vision extends SubsystemBase {
         "Vision/Summary/RobotPosesAccepted", allRobotPosesAccepted.toArray(new Pose3d[0]));
     Logger.recordOutput(
         "Vision/Summary/RobotPosesRejected", allRobotPosesRejected.toArray(new Pose3d[0]));
+
+    System.out.println("Distance: " + getDistanceToSpecificTag(0, 3));
+    // for (int i = 0; i < inputs[0].poseObservations.length; i++) {
+    //   System.out.println(
+    //       "Distance function " + i + " : " + inputs[0].poseObservations[i].averageTagDistance());
+    // }
+
+    // System.out.println(String.format("Latest tarObv: %s", inputs[0].latestTargetObservation));
   }
 
   @FunctionalInterface

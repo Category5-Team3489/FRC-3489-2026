@@ -3,10 +3,13 @@ package frc.robot.subsystems.hood;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.vision.Vision;
 import java.util.function.DoubleSupplier;
 
 public class hood extends SubsystemBase {
   public hoodIO io;
+
+  public void periodic() {}
 
   public hood(hoodIO givenIo) {
     io = givenIo;
@@ -21,6 +24,16 @@ public class hood extends SubsystemBase {
   }
 
   public Command setHoodAngle(DoubleSupplier degrees) {
+    System.out.println(degrees.getAsDouble());
     return Commands.run(() -> io.setHoodAngleDegrees(degrees.getAsDouble()));
+  }
+
+  public Command setHoodAngleVision(Vision eyes, int CamIndex) {
+    return Commands.run(
+        () ->
+            io.setHoodAngleDegrees(
+                // MathUtil.clamp(eyes.getDistanceToSpecificTag(CamIndex, 10), 0.0, 5.0)));
+                -10.0),
+        this);
   }
 }
