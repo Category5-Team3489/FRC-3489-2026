@@ -77,7 +77,8 @@ public class Vision extends SubsystemBase {
       double xd = Math.abs(targetObs.transform3d().getX());
       double yd = Math.abs(targetObs.transform3d().getY());
       double zd = Math.abs(targetObs.transform3d().getZ());
-
+      System.out.println("XD: " + xd);
+      System.out.println("YD: " + yd);
       return Math.sqrt((xd * xd) + (yd * yd)) * (2.1844 / 0.069);
     }
 

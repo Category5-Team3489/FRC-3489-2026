@@ -65,9 +65,12 @@ public class RobotContainer {
   private final turrent Turrent;
   private final hood Hood;
 
-
-  public double distToDeg(DoubleSupplier dist){
-    return (dist.getAsDouble() - 6.16)/(-0.068465);
+  public double distToDeg(DoubleSupplier dist) {
+    double tuff = (dist.getAsDouble() - 6.16) / (-0.068465);
+    if (tuff > 70 || tuff < 35) {
+      return 50;
+    }
+    return tuff;
   }
 
   public double calculateLaunchAngle(
@@ -243,7 +246,7 @@ public class RobotContainer {
         DriveCommands.joystickDrive(
             drive,
             () -> -controller.getLeftY(),
-            () -> -controller.getLeftX() * -1,
+            () -> -controller.getLeftX(),
             () -> -controller.getRightX()));
 
     controller.povUp().whileTrue(DriveCommands.joystickDrive(drive, () -> 10, () -> 0, () -> 0));
@@ -289,9 +292,9 @@ public class RobotContainer {
     // manipulatorController.start().onTrue(Shooter.zeroHoodCalibration());
 
     double INITIAL_VELOCITY = 12.5;
-    manipulatorController.a().whileTrue(Hood.setHoodPosCommand(() -> Hood.degToPos(() -> distToDeg(
-        () -> vision.getDistanceToSpecificTag(0, 3)
-    ) * -1)));
+    manipulatorController
+        .a()
+        .whileTrue(Hood.setHoodPosCommand(() -> Hood.degToPos(() -> distToDeg(() -> 3))));
     // () ->
     //     MathUtil.clamp(
     //         Hood.degToPos(

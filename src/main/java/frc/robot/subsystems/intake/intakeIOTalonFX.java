@@ -1,5 +1,7 @@
 package frc.robot.subsystems.intake;
 
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.PositionDutyCycle;
 import edu.wpi.first.math.MathUtil;
 
 public class intakeIOTalonFX implements intakeIO {
@@ -7,11 +9,18 @@ public class intakeIOTalonFX implements intakeIO {
   private final com.ctre.phoenix6.hardware.TalonFX intakeMotor;
   private final com.ctre.phoenix6.hardware.TalonFX actuatorMotor2;
   private final com.ctre.phoenix6.hardware.TalonFX actuatorMotor1;
+  private final PositionDutyCycle positionRequest = new PositionDutyCycle(0.0);
 
   public intakeIOTalonFX(int intakeMotorPort, int actmotorport1, int actmotorport2) {
     intakeMotor = new com.ctre.phoenix6.hardware.TalonFX(intakeMotorPort);
     actuatorMotor1 = new com.ctre.phoenix6.hardware.TalonFX(actmotorport1);
     actuatorMotor2 = new com.ctre.phoenix6.hardware.TalonFX(actmotorport2);
+    TalonFXConfiguration config = new TalonFXConfiguration();
+    config.Slot0.kP = 0.09;
+    config.Slot0.kI = 0.0;
+    config.Slot0.kD = 0.0;
+    actuatorMotor1.getConfigurator().apply(config);
+    actuatorMotor2.getConfigurator().apply(config);
   }
 
   @Override
@@ -45,28 +54,15 @@ public class intakeIOTalonFX implements intakeIO {
         || actuatorMotor1.getSupplyCurrent().getValueAsDouble() < -20) {
       speed = 0;
     }
-
-    System.out.println("Actuator position: " + actPos);
-    if (actPos >= maxActPos) {
-      if (speed > 0) {
-        actuatorMotor1.set(0);
-        actuatorMotor2.set(-1 * 0);
-      } else {
-        actuatorMotor1.set(speed);
-        actuatorMotor2.set(-1 * speed);
-      }
-    } else if (actPos <= minActPos) {
-      if (speed < 0) {
-        actuatorMotor1.set(0);
-        actuatorMotor2.set(-1 * 0);
-      } else {
-        actuatorMotor1.set(speed);
-        actuatorMotor2.set(-1 * speed);
-      }
+    if (speed > 0) {
+      actuatorMotor1.setControl(positionRequest.withPosition(maxActPos));
+      actuatorMotor2.setControl(positionRequest.withPosition(-maxActPos));
+    } else if (speed < 0) {
+      actuatorMotor1.setControl(positionRequest.withPosition(0));
+      actuatorMotor2.setControl(positionRequest.withPosition(0));
     } else {
-      actuatorMotor1.set(speed);
-      actuatorMotor2.set(-1 * speed);
-      actuatorMotor2.setPosition(0);
+      actuatorMotor1.set(0);
+      actuatorMotor2.set(0);
     }
   }
 
