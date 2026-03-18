@@ -14,6 +14,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -58,7 +59,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
  */
 public class RobotContainer {
   // Subsystems
-  public double timer = 0;
+  private final Timer manipRightTriggerTimer = new Timer();
   private final Drive drive;
   private final Vision vision;
   private final intake Intake;
@@ -102,16 +103,21 @@ public class RobotContainer {
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
 
-  
-  public Command shoot(DoubleSupplier speed, DoubleSupplier time){
-    if(time.getAsDouble() < 100){
-        return Commands.parallel(Shooter.shootAtSpeed(speed.getAsDouble()), Commands.run(() -> Kicker.spinMotor(0.99))); 
-        // Commands.run(() -> Index.spinMotor(-0.99)));
-    }
-
-    return Commands.parallel(Shooter.shootAtSpeed(speed.getAsDouble()), Commands.run(() -> Kicker.spinMotor(0.99)), Commands.run(() -> Index.spinMotor(-0.99)));
+  private Command shootWithIndexDelay(DoubleSupplier speed, double indexDelaySeconds) {
+    return Commands.parallel(
+        Shooter.shootAtSpeed(speed.getAsDouble()),
+        Commands.runEnd(() -> Kicker.spinMotor(0.99), () -> Kicker.spinMotor(0.0), Kicker),
+        Commands.runEnd(
+            () -> {
+              if (manipRightTriggerTimer.get() >= indexDelaySeconds) {
+                Index.spinMotor(-0.99);
+              } else {
+                Index.spinMotor(0.0);
+              }
+            },
+            () -> Index.spinMotor(0.0),
+            Index));
   }
-
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -280,9 +286,16 @@ public class RobotContainer {
     // Lock to 0° when A button is held
     manipulatorController.y().onTrue(Commands.run(() -> Turrent.resetTurrentAngle()));
 
-    manipulatorController
-        .rightTrigger(0.1)
-        .whileTrue(shoot(() -> 0.7, () -> timer));
+    var shootTrigger = manipulatorController.rightTrigger(0.1);
+    shootTrigger.onTrue(
+        Commands.runOnce(
+            () -> {
+              manipRightTriggerTimer.stop();
+              manipRightTriggerTimer.reset();
+              manipRightTriggerTimer.start();
+            }));
+    shootTrigger.onFalse(Commands.runOnce(() -> manipRightTriggerTimer.stop()));
+    shootTrigger.whileTrue(shootWithIndexDelay(() -> 0.7, 1.0));
     // Default shooter command: map controller1 right trigger to shooter
     // voltage. Multiply axis [0..1] by 12 to convert to volts.
 
@@ -320,11 +333,7 @@ public class RobotContainer {
     manipulatorController.leftBumper().whileTrue(Commands.run(() -> Index.spinMotor(-0.99)));
     manipulatorController.rightBumper().whileTrue(Commands.run(() -> Index.spinMotor(0.99)));
     manipulatorController.x().onTrue(Commands.runOnce(() -> Turrent.resetTurrentAngle()));
-    manipulatorController
-        .rightTrigger()
-        .whileTrue(
-            Commands.parallel(
-                Shooter.shootAtSpeed(0.7), Commands.run(() -> Kicker.spinMotor(0.99))));
+    // right trigger binding handled above (with timing)
     // manipulatorController
     //     .b()
     //     .whileTrue(Intake.spinTheStuff(0.8));

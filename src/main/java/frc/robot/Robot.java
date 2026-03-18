@@ -7,7 +7,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.sim.SimChessLauncher;
@@ -72,13 +71,10 @@ public class Robot extends LoggedRobot {
     // and put our autonomous chooser on the dashboard.
     robotContainer = new RobotContainer();
   }
-  XboxController manipulatorController = new XboxController(1);
+
   /** This function is called periodically during all modes. */
   @Override
   public void robotPeriodic() {
-    if(manipulatorController.getRightTriggerAxis() > 0.3){
-      robotContainer.timer += 1;
-    }
     // Optionally switch the thread to high priority to improve loop
     // timing (see the template project documentation for details)
     // Threads.setCurrentThreadPriority(true, 99);
