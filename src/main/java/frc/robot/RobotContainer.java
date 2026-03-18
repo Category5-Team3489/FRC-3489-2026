@@ -58,6 +58,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
  */
 public class RobotContainer {
   // Subsystems
+  public double timer = 0;
   private final Drive drive;
   private final Vision vision;
   private final intake Intake;
@@ -100,6 +101,17 @@ public class RobotContainer {
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
+
+  
+  public Command shoot(DoubleSupplier speed, DoubleSupplier time){
+    if(time.getAsDouble() < 100){
+        return Commands.parallel(Shooter.shootAtSpeed(speed.getAsDouble()), Commands.run(() -> Kicker.spinMotor(0.99))); 
+        // Commands.run(() -> Index.spinMotor(-0.99)));
+    }
+
+    return Commands.parallel(Shooter.shootAtSpeed(speed.getAsDouble()), Commands.run(() -> Kicker.spinMotor(0.99)), Commands.run(() -> Index.spinMotor(-0.99)));
+  }
+
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -270,9 +282,7 @@ public class RobotContainer {
 
     manipulatorController
         .rightTrigger(0.1)
-        .whileTrue(
-            Commands.parallel(
-                Shooter.shootAtSpeed(() -> 0.70), Commands.run(() -> Kicker.spinMotor(0.99))));
+        .whileTrue(shoot(() -> 0.7, () -> timer));
     // Default shooter command: map controller1 right trigger to shooter
     // voltage. Multiply axis [0..1] by 12 to convert to volts.
 
@@ -284,9 +294,9 @@ public class RobotContainer {
     //         Commands.run(
     //             () -> Shooter.shootAtSpeed(() -> controller1.getRightTriggerAxis() * 0.7)));
 
-    manipulatorController.povUp().whileTrue(Intake.actuate(0.3));
+    manipulatorController.povUp().onTrue(Intake.actuate(0.3));
     manipulatorController.povDown().whileTrue(Intake.actuate(-0.3));
-    manipulatorController.povCenter().whileTrue(Intake.actuate(0));
+    manipulatorController.povCenter().onTrue(Intake.actuate(0));
     // manipulatorController.povLeft().onTrue(Shooter.nudgeHoodCalibration(-0.5));
     // manipulatorController.povRight().onTrue(Shooter.nudgeHoodCalibration(0.5));
     // manipulatorController.start().onTrue(Shooter.zeroHoodCalibration());
