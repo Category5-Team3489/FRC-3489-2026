@@ -288,6 +288,7 @@ public class RobotContainer {
 
     Hood.setDefaultCommand(
         Hood.setHoodPosCommand(() -> -Math.abs(manipulatorController.getRightY() * 10)));
+    Climber.setDefaultCommand(Climber.moveClimbMotor(() -> manipulatorController.getLeftY()));
     // Lock to 0° when A button is held
     manipulatorController.y().onTrue(Commands.run(() -> Turrent.resetTurrentAngle()));
 

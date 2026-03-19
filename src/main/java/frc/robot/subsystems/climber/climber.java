@@ -1,5 +1,9 @@
 package frc.robot.subsystems.climber;
 
+import java.util.function.DoubleSupplier;
+
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class climber extends SubsystemBase {
@@ -15,7 +19,7 @@ public class climber extends SubsystemBase {
     super.periodic();
   }
 
-  public void moveClimbMotor(double speed) {
-    io.setClimberSpeed(speed);
+  public Command moveClimbMotor(DoubleSupplier speed) {
+    return Commands.run(() -> io.setClimberSpeed(speed.getAsDouble()), this);
   }
 }
