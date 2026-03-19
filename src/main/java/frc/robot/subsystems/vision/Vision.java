@@ -59,38 +59,27 @@ public class Vision extends SubsystemBase {
 
     var targetObs = inputs[cameraIndex].latestTargetObservation;
 
-    // --- ROBOT SPECIFIC CONSTANTS (Update these!) ---
-    double cameraHeightMeters = 0.5; // Height of lens center from ground
-    double cameraPitchRadians = Math.toRadians(20.0); // Angle camera is tilted up
-    double targetHeightMeters = 1.32; // Height of AprilTag center (check year manual)
-
-    // 1. Check if the target is in the list of IDs seen this frame
-    boolean idFound = false;
     if (targetObs.id() == targetTagId) {
-      idFound = true;
+        double xd = targetObs.transform3d().getX();
+        double yd = targetObs.transform3d().getY();
+        double zd = targetObs.transform3d().getZ();
+
+        System.out.println("XD: " + xd);
+        System.out.println("YD: " + yd);
+        System.out.println("ZD: " + zd); // ← add this, was probably 0 before
+
+        return Math.sqrt((xd * xd) + (yd * yd) + (zd * zd)); // pure 3D norm
     }
 
-    // 2. If the ID is found and the observation is valid, calculate distance
-    if (idFound) {
-      // ty() is a Rotation2d representing the vertical offset
-      // double tyRadians = targetObs.ty().getRadians();
-      double xd = Math.abs(targetObs.transform3d().getX());
-      double yd = Math.abs(targetObs.transform3d().getY());
-      double zd = Math.abs(targetObs.transform3d().getZ());
-      System.out.println("XD: " + xd);
-      System.out.println("YD: " + yd);
-      return Math.sqrt((xd * xd) + (yd * yd)) * (2.1844 / 0.069);
-    }
-
-    // Fallback: Check pose observations if trig fails
+    // Fallback
     for (var obs : inputs[cameraIndex].poseObservations) {
-      if (obs.tagCount() > 0 && obs.averageTagDistance() > 0) {
-        return obs.averageTagDistance();
-      }
+        if (obs.tagCount() > 0 && obs.averageTagDistance() > 0) {
+            return obs.averageTagDistance();
+        }
     }
 
     return -1.0;
-  }
+}
   /**
    * Returns the X angle to the best target, which can be used for simple servoing with vision.
    *
