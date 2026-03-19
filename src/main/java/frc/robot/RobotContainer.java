@@ -23,6 +23,8 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.climber.climber;
+import frc.robot.subsystems.climber.climberIOSim;
+import frc.robot.subsystems.climber.climberIOTalonFX;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
@@ -125,7 +127,7 @@ public class RobotContainer {
   public RobotContainer() {
     switch (Constants.currentMode) {
       case REAL:
-        Climber = new climberIOTalonFX(31);
+        Climber = new climber(new climberIOTalonFX(31));
         Hood = new hood(new hoodIOTalonFX(18));
         // Real robot, instantiate hardware IO implementations
         // ModuleIOTalonF
@@ -172,7 +174,7 @@ public class RobotContainer {
         break;
 
       case SIM:
-        Climber = new climberIOSim();
+        Climber = new climber(new climberIOSim());
         Hood = new hood(new hoodIOTalonFX(18));
         Turrent = new turrent(new turrentIOSim(1));
         Shooter = new shooter(0.4, new shooterIOSim());
@@ -199,7 +201,7 @@ public class RobotContainer {
         break;
 
       default:
-        Climber = new climberIOTalonFX(31);
+        Climber = new climber(new climberIOTalonFX(31));
         Hood = new hood(new hoodIOTalonFX(18));
         Turrent = new turrent(new turrentIOTalonFX(15, 18));
         // Turrent = new turrent(new turrentIOTalonFX(0));
