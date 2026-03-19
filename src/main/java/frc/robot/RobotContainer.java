@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.climber.climber;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
@@ -66,6 +67,7 @@ public class RobotContainer {
   private final shooter Shooter;
   private final turrent Turrent;
   private final hood Hood;
+  private final climber Climber;
 
   public double distToDeg(DoubleSupplier dist) {
     double tuff = (dist.getAsDouble() - 6.16) / (-0.068465);
@@ -123,6 +125,7 @@ public class RobotContainer {
   public RobotContainer() {
     switch (Constants.currentMode) {
       case REAL:
+        Climber = new climberIOTalonFX(31);
         Hood = new hood(new hoodIOTalonFX(18));
         // Real robot, instantiate hardware IO implementations
         // ModuleIOTalonF
@@ -169,6 +172,7 @@ public class RobotContainer {
         break;
 
       case SIM:
+        Climber = new climberIOSim();
         Hood = new hood(new hoodIOTalonFX(18));
         Turrent = new turrent(new turrentIOSim(1));
         Shooter = new shooter(0.4, new shooterIOSim());
@@ -195,6 +199,7 @@ public class RobotContainer {
         break;
 
       default:
+        Climber = new climberIOTalonFX(31);
         Hood = new hood(new hoodIOTalonFX(18));
         Turrent = new turrent(new turrentIOTalonFX(15, 18));
         // Turrent = new turrent(new turrentIOTalonFX(0));
