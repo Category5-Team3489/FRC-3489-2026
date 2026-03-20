@@ -20,6 +20,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.Elastic.Notification;
+import frc.robot.Elastic.NotificationLevel;
 import frc.robot.commands.DriveCommands;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.climber.climber;
@@ -62,6 +64,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
  */
 public class RobotContainer {
   // Subsystems
+  private final Elastic notif = new Elastic();
   private final Timer manipRightTriggerTimer = new Timer();
   private final Drive drive;
   private final Vision vision;
@@ -303,9 +306,19 @@ public class RobotContainer {
     manipulatorController.a().whileTrue((Intake.spinTheStuff(-0.8)));
     manipulatorController.povLeft().onTrue(Commands.run(() -> {
         if(ferryToggle == 1){
-            ferryToggle = 0.6;
+            ferryToggle = 0.7;
+            Elastic.sendNotification(new Notification(
+                NotificationLevel.WARNING,
+                "Ferrying",
+                "Ferrying is now OFF."
+            ));
         }else{
             ferryToggle = 1;
+            Elastic.sendNotification(new Notification(
+                NotificationLevel.WARNING,
+                "Ferrying",
+                "Ferrying is now ON."
+            ));
         }
     }));
     manipulatorController
@@ -317,7 +330,7 @@ public class RobotContainer {
         .b()
         .whileTrue(Commands.parallel(Intake.actuate(-0.5), Intake.spinTheStuff(0.8)));
     shootTrigger.onFalse(Commands.runOnce(() -> manipRightTriggerTimer.stop()));
-    shootTrigger.whileTrue(shootWithIndexDelay(() -> 0.7 * ferryToggle, 1.0));
+    shootTrigger.whileTrue(shootWithIndexDelay(() -> ferryToggle, 1.0));
     controller
         .a()
         .whileTrue(
