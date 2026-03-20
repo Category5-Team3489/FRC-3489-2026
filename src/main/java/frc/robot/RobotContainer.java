@@ -70,7 +70,7 @@ public class RobotContainer {
   private final turrent Turrent;
   private final hood Hood;
   private final climber Climber;
-
+  private double ferryToggle = 1;
   public double distToDeg(DoubleSupplier dist) {
     double tuff = (dist.getAsDouble() - 6.16) / (-0.068465);
     if (tuff > 70 || tuff < 35) {
@@ -263,6 +263,7 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+
     // Default command, normal field-relative drive
     // Use a supplier so the joystick is sampled each scheduler cycle.
     Turrent.setDefaultCommand(Turrent.turnTurrent(() -> (-manipulatorController.getLeftX() * 0.2)));
@@ -300,6 +301,13 @@ public class RobotContainer {
     manipulatorController.povDown().whileTrue(Intake.actuate(-0.6));
     manipulatorController.y().whileTrue((Intake.spinTheStuff(0.8)));
     manipulatorController.a().whileTrue((Intake.spinTheStuff(-0.8)));
+    manipulatorController.povLeft().onTrue(Commands.run(() -> {
+        if(ferryToggle == 1){
+            ferryToggle = 0.6;
+        }else{
+            ferryToggle = 1;
+        }
+    }));
     manipulatorController
         .x()
         .whileTrue(
@@ -309,7 +317,7 @@ public class RobotContainer {
         .b()
         .whileTrue(Commands.parallel(Intake.actuate(-0.5), Intake.spinTheStuff(0.8)));
     shootTrigger.onFalse(Commands.runOnce(() -> manipRightTriggerTimer.stop()));
-    shootTrigger.whileTrue(shootWithIndexDelay(() -> 0.7, 1.0));
+    shootTrigger.whileTrue(shootWithIndexDelay(() -> 0.7 * ferryToggle, 1.0));
     controller
         .a()
         .whileTrue(
@@ -322,7 +330,7 @@ public class RobotContainer {
     // controller.y().whileTrue(Shooter.noShoot());
     // Switch to X pattern when X button is pressed
     controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
-        
+    ferryToggle = 0.6; 
     Index.setDefaultCommand(Commands.run(() -> Index.spinMotor(0), Index));
     Kicker.setDefaultCommand(Commands.run(() -> Kicker.spinMotor(0), Kicker));
     Shooter.setDefaultCommand(Shooter.shootAtSpeed(0.1));
