@@ -282,18 +282,9 @@ public class RobotContainer {
         Intake.noSpin()
         // .andThen(Intake.actuate(0))
         );
-    manipulatorController
-        .leftTrigger(0.5)
-        .whileTrue(
-            Commands.parallel(
-                Shooter.shootAtSpeed(0.4), Commands.run(() -> Kicker.spinMotor(0.99))));
-
     Hood.setDefaultCommand(
         Hood.setHoodPosCommand(() -> -Math.abs(manipulatorController.getRightY() * 10)));
     Climber.setDefaultCommand(Climber.moveClimbMotor(() -> manipulatorController.getLeftY()));
-    // Lock to 0° when A button is held
-    manipulatorController.y().onTrue(Commands.run(() -> Turrent.resetTurrentAngle()));
-
     var shootTrigger = manipulatorController.rightTrigger(0.1);
     shootTrigger.onTrue(
         Commands.runOnce(
@@ -302,49 +293,23 @@ public class RobotContainer {
               manipRightTriggerTimer.reset();
               manipRightTriggerTimer.start();
             }));
+    manipulatorController.leftTrigger().onTrue(Index.agitate());
+    manipulatorController.rightBumper().whileTrue(Commands.run(() -> Index.spinMotor(1)));
+    manipulatorController.leftBumper().whileTrue(Commands.run(() -> Index.spinMotor(-1)));
+    manipulatorController.povUp().whileTrue(Intake.actuate(0.6));
+    manipulatorController.povDown().whileTrue(Intake.actuate(-0.6));
+    manipulatorController.y().whileTrue((Intake.spinTheStuff(0.8)));
+    manipulatorController.a().whileTrue((Intake.spinTheStuff(-0.8)));
+    manipulatorController
+        .x()
+        .whileTrue(
+            Hood.setHoodPosCommand(
+                () -> Hood.degToPos(() -> distToDeg(() -> vision.getDistanceToSpecificTag(0, 10)))));
+    manipulatorController
+        .b()
+        .whileTrue(Commands.parallel(Intake.actuate(-0.5), Intake.spinTheStuff(0.8)));
     shootTrigger.onFalse(Commands.runOnce(() -> manipRightTriggerTimer.stop()));
     shootTrigger.whileTrue(shootWithIndexDelay(() -> 0.7, 1.0));
-    // Default shooter command: map controller1 right trigger to shooter
-    // voltage. Multiply axis [0..1] by 12 to convert to volts.
-
-    // Shooter.setDefaultCommand(Shooter.shootAtSpeed(() -> controller1.getRightTriggerAxis() *
-    // 0.7));
-    // controller1
-    //     .rightTrigger()
-    //     .whileTrue(
-    //         Commands.run(
-    //             () -> Shooter.shootAtSpeed(() -> controller1.getRightTriggerAxis() * 0.7)));
-
-    manipulatorController.povUp().onTrue(Intake.actuate(0.3));
-    manipulatorController.povDown().whileTrue(Intake.actuate(-0.3));
-    manipulatorController.povCenter().onTrue(Intake.actuate(0));
-    // manipulatorController.povLeft().onTrue(Shooter.nudgeHoodCalibration(-0.5));
-    // manipulatorController.povRight().onTrue(Shooter.nudgeHoodCalibration(0.5));
-    // manipulatorController.start().onTrue(Shooter.zeroHoodCalibration());
-
-    double INITIAL_VELOCITY = 12.5;
-    manipulatorController
-        .a()
-        .whileTrue(Hood.setHoodPosCommand(() -> Hood.degToPos(() -> distToDeg(() -> 3))));
-    // () ->
-    //     MathUtil.clamp(
-    //         Hood.degToPos(
-    //             () ->
-    //                 Math.toDegrees(
-    //                         calculateLaunchAngle(
-    //                             () -> vision.getDistanceToSpecificTag(0, 3),
-    //                             () -> 200,
-    //                             INITIAL_VELOCITY))
-    //                     * -1),
-    //         -10,
-    //         0)));
-    manipulatorController.leftBumper().whileTrue(Commands.run(() -> Index.spinMotor(-0.99)));
-    manipulatorController.rightBumper().whileTrue(Commands.run(() -> Index.spinMotor(0.99)));
-    manipulatorController.x().onTrue(Commands.runOnce(() -> Turrent.resetTurrentAngle()));
-    // right trigger binding handled above (with timing)
-    // manipulatorController
-    //     .b()
-    //     .whileTrue(Intake.spinTheStuff(0.8));
     controller
         .a()
         .whileTrue(
@@ -354,12 +319,10 @@ public class RobotContainer {
                 () -> -controller.getLeftX(),
                 () -> Rotation2d.kZero));
 
-    manipulatorController.povLeft().whileTrue(Intake.spinTheStuff(-0.55));
-    manipulatorController.povRight().whileTrue(Intake.spinTheStuff(0.8));
     // controller.y().whileTrue(Shooter.noShoot());
     // Switch to X pattern when X button is pressed
     controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
-
+        
     Index.setDefaultCommand(Commands.run(() -> Index.spinMotor(0), Index));
     Kicker.setDefaultCommand(Commands.run(() -> Kicker.spinMotor(0), Kicker));
     Shooter.setDefaultCommand(Shooter.shootAtSpeed(0.1));
