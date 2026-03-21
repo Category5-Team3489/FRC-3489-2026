@@ -20,6 +20,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.Elastic.Notification;
+import frc.robot.Elastic.NotificationLevel;
 import frc.robot.commands.DriveCommands;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.climber.climber;
@@ -62,6 +64,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
  */
 public class RobotContainer {
   // Subsystems
+  private final Elastic notif = new Elastic();
   private final Timer manipRightTriggerTimer = new Timer();
   private final Drive drive;
   private final Vision vision;
@@ -70,7 +73,7 @@ public class RobotContainer {
   private final turrent Turrent;
   private final hood Hood;
   private final climber Climber;
-
+  private double ferryToggle = 1;
   public double distToDeg(DoubleSupplier dist) {
     double tuff = (dist.getAsDouble() - 6.16) / (-0.068465);
     if (tuff > 70 || tuff < 35) {
@@ -263,6 +266,7 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+
     // Default command, normal field-relative drive
     // Use a supplier so the joystick is sampled each scheduler cycle.
     Turrent.setDefaultCommand(Turrent.turnTurrent(() -> (-manipulatorController.getLeftX() * 0.2)));
@@ -282,18 +286,9 @@ public class RobotContainer {
         Intake.noSpin()
         .andThen(Intake.actuate(0.3))
         );
-    // manipulatorController
-    //     .leftTrigger(0.5)
-    //     .whileTrue(
-    //         Commands.parallel(
-    //             Shooter.shootAtSpeed(0.4), Commands.run(() -> Kicker.spinMotor(0.99))));
-
     Hood.setDefaultCommand(
         Hood.setHoodPosCommand(() -> -Math.abs(manipulatorController.getRightY() * 10)));
-    Climber.setDefaultCommand(Climber.moveClimbMotor(() -> manipulatorController.getLeftY() * -1));
-    // Lock to 0° when A button is held
-    // manipulatorController.y().onTrue(Commands.run(() -> Turrent.resetTurrentAngle()));
-
+    Climber.setDefaultCommand(Climber.moveClimbMotor(() -> manipulatorController.getLeftY()));
     var shootTrigger = manipulatorController.rightTrigger(0.1);
     shootTrigger.onTrue(
         Commands.runOnce(
@@ -302,54 +297,40 @@ public class RobotContainer {
               manipRightTriggerTimer.reset();
               manipRightTriggerTimer.start();
             }));
-    shootTrigger.onFalse(Commands.runOnce(() -> manipRightTriggerTimer.stop()));
-    shootTrigger.whileTrue(shootWithIndexDelay(() -> 0.7, 1.0));
-    // Default shooter command: map controller1 right trigger to shooter
-    // voltage. Multiply axis [0..1] by 12 to convert to volts.
-
-    // Shooter.setDefaultCommand(Shooter.shootAtSpeed(() -> controller1.getRightTriggerAxis() *
-    // 0.7));
-    // controller1
-    //     .rightTrigger()
-    //     .whileTrue(
-    //         Commands.run(
-    //             () -> Shooter.shootAtSpeed(() -> controller1.getRightTriggerAxis() * 0.7)));
-
-    // manipulatorController.povUp().whileTrue(Intake.actuate(0.3));
-    // manipulatorController.povDown().whileTrue(Intake.actuate(-0.3));
-    // manipulatorController.povCenter().whileTrue(Intake.actuate(0));
-    // manipulatorController.povLeft().onTrue(Shooter.nudgeHoodCalibration(-0.5));
-    // manipulatorController.povRight().onTrue(Shooter.nudgeHoodCalibration(0.5));
-    // manipulatorController.start().onTrue(Shooter.zeroHoodCalibration());
-
-    double INITIAL_VELOCITY = 12.5;
+    manipulatorController.leftTrigger().onTrue(Index.agitate());
+    manipulatorController.rightBumper().whileTrue(Commands.run(() -> Index.spinMotor(1)));
+    manipulatorController.leftBumper().whileTrue(Commands.run(() -> Index.spinMotor(-1)));
+    manipulatorController.povUp().whileTrue(Intake.actuate(0.6));
+    manipulatorController.povDown().whileTrue(Intake.actuate(-0.6));
+    manipulatorController.y().whileTrue((Intake.spinTheStuff(0.8)));
+    manipulatorController.a().whileTrue((Intake.spinTheStuff(-0.8)));
+    manipulatorController.povLeft().onTrue(Commands.run(() -> {
+        if(ferryToggle == 1){
+            ferryToggle = 0.7;
+            Elastic.sendNotification(new Notification(
+                NotificationLevel.WARNING,
+                "Ferrying",
+                "Ferrying is now OFF."
+            ));
+        }else{
+            ferryToggle = 1;
+            Elastic.sendNotification(new Notification(
+                NotificationLevel.WARNING,
+                "Ferrying",
+                "Ferrying is now ON."
+            ));
+        }
+    }));
     manipulatorController
-        .a()
+        .x()
         .whileTrue(
             Hood.setHoodPosCommand(
-                () ->
-                    Hood.degToPos(() -> distToDeg(() -> vision.getDistanceToSpecificTag(0, 10)))));
-    // () ->
-    //     MathUtil.clamp(
-    //         Hood.degToPos(
-    //             () ->
-    //                 Math.toDegrees(
-    //                         calculateLaunchAngle(
-    //                             () -> vision.getDistanceToSpecificTag(0, 3),
-    //                             () -> 200,
-    //                             INITIAL_VELOCITY))
-    //                     * -1),
-    //         -10,
-    //         0)));
-    // manipulatorController
-    //     .leftBumper()
-    //     .whileTrue(Commands.parallel(Intake.spinTheStuff(0.9), Intake.actuate(-0.6)));
-    // manipulatorController.rightBumper().whileTrue(Commands.run(() -> Index.spinMotor(0.99)));
-    // manipulatorController.x().onTrue(Commands.runOnce(() -> Turrent.resetTurrentAngle()));
-    // right trigger binding handled above (with timing)
-    // manipulatorController
-    //     .b()
-    //     .whileTrue(Intake.spinTheStuff(0.8));
+                () -> Hood.degToPos(() -> distToDeg(() -> vision.getDistanceToSpecificTag(0, 10)))));
+    manipulatorController
+        .b()
+        .whileTrue(Commands.parallel(Intake.actuate(-0.5), Intake.spinTheStuff(0.8)));
+    shootTrigger.onFalse(Commands.runOnce(() -> manipRightTriggerTimer.stop()));
+    shootTrigger.whileTrue(shootWithIndexDelay(() -> ferryToggle, 1.0));
     controller
         .a()
         .whileTrue(
@@ -364,7 +345,7 @@ public class RobotContainer {
     // controller.y().whileTrue(Shooter.noShoot());
     // Switch to X pattern when X button is pressed
     controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
-
+    ferryToggle = 0.6; 
     Index.setDefaultCommand(Commands.run(() -> Index.spinMotor(0), Index));
     Kicker.setDefaultCommand(Commands.run(() -> Kicker.spinMotor(0), Kicker));
     Shooter.setDefaultCommand(Shooter.shootAtSpeed(0.1));
