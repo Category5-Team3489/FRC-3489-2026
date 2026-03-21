@@ -280,19 +280,19 @@ public class RobotContainer {
     controller.povRight().whileTrue(DriveCommands.joystickDrive(drive, () -> 0, () -> 10, () -> 0));
     Intake.setDefaultCommand(
         Intake.noSpin()
-        // .andThen(Intake.actuate(0))
+        .andThen(Intake.actuate(0.3))
         );
-    manipulatorController
-        .leftTrigger(0.5)
-        .whileTrue(
-            Commands.parallel(
-                Shooter.shootAtSpeed(0.4), Commands.run(() -> Kicker.spinMotor(0.99))));
+    // manipulatorController
+    //     .leftTrigger(0.5)
+    //     .whileTrue(
+    //         Commands.parallel(
+    //             Shooter.shootAtSpeed(0.4), Commands.run(() -> Kicker.spinMotor(0.99))));
 
     Hood.setDefaultCommand(
         Hood.setHoodPosCommand(() -> -Math.abs(manipulatorController.getRightY() * 10)));
-    Climber.setDefaultCommand(Climber.moveClimbMotor(() -> manipulatorController.getLeftY()));
+    Climber.setDefaultCommand(Climber.moveClimbMotor(() -> manipulatorController.getLeftY() * -1));
     // Lock to 0° when A button is held
-    manipulatorController.y().onTrue(Commands.run(() -> Turrent.resetTurrentAngle()));
+    // manipulatorController.y().onTrue(Commands.run(() -> Turrent.resetTurrentAngle()));
 
     var shootTrigger = manipulatorController.rightTrigger(0.1);
     shootTrigger.onTrue(
@@ -315,9 +315,9 @@ public class RobotContainer {
     //         Commands.run(
     //             () -> Shooter.shootAtSpeed(() -> controller1.getRightTriggerAxis() * 0.7)));
 
-    manipulatorController.povUp().onTrue(Intake.actuate(0.3));
-    manipulatorController.povDown().whileTrue(Intake.actuate(-0.3));
-    manipulatorController.povCenter().onTrue(Intake.actuate(0));
+    // manipulatorController.povUp().whileTrue(Intake.actuate(0.3));
+    // manipulatorController.povDown().whileTrue(Intake.actuate(-0.3));
+    // manipulatorController.povCenter().whileTrue(Intake.actuate(0));
     // manipulatorController.povLeft().onTrue(Shooter.nudgeHoodCalibration(-0.5));
     // manipulatorController.povRight().onTrue(Shooter.nudgeHoodCalibration(0.5));
     // manipulatorController.start().onTrue(Shooter.zeroHoodCalibration());
@@ -325,7 +325,10 @@ public class RobotContainer {
     double INITIAL_VELOCITY = 12.5;
     manipulatorController
         .a()
-        .whileTrue(Hood.setHoodPosCommand(() -> Hood.degToPos(() -> distToDeg(() -> 3))));
+        .whileTrue(
+            Hood.setHoodPosCommand(
+                () ->
+                    Hood.degToPos(() -> distToDeg(() -> vision.getDistanceToSpecificTag(0, 10)))));
     // () ->
     //     MathUtil.clamp(
     //         Hood.degToPos(
@@ -338,9 +341,11 @@ public class RobotContainer {
     //                     * -1),
     //         -10,
     //         0)));
-    manipulatorController.leftBumper().whileTrue(Commands.run(() -> Index.spinMotor(-0.99)));
-    manipulatorController.rightBumper().whileTrue(Commands.run(() -> Index.spinMotor(0.99)));
-    manipulatorController.x().onTrue(Commands.runOnce(() -> Turrent.resetTurrentAngle()));
+    // manipulatorController
+    //     .leftBumper()
+    //     .whileTrue(Commands.parallel(Intake.spinTheStuff(0.9), Intake.actuate(-0.6)));
+    // manipulatorController.rightBumper().whileTrue(Commands.run(() -> Index.spinMotor(0.99)));
+    // manipulatorController.x().onTrue(Commands.runOnce(() -> Turrent.resetTurrentAngle()));
     // right trigger binding handled above (with timing)
     // manipulatorController
     //     .b()
@@ -354,8 +359,8 @@ public class RobotContainer {
                 () -> -controller.getLeftX(),
                 () -> Rotation2d.kZero));
 
-    manipulatorController.povLeft().whileTrue(Intake.spinTheStuff(-0.55));
-    manipulatorController.povRight().whileTrue(Intake.spinTheStuff(0.8));
+    manipulatorController.x().whileTrue(Intake.spinTheStuff(-0.55));
+    manipulatorController.b().whileTrue(Intake.spinTheStuff(0.8));
     // controller.y().whileTrue(Shooter.noShoot());
     // Switch to X pattern when X button is pressed
     controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));

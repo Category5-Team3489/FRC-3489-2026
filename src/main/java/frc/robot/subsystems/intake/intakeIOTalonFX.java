@@ -54,15 +54,39 @@ public class intakeIOTalonFX implements intakeIO {
         || actuatorMotor1.getSupplyCurrent().getValueAsDouble() < -20) {
       speed = 0;
     }
-    if (speed > 0) {
-      actuatorMotor1.setControl(positionRequest.withPosition(maxActPos));
-      actuatorMotor2.setControl(positionRequest.withPosition(-maxActPos));
-    } else if (speed < 0) {
-      actuatorMotor1.setControl(positionRequest.withPosition(0));
-      actuatorMotor2.setControl(positionRequest.withPosition(0));
+
+    // if (speed > 0) {
+    //   actuatorMotor1.setControl(positionRequest.withPosition(maxActPos));
+    //   actuatorMotor2.setControl(positionRequest.withPosition(-maxActPos));
+    // } else if (speed < 0) {
+    //   actuatorMotor1.setControl(positionRequest.withPosition(0));
+    //   actuatorMotor2.setControl(positionRequest.withPosition(0));
+    // } else {
+    //   actuatorMotor1.setControl(positionRequest.withPosition(0));
+    //   actuatorMotor2.setControl(positionRequest.withPosition(0));
+    // }
+
+    System.out.println("Actuator position: " + actPos);
+    if (actPos >= maxActPos) {
+      if (speed > 0) {
+        actuatorMotor1.set(0);
+        actuatorMotor2.set(-1 * 0);
+      } else {
+        actuatorMotor1.set(speed);
+        actuatorMotor2.set(-1 * speed);
+      }
+    } else if (actPos <= minActPos) {
+      if (speed < 0) {
+        actuatorMotor1.set(0);
+        actuatorMotor2.set(-1 * 0);
+      } else {
+        actuatorMotor1.set(speed);
+        actuatorMotor2.set(-1 * speed);
+      }
     } else {
-      actuatorMotor1.set(0);
-      actuatorMotor2.set(0);
+      actuatorMotor1.set(speed);
+      actuatorMotor2.set(-1 * speed);
+      actuatorMotor2.setPosition(0);
     }
   }
 
