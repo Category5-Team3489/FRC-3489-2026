@@ -73,7 +73,8 @@ public class RobotContainer {
   private final turrent Turrent;
   private final hood Hood;
   private final climber Climber;
-  private double ferryToggle = 1;
+  private double ferryToggle = 0.5;
+
   public double distToDeg(DoubleSupplier dist) {
     double tuff = (dist.getAsDouble() - 6.16) / (-0.068465);
     if (tuff > 70 || tuff < 35) {
@@ -282,10 +283,7 @@ public class RobotContainer {
     controller.povDown().whileTrue(DriveCommands.joystickDrive(drive, () -> -10, () -> 0, () -> 0));
     controller.povLeft().whileTrue(DriveCommands.joystickDrive(drive, () -> 0, () -> -10, () -> 0));
     controller.povRight().whileTrue(DriveCommands.joystickDrive(drive, () -> 0, () -> 10, () -> 0));
-    Intake.setDefaultCommand(
-        Intake.noSpin()
-        .andThen(Intake.actuate(0.3))
-        );
+    Intake.setDefaultCommand(Intake.noSpin().andThen(Intake.actuate(0.3)));
     Hood.setDefaultCommand(
         Hood.setHoodPosCommand(() -> -Math.abs(manipulatorController.getRightY() * 10)));
     Climber.setDefaultCommand(Climber.moveClimbMotor(() -> manipulatorController.getLeftY()));
@@ -302,30 +300,34 @@ public class RobotContainer {
     manipulatorController.leftBumper().whileTrue(Commands.run(() -> Index.spinMotor(-1)));
     manipulatorController.povUp().whileTrue(Intake.actuate(0.6));
     manipulatorController.povDown().whileTrue(Intake.actuate(-0.6));
+    manipulatorController.povCenter().whileTrue(Intake.actuate(0));
     manipulatorController.y().whileTrue((Intake.spinTheStuff(0.8)));
     manipulatorController.a().whileTrue((Intake.spinTheStuff(-0.8)));
-    manipulatorController.povLeft().onTrue(Commands.run(() -> {
-        if(ferryToggle == 1){
-            ferryToggle = 0.7;
-            Elastic.sendNotification(new Notification(
-                NotificationLevel.WARNING,
-                "Ferrying",
-                "Ferrying is now OFF."
-            ));
-        }else{
-            ferryToggle = 1;
-            Elastic.sendNotification(new Notification(
-                NotificationLevel.WARNING,
-                "Ferrying",
-                "Ferrying is now ON."
-            ));
-        }
-    }));
+    manipulatorController
+        .povLeft()
+        .onTrue(
+            Commands.runOnce(
+                () -> {
+                  if (ferryToggle == 1) {
+                    ferryToggle = 0.0;
+                    System.out.println("Ferrying OFF");
+                    Elastic.sendNotification(
+                        new Notification(
+                            NotificationLevel.WARNING, "Ferrying", "Ferrying is now OFF."));
+                  } else {
+                    ferryToggle = 1;
+                    System.out.println("Ferrying ON");
+                    Elastic.sendNotification(
+                        new Notification(
+                            NotificationLevel.WARNING, "Ferrying", "Ferrying is now ON."));
+                  }
+                }));
     manipulatorController
         .x()
         .whileTrue(
             Hood.setHoodPosCommand(
-                () -> Hood.degToPos(() -> distToDeg(() -> vision.getDistanceToSpecificTag(0, 10)))));
+                () ->
+                    Hood.degToPos(() -> distToDeg(() -> vision.getDistanceToSpecificTag(0, 10)))));
     manipulatorController
         .b()
         .whileTrue(Commands.parallel(Intake.actuate(-0.5), Intake.spinTheStuff(0.8)));
@@ -340,12 +342,12 @@ public class RobotContainer {
                 () -> -controller.getLeftX(),
                 () -> Rotation2d.kZero));
 
-    manipulatorController.x().whileTrue(Intake.spinTheStuff(-0.55));
-    manipulatorController.b().whileTrue(Intake.spinTheStuff(0.8));
+    // manipulatorController.x().whileTrue(Intake.spinTheStuff(-0.55));
+    // manipulatorController.b().whileTrue(Intake.spinTheStuff(0.8));
     // controller.y().whileTrue(Shooter.noShoot());
     // Switch to X pattern when X button is pressed
     controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
-    ferryToggle = 0.6; 
+    // ferryToggle = 0.6;
     Index.setDefaultCommand(Commands.run(() -> Index.spinMotor(0), Index));
     Kicker.setDefaultCommand(Commands.run(() -> Kicker.spinMotor(0), Kicker));
     Shooter.setDefaultCommand(Shooter.shootAtSpeed(0.1));
