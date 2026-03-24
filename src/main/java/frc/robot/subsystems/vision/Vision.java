@@ -66,7 +66,7 @@ public class Vision extends SubsystemBase {
 
       System.out.println("XD: " + xd);
       System.out.println("YD: " + yd);
-      System.out.println("ZD: " + zd); // ← add this, was probably 0 before
+      System.out.println("ZD: " + zd); // add this, was probably 0 before
 
       return Math.sqrt((xd * xd) + (yd * yd) + (zd * zd)); // pure 3D norm
     }
@@ -207,7 +207,7 @@ public class Vision extends SubsystemBase {
     Logger.recordOutput(
         "Vision/Summary/RobotPosesRejected", allRobotPosesRejected.toArray(new Pose3d[0]));
 
-    System.out.println("Distance: " + getDistanceToSpecificTag(0, 3));
+    // System.out.println("Distance: " + getDistanceToSpecificTag(0, 3));
     // for (int i = 0; i < inputs[0].poseObservations.length; i++) {
     //   System.out.println(
     //       "Distance function " + i + " : " + inputs[0].poseObservations[i].averageTagDistance());

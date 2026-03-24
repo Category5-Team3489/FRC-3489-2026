@@ -13,4 +13,10 @@ public class climberIOSim implements climberIO {
   public void setClimberSpeed(double speed) {
     parker.setInputVoltage(speed * 12.00);
   }
+
+  @Override
+  public void toggleClimberPosition(boolean isExtended) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'setClimberPosition'");
+  }
 }

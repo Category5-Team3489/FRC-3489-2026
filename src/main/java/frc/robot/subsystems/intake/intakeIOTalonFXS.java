@@ -38,4 +38,40 @@ public class intakeIOTalonFXS implements intakeIO {
   public void stopMotors() {
     intakeMotor.set(0);
   }
+
+  @Override
+  public void extend() {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'extend'");
+  }
+
+  @Override
+  public boolean isExtended() {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'isExtended'");
+  }
+
+  @Override
+  public void retract() {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'retract'");
+  }
+
+  @Override
+  public boolean isRetracted() {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'isRetracted'");
+  }
+
+  @Override
+  public void toggleSpinIntake(boolean isSpinning) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'toggleSpin'");
+  }
+
+  @Override
+  public void toggleSpinOuttake(boolean isSpinning) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'toggleSpinOuttake'");
+  }
 }

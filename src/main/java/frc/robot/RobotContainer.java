@@ -156,7 +156,7 @@ public class RobotContainer {
         Kicker = new kicker(new kickerIOTalonFX(14));
         Intake = new intake(new intakeIOTalonFX(22, 23, 24));
 
-        Shooter = new shooter(0.4, new shooterIOTalonFX(20, 17));
+        Shooter = new shooter(0.4, new shooterIOTalonFX(17, 20));
 
         // The ModuleIOTalonFXS implementation provides an example implementation for
         // TalonFXS controller connected to a CANdi with a PWM encoder. The
@@ -235,7 +235,7 @@ public class RobotContainer {
 
     NamedCommands.registerCommand("intakeOn", Intake.spinTheStuff(0.4));
 
-    NamedCommands.registerCommand("shooterOn", Shooter.shootAtSpeed(0.4));
+    NamedCommands.registerCommand("shooterOn", shootWithIndexDelay(() -> 1, 1.0).withTimeout(2.0));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -256,8 +256,11 @@ public class RobotContainer {
     autoChooser.addOption(
         "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
+    // isFerry = new Log;
+    // isFerry.
     // Configure the button bindings
-    configureButtonBindings();
+    // configureButtonBindings();
+    configureButtonBindingsV2();
   }
 
   /**
@@ -300,6 +303,7 @@ public class RobotContainer {
     manipulatorController.leftBumper().whileTrue(Commands.run(() -> Index.spinMotor(-1)));
     manipulatorController.povUp().whileTrue(Intake.actuate(0.6));
     manipulatorController.povDown().whileTrue(Intake.actuate(-0.6));
+    // manipulatorController.povDown().onTrue(Intake.extend()); -> anthony
     manipulatorController.povCenter().whileTrue(Intake.actuate(0));
     manipulatorController.y().whileTrue((Intake.spinTheStuff(0.8)));
     manipulatorController.a().whileTrue((Intake.spinTheStuff(-0.8)));
@@ -308,14 +312,14 @@ public class RobotContainer {
         .onTrue(
             Commands.runOnce(
                 () -> {
-                  if (ferryToggle == 1) {
-                    ferryToggle = 0.0;
+                  if (Shooter.getFerry() == 1) {
+                    Shooter.setFerry(0.7);
                     System.out.println("Ferrying OFF");
                     Elastic.sendNotification(
                         new Notification(
                             NotificationLevel.WARNING, "Ferrying", "Ferrying is now OFF."));
                   } else {
-                    ferryToggle = 1;
+                    Shooter.setFerry(1);
                     System.out.println("Ferrying ON");
                     Elastic.sendNotification(
                         new Notification(
@@ -332,7 +336,7 @@ public class RobotContainer {
         .b()
         .whileTrue(Commands.parallel(Intake.actuate(-0.5), Intake.spinTheStuff(0.8)));
     shootTrigger.onFalse(Commands.runOnce(() -> manipRightTriggerTimer.stop()));
-    shootTrigger.whileTrue(shootWithIndexDelay(() -> ferryToggle, 1.0));
+    shootTrigger.whileTrue(shootWithIndexDelay(() -> 1, 1.0));
     controller
         .a()
         .whileTrue(
@@ -379,6 +383,123 @@ public class RobotContainer {
     //             vision,
     //             vision.getLatestTagId(0))); // Lock to target from camera 0 while Y button is
     // held
+  }
+
+  /**
+   * Use this method to define your button->command mappings. Buttons can be created by
+   * instantiating a {@link GenericHID} or one of its subclasses ({@link
+   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
+   * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
+   */
+  private void configureButtonBindingsV2() {
+
+    // Default command, normal field-relative drive
+    // Use a supplier so the joystick is sampled each scheduler cycle.
+    Turrent.setDefaultCommand(Turrent.turnTurrent(() -> 0));
+    Index.setDefaultCommand(Commands.run(() -> Index.spinMotor(0), Index));
+    Kicker.setDefaultCommand(Commands.run(() -> Kicker.spinMotor(0), Kicker));
+    Shooter.setDefaultCommand(Shooter.shootAtSpeed(0.1));
+    Intake.setDefaultCommand(Intake.noSpin());
+    Hood.setDefaultCommand(Hood.setHoodPosCommand(() -> 0));
+    Climber.setDefaultCommand(Climber.moveClimbMotor(() -> 0));
+
+    // Hood - Ferry Mode
+    manipulatorController.povUp().onTrue(Hood.setFerryMode(true).withTimeout(0.5));
+
+    // Hood - Hub Mode
+    manipulatorController.povDown().onTrue(Hood.setFerryMode(false).withTimeout(0.5));
+
+    // Intake - Intake Fuel
+    manipulatorController.x().onTrue(Intake.toggleSpinIntake());
+
+    // Intake - Outtake Fuel
+    manipulatorController.y().onTrue(Intake.toggleSpinOuttake());
+
+    // Spindexer - Agitate (verified)
+    manipulatorController
+        .b()
+        .whileTrue(
+            Commands.sequence(
+                Commands.run(() -> Index.spinMotor(-0.6), Index).withTimeout(1),
+                Commands.run(() -> Index.spinMotor(0.6), Index).withTimeout(1)));
+
+    // Climber - Extend / Retract
+    manipulatorController.a().onTrue(Climber.toggleClimberPosition().withTimeout(3));
+
+    // Intake - Acctuate Out
+    manipulatorController
+        .rightBumper()
+        .onTrue(Intake.extend().withTimeout(3)); // (Intake.actuate(0.6));
+
+    // Shooter - Shooter
+    var shootTrigger = manipulatorController.rightTrigger(0.1);
+    shootTrigger.onTrue(
+        Commands.runOnce(
+            () -> {
+              manipRightTriggerTimer.stop();
+              manipRightTriggerTimer.reset();
+              manipRightTriggerTimer.start();
+            }));
+    shootTrigger.onFalse(Commands.runOnce(() -> manipRightTriggerTimer.stop()));
+    shootTrigger.whileTrue(shootWithIndexDelay(() -> 1, 1.0));
+
+    // Intake - Acctuate In
+    manipulatorController
+        .leftBumper()
+        .onTrue(Intake.retract().withTimeout(3)); // (Intake.actuate(-0.6));
+
+    // Hood - Down Flat
+    manipulatorController.leftTrigger().whileTrue(Hood.setHoodPosCommand(() -> 0));
+
+    manipulatorController
+        .povRight()
+        .whileTrue(
+            Hood.setHoodPosCommand(
+                () -> Hood.degToPos(() -> distToDeg(() -> vision.getDistanceToSpecificTag(0, 8)))));
+
+    // Drive Controller Configuration
+
+    drive.setDefaultCommand(
+        DriveCommands.joystickDrive(
+            drive,
+            () -> -controller.getLeftY(),
+            () -> -controller.getLeftX(),
+            () -> -controller.getRightX()));
+
+    controller.povUp().whileTrue(DriveCommands.joystickDrive(drive, () -> 10, () -> 0, () -> 0));
+    controller.povDown().whileTrue(DriveCommands.joystickDrive(drive, () -> -10, () -> 0, () -> 0));
+    controller.povLeft().whileTrue(DriveCommands.joystickDrive(drive, () -> 0, () -> -10, () -> 0));
+    controller.povRight().whileTrue(DriveCommands.joystickDrive(drive, () -> 0, () -> 10, () -> 0));
+    controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
+    controller
+        .a()
+        .whileTrue(
+            DriveCommands.joystickDriveAtAngle(
+                drive,
+                () -> -controller.getLeftY(),
+                () -> -controller.getLeftX(),
+                () -> Rotation2d.kZero));
+
+    // Change .leftTrigger to what you want it to be to half vel]=ocity.
+    controller
+        .leftTrigger()
+        .whileTrue(
+            DriveCommands.joystickDrive(
+                drive,
+                () -> -controller.getLeftY() * (1 - controller.getLeftTriggerAxis()),
+                () -> -controller.getLeftX() * (1 - controller.getLeftTriggerAxis()),
+                () -> -controller.getRightX() * (1 - controller.getLeftTriggerAxis())));
+
+    // Reset gyro to 0 when B button is pressed
+    controller
+        .b()
+        .onTrue(
+            Commands.runOnce(
+                    () ->
+                        drive.setPose(
+                            new Pose2d(drive.getPose().getTranslation(), Rotation2d.kZero)),
+                    drive)
+                .ignoringDisable(true));
   }
 
   /**

@@ -18,5 +18,17 @@ public interface intakeIO {
 
   public void moveInorOut(double speed);
 
+  public void extend();
+
+  public boolean isExtended();
+
+  public void retract();
+
+  public boolean isRetracted();
+
   public void stopMotors();
+
+  public void toggleSpinIntake(boolean isSpinning);
+
+  public void toggleSpinOuttake(boolean isSpinning);
 }

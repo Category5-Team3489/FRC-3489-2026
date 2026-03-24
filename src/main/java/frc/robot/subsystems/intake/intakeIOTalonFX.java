@@ -2,6 +2,7 @@ package frc.robot.subsystems.intake;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionDutyCycle;
+import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
 import edu.wpi.first.math.MathUtil;
 
 public class intakeIOTalonFX implements intakeIO {
@@ -10,6 +11,10 @@ public class intakeIOTalonFX implements intakeIO {
   private final com.ctre.phoenix6.hardware.TalonFX actuatorMotor2;
   private final com.ctre.phoenix6.hardware.TalonFX actuatorMotor1;
   private final PositionDutyCycle positionRequest = new PositionDutyCycle(0.0);
+  private final double maxActPos = 82.5;
+  private final double minActPos = 0.5;
+  private final PositionTorqueCurrentFOC m_positionTorque =
+      new PositionTorqueCurrentFOC(0).withSlot(1);
 
   public intakeIOTalonFX(int intakeMotorPort, int actmotorport1, int actmotorport2) {
     intakeMotor = new com.ctre.phoenix6.hardware.TalonFX(intakeMotorPort);
@@ -19,6 +24,9 @@ public class intakeIOTalonFX implements intakeIO {
     config.Slot0.kP = 0.09;
     config.Slot0.kI = 0.0;
     config.Slot0.kD = 0.0;
+    config.Slot1.kP = 60.0;
+    config.Slot1.kI = 0.0;
+    config.Slot1.kD = 6.0;
     actuatorMotor1.getConfigurator().apply(config);
     actuatorMotor2.getConfigurator().apply(config);
   }
@@ -44,8 +52,6 @@ public class intakeIOTalonFX implements intakeIO {
 
   @Override
   public void moveInorOut(double speed1) {
-    double maxActPos = 82.5;
-    double minActPos = 0.5;
     double actPos = actuatorMotor1.getPosition().getValueAsDouble();
     double speed = speed1;
     speed = MathUtil.clamp(speed, -0.8, 0.8);
@@ -91,7 +97,42 @@ public class intakeIOTalonFX implements intakeIO {
   }
 
   @Override
+  public void extend() {
+    // PositionDutyCycle dutyCycle = new PositionDutyCycle(maxActPos);
+    // dutyCycle.withVelocity(0.6);
+    intakeMotor.setControl(m_positionTorque.withPosition(maxActPos));
+  }
+
+  @Override
+  public boolean isExtended() {
+    return intakeMotor.getPosition().getValueAsDouble() == maxActPos;
+  }
+
+  @Override
+  public void retract() {
+    // PositionDutyCycle dutyCycle = new PositionDutyCycle(maxActPos);
+    // dutyCycle.withVelocity(0.6);
+    // intakeMotor.setControl(dutyCycle);
+    intakeMotor.setControl(m_positionTorque.withPosition(maxActPos));
+  }
+
+  @Override
+  public boolean isRetracted() {
+    return intakeMotor.getPosition().getValueAsDouble() == minActPos;
+  }
+
+  @Override
   public void stopMotors() {
     intakeMotor.set(0);
+  }
+
+  @Override
+  public void toggleSpinIntake(boolean isSpinning) {
+    this.intakeMotor.set(isSpinning ? 0 : 0.8);
+  }
+
+  @Override
+  public void toggleSpinOuttake(boolean isSpinning) {
+    this.intakeMotor.set(isSpinning ? 0 : -0.8);
   }
 }

@@ -7,6 +7,7 @@ import java.util.function.DoubleSupplier;
 
 public class climber extends SubsystemBase {
   private climberIO io;
+  private boolean isExtended = false;
 
   public climber(climberIO given) {
     io = given;
@@ -20,5 +21,9 @@ public class climber extends SubsystemBase {
 
   public Command moveClimbMotor(DoubleSupplier speed) {
     return Commands.run(() -> io.setClimberSpeed(speed.getAsDouble()), this);
+  }
+
+  public Command toggleClimberPosition() {
+    return Commands.run(() -> io.toggleClimberPosition(this.isExtended), this);
   }
 }

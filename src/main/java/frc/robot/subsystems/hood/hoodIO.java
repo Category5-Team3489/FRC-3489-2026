@@ -8,4 +8,6 @@ public interface hoodIO {
   public void setHoodAngleDegrees(double degrees);
 
   public double getDegrees();
+
+  public void toggleHoodPosition();
 }

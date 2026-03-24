@@ -8,6 +8,9 @@ public class hoodIOTalonFX implements hoodIO {
   private static final double ANGLE_GEAR_RATIO = 9.0;
   private TalonFX motor;
   private final PositionDutyCycle positionRequest = new PositionDutyCycle(0.0);
+  private final double maxActPos = 20.5;
+  private final double minActPos = 0.5;
+  private boolean isExtended = false;
 
   public hoodIOTalonFX(int motorID) {
     motor = new TalonFX(motorID);
@@ -40,5 +43,12 @@ public class hoodIOTalonFX implements hoodIO {
   public void setHoodAngleDegrees(double degrees) {
     double targetRotations = ((70 + degrees) / 360.0) * ANGLE_GEAR_RATIO;
     motor.setControl(positionRequest.withPosition(targetRotations));
+  }
+
+  @Override
+  public void toggleHoodPosition() {
+    PositionDutyCycle dutyCycle = new PositionDutyCycle(isExtended ? minActPos : maxActPos);
+    this.motor.setControl(dutyCycle);
+    isExtended = !isExtended;
   }
 }

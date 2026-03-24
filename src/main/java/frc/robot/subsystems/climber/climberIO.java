@@ -10,4 +10,6 @@ public interface climberIO {
 
   // Climbmotor void
   public void setClimberSpeed(double speed);
+
+  public void toggleClimberPosition(boolean isExtended);
 }

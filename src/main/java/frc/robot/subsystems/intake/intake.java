@@ -9,6 +9,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class intake extends SubsystemBase {
   private final intakeIO parker;
   private intakeIOInputsAutoLogged inputs = new intakeIOInputsAutoLogged();
+  private boolean isSpinningIntake = false;
+  private boolean isSpinningOuttake = false;
 
   public intake(intakeIO given) {
     parker = given;
@@ -31,5 +33,25 @@ public class intake extends SubsystemBase {
 
   public Command actuate(double speed) {
     return Commands.run(() -> parker.moveInorOut(speed));
+  }
+
+  public Command extend() {
+    return Commands.run(() -> parker.extend(), this);
+  }
+
+  public Command retract() {
+    return Commands.run(() -> parker.retract(), this);
+  }
+
+  public Command toggleSpinIntake() {
+    return Commands.run(() -> parker.toggleSpinIntake(this.isSpinningIntake), this);
+  }
+
+  public Command toggleSpinOuttake() {
+    return Commands.run(() -> parker.toggleSpinOuttake(this.isSpinningOuttake), this);
+  }
+
+  public boolean isSpinning() {
+    return this.isSpinningIntake || this.isSpinningOuttake;
   }
 }

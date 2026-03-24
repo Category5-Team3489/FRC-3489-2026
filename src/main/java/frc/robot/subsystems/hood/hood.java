@@ -8,9 +8,13 @@ import java.util.function.DoubleSupplier;
 
 public class hood extends SubsystemBase {
   public hoodIO io;
+  public boolean isFerryMode = false;
+  // public final double maxHoodPos = -9.342285;
+  public final double maxHoodPos = -9.0;
+  public final double minHoodPos = -0.05;
 
   public void periodic() {
-    System.out.println("Degrees: " + posToDeg(() -> io.getDegrees()));
+    // System.out.println("Degrees: " + posToDeg(() -> io.getDegrees()));
   }
 
   public double posToDeg(DoubleSupplier yeah) {
@@ -34,7 +38,7 @@ public class hood extends SubsystemBase {
   }
 
   public Command setHoodAngle(DoubleSupplier degrees) {
-    System.out.println(degrees.getAsDouble());
+    // System.out.println(degrees.getAsDouble());
     return Commands.run(() -> io.setHoodAngleDegrees(degrees.getAsDouble()));
   }
 
@@ -45,5 +49,18 @@ public class hood extends SubsystemBase {
                 // MathUtil.clamp(eyes.getDistanceToSpecificTag(CamIndex, 10), 0.0, 5.0)));
                 -10.0),
         this);
+  }
+
+  public Command toggleHoodPosition() {
+    return Commands.run(() -> io.toggleHoodPosition(), this);
+  }
+
+  public Command setFerryMode(boolean ferryMode) {
+    this.isFerryMode = ferryMode;
+    return Commands.run(() -> io.setHoodPos(ferryMode ? this.maxHoodPos : this.minHoodPos), this);
+  }
+
+  public boolean isFerryMode() {
+    return this.isFerryMode;
   }
 }

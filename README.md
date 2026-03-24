@@ -36,3 +36,25 @@
 ## [Turrent](/src/main/java/frc/robot/subsystems/turrent/turrent.java)
 - Number of motor(s): 1
     - Rotate shooter ([KrakenX44](/src/main/java/frc/robot/subsystems/turret/turretIOTalonFX.java))
+
+---
+
+# Intake:
+
+    - Button to extend out with one button (1)
+    - Button to retract in with one button (1)
+    - Speed up  motor (1)
+
+# Drive:
+
+    - Button to spin robot to closest 90 degree (1)
+
+
+# Shoot:
+
+    - Combine commands to Shoot, kicker, agitate, intake, and retract (1)
+
+# Hood:
+
+    - Lower hood all the way for trench ()
+    - Raise hood all the way for ferry

@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.util.function.DoubleSupplier;
 
 public class shooter extends SubsystemBase {
-
+  private double ferry = 1;
   private final double distanceFromGround;
   private final double HubHeight = 1.829;
   private shooterIO io;
@@ -34,7 +34,7 @@ public class shooter extends SubsystemBase {
   // scheduled. The command requires this subsystem so it can be used as a
   // default command.
   public Command shootAtSpeed(double speed) {
-    return Commands.run(() -> io.shootBall(speed), this);
+    return Commands.run(() -> io.shootBall(speed * this.ferry), this);
   }
 
   // Overload that accepts a DoubleSupplier so the controller axis can be
@@ -52,6 +52,14 @@ public class shooter extends SubsystemBase {
   // public Command nudgeHoodCalibration(double deltaDegrees) {
   //   return Commands.runOnce(() -> io.addHoodCalibrationOffset(deltaDegrees), this);
   // }
+
+  public double getFerry() {
+    return ferry;
+  }
+
+  public void setFerry(double get) {
+    ferry = get;
+  }
 
   public double getNeededAngle(double distance, double initialSpeed, boolean PlusorMinus) {
     // True is plus, false is minus.

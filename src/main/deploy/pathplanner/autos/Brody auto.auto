@@ -9,6 +9,12 @@
           "data": {
             "pathName": "preload auto"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shooterOn"
+          }
         }
       ]
     }

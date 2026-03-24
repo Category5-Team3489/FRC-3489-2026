@@ -12,4 +12,10 @@ public class climberIOTalonFXS implements climberIO {
   public void setClimberSpeed(double speed) {
     climbMotor.set(speed);
   }
+
+  @Override
+  public void toggleClimberPosition(boolean isExtended) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'setClimberPosition'");
+  }
 }
