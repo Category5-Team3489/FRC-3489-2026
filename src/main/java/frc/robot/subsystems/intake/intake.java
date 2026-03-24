@@ -27,6 +27,14 @@ public class intake extends SubsystemBase {
     return Commands.run(() -> parker.spinThatStuff(input));
   }
 
+  public void spinTheStuffvoid(double input) {
+    parker.spinThatStuff(input);
+  }
+
+  public void actuatevoid(double speed) {
+    parker.moveInorOut(speed);
+  }
+
   public Command noSpin() {
     return Commands.run(() -> parker.stopMotors(), this);
   }
@@ -36,7 +44,7 @@ public class intake extends SubsystemBase {
   }
 
   public Command extend() {
-    return Commands.run(() -> parker.extend(), this);
+    return Commands.run(() -> parker.extend());
   }
 
   public Command retract() {

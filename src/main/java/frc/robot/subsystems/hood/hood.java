@@ -12,6 +12,7 @@ public class hood extends SubsystemBase {
   // public final double maxHoodPos = -9.342285;
   public final double maxHoodPos = -9.0;
   public final double minHoodPos = -0.05;
+  private double defaultPosition = 0.0;
 
   public void periodic() {
     // System.out.println("Degrees: " + posToDeg(() -> io.getDegrees()));
@@ -62,5 +63,13 @@ public class hood extends SubsystemBase {
 
   public boolean isFerryMode() {
     return this.isFerryMode;
+  }
+
+  public void setDefaultPosition(double defPos) {
+    this.defaultPosition = defPos;
+  }
+
+  public Command setHoodDefaultPositionCommand() {
+    return Commands.run(() -> io.setHoodPos(this.defaultPosition), this);
   }
 }

@@ -1,5 +1,7 @@
 package frc.robot.subsystems.intake;
 
+import static edu.wpi.first.units.Units.Amps;
+
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionDutyCycle;
 import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
@@ -14,7 +16,7 @@ public class intakeIOTalonFX implements intakeIO {
   private final double maxActPos = 82.5;
   private final double minActPos = 0.5;
   private final PositionTorqueCurrentFOC m_positionTorque =
-      new PositionTorqueCurrentFOC(0).withSlot(1);
+      new PositionTorqueCurrentFOC(0).withSlot(0);
 
   public intakeIOTalonFX(int intakeMotorPort, int actmotorport1, int actmotorport2) {
     intakeMotor = new com.ctre.phoenix6.hardware.TalonFX(intakeMotorPort);
@@ -24,11 +26,19 @@ public class intakeIOTalonFX implements intakeIO {
     config.Slot0.kP = 0.09;
     config.Slot0.kI = 0.0;
     config.Slot0.kD = 0.0;
+
     config.Slot1.kP = 60.0;
     config.Slot1.kI = 0.0;
     config.Slot1.kD = 6.0;
+
+    config.TorqueCurrent.withPeakForwardTorqueCurrent(Amps.of(120))
+        .withPeakReverseTorqueCurrent(Amps.of(-120));
+
     actuatorMotor1.getConfigurator().apply(config);
     actuatorMotor2.getConfigurator().apply(config);
+
+    // actuatorMotor1.setPosition(0);
+    // actuatorMotor2.setPosition(0);
   }
 
   @Override
@@ -100,7 +110,8 @@ public class intakeIOTalonFX implements intakeIO {
   public void extend() {
     // PositionDutyCycle dutyCycle = new PositionDutyCycle(maxActPos);
     // dutyCycle.withVelocity(0.6);
-    intakeMotor.setControl(m_positionTorque.withPosition(maxActPos));
+    actuatorMotor1.setControl(positionRequest.withPosition(maxActPos));
+    actuatorMotor2.setControl(positionRequest.withPosition(-maxActPos));
   }
 
   @Override
@@ -113,7 +124,8 @@ public class intakeIOTalonFX implements intakeIO {
     // PositionDutyCycle dutyCycle = new PositionDutyCycle(maxActPos);
     // dutyCycle.withVelocity(0.6);
     // intakeMotor.setControl(dutyCycle);
-    intakeMotor.setControl(m_positionTorque.withPosition(maxActPos));
+    actuatorMotor1.setControl(positionRequest.withPosition(0));
+    actuatorMotor2.setControl(positionRequest.withPosition(0));
   }
 
   @Override

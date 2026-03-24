@@ -114,16 +114,27 @@ public class RobotContainer {
   private Command shootWithIndexDelay(DoubleSupplier speed, double indexDelaySeconds) {
     return Commands.parallel(
         Shooter.shootAtSpeed(speed.getAsDouble()),
-        Commands.runEnd(() -> Kicker.spinMotor(0.99), () -> Kicker.spinMotor(0.0), Kicker),
+        // Commands.runEnd(() -> Kicker.spinMotor(0.99), () -> Kicker.spinMotor(0.0), Kicker),
         Commands.runEnd(
             () -> {
               if (manipRightTriggerTimer.get() >= indexDelaySeconds) {
                 Index.spinMotor(-0.99);
+                Intake.actuatevoid(-0.5);
+                Intake.spinTheStuffvoid(0.8);
+                Kicker.spinMotor(0.99);
               } else {
                 Index.spinMotor(0.0);
+                Intake.actuatevoid(0);
+                Intake.spinTheStuffvoid(0.0);
+                Kicker.spinMotor(0.0);
               }
             },
-            () -> Index.spinMotor(0.0),
+            () -> {
+              Index.spinMotor(0.0);
+              Intake.actuatevoid(0);
+              Intake.spinTheStuffvoid(0.0);
+              Kicker.spinMotor(0.0);
+            },
             Index));
   }
 
@@ -399,27 +410,51 @@ public class RobotContainer {
     Index.setDefaultCommand(Commands.run(() -> Index.spinMotor(0), Index));
     Kicker.setDefaultCommand(Commands.run(() -> Kicker.spinMotor(0), Kicker));
     Shooter.setDefaultCommand(Shooter.shootAtSpeed(0.1));
-    Intake.setDefaultCommand(Intake.noSpin());
-    Hood.setDefaultCommand(Hood.setHoodPosCommand(() -> 0));
+    Intake.setDefaultCommand(Commands.parallel(Intake.noSpin(), Intake.extend()));
+    Hood.setDefaultCommand(Hood.setHoodDefaultPositionCommand());
     Climber.setDefaultCommand(Climber.moveClimbMotor(() -> 0));
 
     // Hood - Ferry Mode
-    manipulatorController.povUp().onTrue(Hood.setFerryMode(true).withTimeout(0.5));
+    manipulatorController
+        .povUp()
+        .onTrue(
+            Commands.runOnce(
+                () -> {
+                  if (Shooter.getFerry() == 1) {
+                    Hood.setDefaultPosition(0);
+                    Shooter.setFerry(0.7);
+                    System.out.println("Ferrying OFF");
+                    Elastic.sendNotification(
+                        new Notification(
+                            NotificationLevel.WARNING, "Ferrying", "Ferrying is now OFF."));
+                  } else {
+                    Hood.setDefaultPosition(Hood.maxHoodPos);
+                    Shooter.setFerry(1);
+                    System.out.println("Ferrying ON");
+                    Elastic.sendNotification(
+                        new Notification(
+                            NotificationLevel.WARNING, "Ferrying", "Ferrying is now ON."));
+                  }
+                }));
 
     // Hood - Hub Mode
-    manipulatorController.povDown().onTrue(Hood.setFerryMode(false).withTimeout(0.5));
+    manipulatorController
+        .povDown()
+        .onTrue(Commands.runOnce(() -> Hood.setDefaultPosition(0), Hood));
 
     // Intake - Intake Fuel
-    manipulatorController.x().onTrue(Intake.toggleSpinIntake());
+    manipulatorController.x().toggleOnTrue(Intake.spinTheStuff(0.8));
+    manipulatorController.x().toggleOnFalse(Intake.spinTheStuff(0.0));
 
     // Intake - Outtake Fuel
-    manipulatorController.y().onTrue(Intake.toggleSpinOuttake());
+    manipulatorController.y().toggleOnTrue(Intake.spinTheStuff(-0.8));
+    manipulatorController.y().toggleOnFalse(Intake.spinTheStuff(0.0));
 
     // Spindexer - Agitate (verified)
     manipulatorController
         .b()
         .whileTrue(
-            Commands.sequence(
+            Commands.repeatingSequence(
                 Commands.run(() -> Index.spinMotor(-0.6), Index).withTimeout(1),
                 Commands.run(() -> Index.spinMotor(0.6), Index).withTimeout(1)));
 
@@ -427,9 +462,8 @@ public class RobotContainer {
     manipulatorController.a().onTrue(Climber.toggleClimberPosition().withTimeout(3));
 
     // Intake - Acctuate Out
-    manipulatorController
-        .rightBumper()
-        .onTrue(Intake.extend().withTimeout(3)); // (Intake.actuate(0.6));
+    manipulatorController.rightBumper().whileTrue(Intake.extend());
+    // .withTimeout(3)); // (Intake.actuate(0.6));
 
     // Shooter - Shooter
     var shootTrigger = manipulatorController.rightTrigger(0.1);
@@ -444,9 +478,7 @@ public class RobotContainer {
     shootTrigger.whileTrue(shootWithIndexDelay(() -> 1, 1.0));
 
     // Intake - Acctuate In
-    manipulatorController
-        .leftBumper()
-        .onTrue(Intake.retract().withTimeout(3)); // (Intake.actuate(-0.6));
+    manipulatorController.leftBumper().whileTrue(Intake.retract()); // (Intake.actuate(-0.6));
 
     // Hood - Down Flat
     manipulatorController.leftTrigger().whileTrue(Hood.setHoodPosCommand(() -> 0));
