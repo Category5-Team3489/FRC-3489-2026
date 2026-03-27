@@ -506,7 +506,7 @@ public class RobotContainer {
           .povRight()
           .whileTrue(
               Hood.setHoodPosCommand(
-                  () -> Hood.degToPos(() -> distToDeg(() -> vision.getDistanceToSpecificTag(0, 10)))));
+                  () -> Hood.degToPos(() -> distToDeg(() -> vision.getDistanceToSpecificTag(0, 26)))));
     }
     // Drive Controller Configuration
 
