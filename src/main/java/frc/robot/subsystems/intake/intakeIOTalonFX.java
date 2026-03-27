@@ -5,11 +5,8 @@ import static edu.wpi.first.units.Units.Amps;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionDutyCycle;
 import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
-import com.ctre.phoenix6.controls.VelocityDutyCycle;
-import com.ctre.phoenix6.controls.VelocityVoltage;
-
+import com.ctre.phoenix6.controls.VoltageOut;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.units.measure.AngularVelocity;
 
 public class intakeIOTalonFX implements intakeIO {
   // Create motors
@@ -48,8 +45,12 @@ public class intakeIOTalonFX implements intakeIO {
   @Override
   public void spinThatStuff(double initialSpeed) {
     double currentSpeed = initialSpeed * 12.0;
-    currentSpeed = MathUtil.clamp(currentSpeed, -10, 10);
-    VelocityDutyCycle cole = new VelocityDutyCycle(currentSpeed/10);
+    currentSpeed = MathUtil.clamp(currentSpeed, -8, 8);
+    // VelocityDutyCycle cole = new VelocityDutyCycle(currentSpeed * 100);
+    // intakeMotor.setControl(cole);
+
+    VoltageOut cole = new VoltageOut(currentSpeed);
+
     intakeMotor.setControl(cole);
   }
 
