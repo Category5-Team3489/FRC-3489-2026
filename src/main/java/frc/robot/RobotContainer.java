@@ -120,7 +120,7 @@ public class RobotContainer {
               if (manipRightTriggerTimer.get() >= indexDelaySeconds) {
                 Index.spinMotor(-0.99);
                 Intake.actuatevoid(-0.3);
-                Intake.spinTheStuffvoid(0.8);
+                Intake.spinTheStuffvoid(0.4);
                 Kicker.spinMotor(0.99);
                 // if (Shooter.getFerry() == 0.7) {
                 // //   Hood.setHoodPosVoid(
@@ -496,7 +496,7 @@ public class RobotContainer {
     manipulatorController.leftTrigger().whileTrue(Hood.setHoodPosCommand(() -> 0));
 
     // if (DriverStation.getAlliance().get() == Alliance.Red) {
-    manipulatorController.povRight().whileTrue(Hood.setHoodPosCommand(() -> -4.2));
+    manipulatorController.povRight().whileTrue(Hood.setHoodPosCommand(() -> -3.95));
 
     // Drive Controller Configuration
 
