@@ -7,6 +7,7 @@ public interface intakeIO {
   public class intakeIOInputs {
     public double motorCurrent = 0.0;
     public boolean isBallDetected = false;
+    public double velocityflywheel = 0.0;
   }
 
   // added an update inputs class

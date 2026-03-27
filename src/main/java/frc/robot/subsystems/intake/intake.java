@@ -19,8 +19,9 @@ public class intake extends SubsystemBase {
   @Override
   public void periodic() {
     // TODO Auto-generated method stub
-    super.periodic();
+
     parker.updateInputs(inputs);
+    super.periodic();
   }
 
   public Command spinTheStuff(double input) {

@@ -455,12 +455,12 @@ public class RobotContainer {
         .onTrue(Commands.runOnce(() -> Hood.setDefaultPosition(0), Hood));
 
     // Intake - Intake Fuel
-    manipulatorController.x().toggleOnTrue(Intake.spinTheStuff(0.8));
-    manipulatorController.x().toggleOnFalse(Intake.spinTheStuff(0.0));
+    manipulatorController.x().whileTrue(Intake.spinTheStuff(0.8));
+    // manipulatorController.x().whileFalse(Intake.spinTheStuff(0.0));
 
     // Intake - Outtake Fuel
-    manipulatorController.y().toggleOnTrue(Intake.spinTheStuff(-0.8));
-    manipulatorController.y().toggleOnFalse(Intake.spinTheStuff(0.0));
+    manipulatorController.y().whileTrue(Intake.spinTheStuff(-0.8));
+    // manipulatorController.y().toggleOnFalse(Intake.spinTheStuff(0.0));
 
     // Spindexer - Agitate (verified)
     manipulatorController
@@ -495,18 +495,22 @@ public class RobotContainer {
     // Hood - Down Flat
     manipulatorController.leftTrigger().whileTrue(Hood.setHoodPosCommand(() -> 0));
 
-    if(DriverStation.getAlliance().get() == Alliance.Red){
+    if (DriverStation.getAlliance().get() == Alliance.Red) {
       manipulatorController
           .povRight()
           .whileTrue(
               Hood.setHoodPosCommand(
-                  () -> Hood.degToPos(() -> distToDeg(() -> vision.getDistanceToSpecificTag(0, 10)))));
-    }else{
+                  () ->
+                      Hood.degToPos(
+                          () -> distToDeg(() -> vision.getDistanceToSpecificTag(0, 10)))));
+    } else {
       manipulatorController
           .povRight()
           .whileTrue(
               Hood.setHoodPosCommand(
-                  () -> Hood.degToPos(() -> distToDeg(() -> vision.getDistanceToSpecificTag(0, 26)))));
+                  () ->
+                      Hood.degToPos(
+                          () -> distToDeg(() -> vision.getDistanceToSpecificTag(0, 26)))));
     }
     // Drive Controller Configuration
 

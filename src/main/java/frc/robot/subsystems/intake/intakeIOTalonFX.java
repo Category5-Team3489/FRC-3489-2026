@@ -5,6 +5,7 @@ import static edu.wpi.first.units.Units.Amps;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionDutyCycle;
 import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VoltageOut;
 import edu.wpi.first.math.MathUtil;
 
@@ -14,13 +15,18 @@ public class intakeIOTalonFX implements intakeIO {
   private final com.ctre.phoenix6.hardware.TalonFX actuatorMotor2;
   private final com.ctre.phoenix6.hardware.TalonFX actuatorMotor1;
   private final PositionDutyCycle positionRequest = new PositionDutyCycle(0.0);
-  private final double maxActPos = 82.5;
+  private final double maxActPos = 84;
   private final double minActPos = 0.5;
   private final PositionTorqueCurrentFOC m_positionTorque =
       new PositionTorqueCurrentFOC(0).withSlot(0);
 
   public intakeIOTalonFX(int intakeMotorPort, int actmotorport1, int actmotorport2) {
     intakeMotor = new com.ctre.phoenix6.hardware.TalonFX(intakeMotorPort);
+    // CurrentLimitsConfigs limits = new CurrentLimitsConfigs();
+    // limits.SupplyCurrentLimitEnable = true;
+    // limits.SupplyCurrentLimit = 40;
+    // intakeMotor.getConfigurator().apply(limits);
+
     actuatorMotor1 = new com.ctre.phoenix6.hardware.TalonFX(actmotorport1);
     actuatorMotor2 = new com.ctre.phoenix6.hardware.TalonFX(actmotorport2);
     TalonFXConfiguration config = new TalonFXConfiguration();
@@ -48,16 +54,17 @@ public class intakeIOTalonFX implements intakeIO {
     currentSpeed = MathUtil.clamp(currentSpeed, -10, 10);
     // VelocityDutyCycle cole = new VelocityDutyCycle(currentSpeed * 100);
     // intakeMotor.setControl(cole);
-
+    VelocityTorqueCurrentFOC coleg = new VelocityTorqueCurrentFOC(currentSpeed);
     VoltageOut cole = new VoltageOut(currentSpeed);
 
-    intakeMotor.setControl(cole);
+    intakeMotor.set(initialSpeed);
   }
 
   @Override
   public void updateInputs(intakeIOInputs inputs) {
     inputs.isBallDetected = false;
     inputs.motorCurrent = intakeMotor.get();
+    inputs.velocityflywheel = intakeMotor.getVelocity().getValueAsDouble();
   }
 
   @Override
