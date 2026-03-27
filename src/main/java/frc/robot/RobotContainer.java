@@ -420,7 +420,11 @@ public class RobotContainer {
     Index.setDefaultCommand(Commands.run(() -> Index.spinMotor(0), Index));
     Kicker.setDefaultCommand(Commands.run(() -> Kicker.spinMotor(0), Kicker));
     Shooter.setDefaultCommand(Shooter.shootAtSpeed(0.1));
-    Intake.setDefaultCommand(Commands.parallel(Intake.noSpin(), Intake.extend()));
+    Intake.setDefaultCommand(
+        Commands.parallel(
+            Intake.noSpin()
+            // Intake.extend()
+            ));
     Hood.setDefaultCommand(
         Hood.setHoodDefaultPositionCommand(() -> Math.abs(manipulatorController.getRightY() * 10)));
     Climber.setDefaultCommand(Climber.moveClimbMotor(() -> manipulatorController.getLeftY()));
@@ -473,7 +477,15 @@ public class RobotContainer {
     manipulatorController.a().onTrue(Climber.toggleClimberPosition().withTimeout(3));
 
     // Intake - Acctuate Out
-    manipulatorController.rightBumper().whileTrue(Intake.extend());
+    manipulatorController
+        .rightBumper()
+        .whileTrue(
+            Intake.extend()
+                .alongWith(
+                    Commands.run(
+                        () -> {
+                          System.out.println("Yeah we extending");
+                        })));
     // .withTimeout(3)); // (Intake.actuate(0.6));
 
     // Shooter - Shooter
@@ -493,7 +505,13 @@ public class RobotContainer {
     manipulatorController.leftBumper().whileTrue(Intake.retract()); // (Intake.actuate(-0.6));
 
     // Hood - Down Flat
-    manipulatorController.leftTrigger().whileTrue(Hood.setHoodPosCommand(() -> 0));
+    manipulatorController
+        .leftTrigger()
+        .whileTrue(
+            Shooter.shootAtSpeed(() -> 0.8)
+                .alongWith(
+                    Commands.run(() -> Index.spinMotor(-0.99)),
+                    Commands.run(() -> Kicker.spinMotor(0.99))));
 
     // if (DriverStation.getAlliance().get() == Alliance.Red) {
     manipulatorController.povRight().whileTrue(Hood.setHoodPosCommand(() -> -3.95));
