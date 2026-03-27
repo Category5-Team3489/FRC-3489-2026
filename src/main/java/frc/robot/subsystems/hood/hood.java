@@ -73,8 +73,8 @@ public class hood extends SubsystemBase {
     this.defaultPosition = defPos;
   }
 
-  public Command setHoodDefaultPositionCommand() {
-    return Commands.run(() -> io.setHoodPos(this.defaultPosition), this);
+  public Command setHoodDefaultPositionCommand(DoubleSupplier stick) {
+    return Commands.run(() -> io.setHoodPos(this.defaultPosition - stick.getAsDouble()), this);
   }
 
   public void setHoodDefaultPositionVoid() {

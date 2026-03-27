@@ -13,8 +13,6 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
@@ -124,20 +122,20 @@ public class RobotContainer {
                 Intake.actuatevoid(-0.3);
                 Intake.spinTheStuffvoid(0.8);
                 Kicker.spinMotor(0.99);
-                if (Shooter.getFerry() == 0.7) {
-                  Hood.setHoodPosVoid(
-                      () ->
-                          Hood.degToPos(
-                              () -> distToDeg(() -> vision.getDistanceToSpecificTag(0, 8))));
-                } else {
-                  Hood.setHoodDefaultPositionVoid();
-                }
+                // if (Shooter.getFerry() == 0.7) {
+                // //   Hood.setHoodPosVoid(
+                // //       () ->
+                // //           Hood.degToPos(
+                // //               () -> distToDeg(() -> vision.getDistanceToSpecificTag(0, 8))));
+                // } else {
+                // //   Hood.setHoodDefaultPositionVoid();
+                // }
               } else {
                 Index.spinMotor(0.0);
                 Intake.actuatevoid(0);
                 Intake.spinTheStuffvoid(0.0);
                 Kicker.spinMotor(0.0);
-                Hood.setHoodDefaultPositionVoid();
+                // Hood.setHoodDefaultPositionVoid();
               }
             },
             () -> {
@@ -145,7 +143,7 @@ public class RobotContainer {
               Intake.actuatevoid(0);
               Intake.spinTheStuffvoid(0.0);
               Kicker.spinMotor(0.0);
-              Hood.setHoodDefaultPositionVoid();
+              //   Hood.setHoodDefaultPositionVoid();
             },
             Index));
   }
@@ -423,7 +421,8 @@ public class RobotContainer {
     Kicker.setDefaultCommand(Commands.run(() -> Kicker.spinMotor(0), Kicker));
     Shooter.setDefaultCommand(Shooter.shootAtSpeed(0.1));
     Intake.setDefaultCommand(Commands.parallel(Intake.noSpin(), Intake.extend()));
-    Hood.setDefaultCommand(Hood.setHoodDefaultPositionCommand());
+    Hood.setDefaultCommand(
+        Hood.setHoodDefaultPositionCommand(() -> Math.abs(manipulatorController.getRightY() * 10)));
     Climber.setDefaultCommand(Climber.moveClimbMotor(() -> manipulatorController.getLeftY()));
 
     // Hood - Ferry Mode
@@ -487,7 +486,8 @@ public class RobotContainer {
               manipRightTriggerTimer.start();
             }));
     shootTrigger.onFalse(Commands.runOnce(() -> manipRightTriggerTimer.stop()));
-    shootTrigger.whileTrue(shootWithIndexDelay(() -> 0.8, 1.0));
+    shootTrigger.whileTrue(
+        shootWithIndexDelay(() -> 0.8, 1.0).alongWith(Hood.setHoodPosCommand(() -> -3.95)));
 
     // Intake - Acctuate In
     manipulatorController.leftBumper().whileTrue(Intake.retract()); // (Intake.actuate(-0.6));
@@ -495,23 +495,9 @@ public class RobotContainer {
     // Hood - Down Flat
     manipulatorController.leftTrigger().whileTrue(Hood.setHoodPosCommand(() -> 0));
 
-    if (DriverStation.getAlliance().get() == Alliance.Red) {
-      manipulatorController
-          .povRight()
-          .whileTrue(
-              Hood.setHoodPosCommand(
-                  () ->
-                      Hood.degToPos(
-                          () -> distToDeg(() -> vision.getDistanceToSpecificTag(0, 10)))));
-    } else {
-      manipulatorController
-          .povRight()
-          .whileTrue(
-              Hood.setHoodPosCommand(
-                  () ->
-                      Hood.degToPos(
-                          () -> distToDeg(() -> vision.getDistanceToSpecificTag(0, 26)))));
-    }
+    // if (DriverStation.getAlliance().get() == Alliance.Red) {
+    manipulatorController.povRight().whileTrue(Hood.setHoodPosCommand(() -> -3.95));
+
     // Drive Controller Configuration
 
     drive.setDefaultCommand(
