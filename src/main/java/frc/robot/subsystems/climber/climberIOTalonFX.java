@@ -14,12 +14,29 @@ public class climberIOTalonFX implements climberIO {
 
   @Override
   public void setClimberSpeed(double speed) {
-    double maxEncValue = 0;
+    double maxEncValue = 188;
+    double minEncValue = 1;
+    double applied;
+    double position = climbMotor.getPosition().getValueAsDouble();
+    if (speed > 0) {
+      applied = speed;
+      if (position >= 188) {
+        applied = 0;
+      }
+    } else if (speed < 0) {
+      applied = speed;
+      if (position <= 1) {
+        applied = 0;
+      }
+    } else {
+      applied = speed;
+    }
     // climbMotor.set(speed);
+    climbMotor.set(applied);
   }
 
- @Override
-  public void zeroClimber(){
+  @Override
+  public void zeroClimber() {
     climbMotor.setPosition(0);
   }
 

@@ -13,10 +13,8 @@ public class climberIOTalonFXS implements climberIO {
     climbMotor.set(speed);
   }
 
-   @Override
-  public void zeroClimber(){
-    
-  }
+  @Override
+  public void zeroClimber() {}
 
   @Override
   public void toggleClimberPosition(boolean isExtended) {

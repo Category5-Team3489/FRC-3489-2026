@@ -422,7 +422,7 @@ public class RobotContainer {
     Shooter.setDefaultCommand(Shooter.shootAtSpeed(0.1));
     Intake.setDefaultCommand(Commands.parallel(Intake.noSpin(), Intake.extend()));
     Hood.setDefaultCommand(Hood.setHoodDefaultPositionCommand());
-    Climber.setDefaultCommand(Climber.moveClimbMotor(() -> 0));
+    Climber.setDefaultCommand(Climber.moveClimbMotor(() -> manipulatorController.getLeftY()));
 
     // Hood - Ferry Mode
     manipulatorController

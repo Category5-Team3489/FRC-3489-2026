@@ -15,9 +15,7 @@ public class climberIOSim implements climberIO {
   }
 
   @Override
-  public void zeroClimber(){
-    
-  }
+  public void zeroClimber() {}
 
   @Override
   public void toggleClimberPosition(boolean isExtended) {
