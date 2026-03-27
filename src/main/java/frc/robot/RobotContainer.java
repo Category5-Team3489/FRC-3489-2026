@@ -487,7 +487,7 @@ public class RobotContainer {
             }));
     shootTrigger.onFalse(Commands.runOnce(() -> manipRightTriggerTimer.stop()));
     shootTrigger.whileTrue(
-        shootWithIndexDelay(() -> 0.8, 1.0).alongWith(Hood.setHoodPosCommand(() -> -3.95)));
+        shootWithIndexDelay(() -> 0.8, 1.0).alongWith(Hood.setHoodPosCommand(() -> -4.2)));
 
     // Intake - Acctuate In
     manipulatorController.leftBumper().whileTrue(Intake.retract()); // (Intake.actuate(-0.6));
@@ -496,7 +496,7 @@ public class RobotContainer {
     manipulatorController.leftTrigger().whileTrue(Hood.setHoodPosCommand(() -> 0));
 
     // if (DriverStation.getAlliance().get() == Alliance.Red) {
-    manipulatorController.povRight().whileTrue(Hood.setHoodPosCommand(() -> -3.95));
+    manipulatorController.povRight().whileTrue(Hood.setHoodPosCommand(() -> -4.2));
 
     // Drive Controller Configuration
 
