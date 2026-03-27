@@ -284,7 +284,7 @@ public class RobotContainer {
     controller.povRight().whileTrue(DriveCommands.joystickDrive(drive, () -> 0, () -> 10, () -> 0));
     Intake.setDefaultCommand(
         Intake.noSpin()
-        // .andThen(Intake.actuate(0))
+        .andThen(Intake.actuate(0.3))
         );
     Hood.setDefaultCommand(
         Hood.setHoodPosCommand(() -> -Math.abs(manipulatorController.getRightY() * 10)));
@@ -340,6 +340,8 @@ public class RobotContainer {
                 () -> -controller.getLeftX(),
                 () -> Rotation2d.kZero));
 
+    manipulatorController.x().whileTrue(Intake.spinTheStuff(-0.55));
+    manipulatorController.b().whileTrue(Intake.spinTheStuff(0.8));
     // controller.y().whileTrue(Shooter.noShoot());
     // Switch to X pattern when X button is pressed
     controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
