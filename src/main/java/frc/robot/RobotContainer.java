@@ -119,14 +119,23 @@ public class RobotContainer {
             () -> {
               if (manipRightTriggerTimer.get() >= indexDelaySeconds) {
                 Index.spinMotor(-0.99);
-                Intake.actuatevoid(-0.5);
+                Intake.actuatevoid(-0.3);
                 Intake.spinTheStuffvoid(0.8);
                 Kicker.spinMotor(0.99);
+                if (Shooter.getFerry() == 0.7) {
+                  Hood.setHoodPosVoid(
+                      () ->
+                          Hood.degToPos(
+                              () -> distToDeg(() -> vision.getDistanceToSpecificTag(0, 8))));
+                } else {
+                  Hood.setHoodDefaultPositionVoid();
+                }
               } else {
                 Index.spinMotor(0.0);
                 Intake.actuatevoid(0);
                 Intake.spinTheStuffvoid(0.0);
                 Kicker.spinMotor(0.0);
+                Hood.setHoodDefaultPositionVoid();
               }
             },
             () -> {
@@ -134,6 +143,7 @@ public class RobotContainer {
               Intake.actuatevoid(0);
               Intake.spinTheStuffvoid(0.0);
               Kicker.spinMotor(0.0);
+              Hood.setHoodDefaultPositionVoid();
             },
             Index));
   }
@@ -475,7 +485,7 @@ public class RobotContainer {
               manipRightTriggerTimer.start();
             }));
     shootTrigger.onFalse(Commands.runOnce(() -> manipRightTriggerTimer.stop()));
-    shootTrigger.whileTrue(shootWithIndexDelay(() -> 1, 1.0));
+    shootTrigger.whileTrue(shootWithIndexDelay(() -> 0.8, 1.0));
 
     // Intake - Acctuate In
     manipulatorController.leftBumper().whileTrue(Intake.retract()); // (Intake.actuate(-0.6));

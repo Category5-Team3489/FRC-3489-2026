@@ -38,6 +38,10 @@ public class hood extends SubsystemBase {
     return Commands.run(() -> io.setHoodPos(pos.getAsDouble()), this);
   }
 
+  public void setHoodPosVoid(DoubleSupplier pos) {
+    io.setHoodPos(pos.getAsDouble());
+  }
+
   public Command setHoodAngle(DoubleSupplier degrees) {
     // System.out.println(degrees.getAsDouble());
     return Commands.run(() -> io.setHoodAngleDegrees(degrees.getAsDouble()));
@@ -71,5 +75,9 @@ public class hood extends SubsystemBase {
 
   public Command setHoodDefaultPositionCommand() {
     return Commands.run(() -> io.setHoodPos(this.defaultPosition), this);
+  }
+
+  public void setHoodDefaultPositionVoid() {
+    io.setHoodPos(this.defaultPosition);
   }
 }

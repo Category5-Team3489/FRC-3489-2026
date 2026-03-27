@@ -15,6 +15,11 @@ public class climberIOSim implements climberIO {
   }
 
   @Override
+  public void zeroClimber(){
+    
+  }
+
+  @Override
   public void toggleClimberPosition(boolean isExtended) {
     // TODO Auto-generated method stub
     throw new UnsupportedOperationException("Unimplemented method 'setClimberPosition'");
