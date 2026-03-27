@@ -13,6 +13,8 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
@@ -493,12 +495,19 @@ public class RobotContainer {
     // Hood - Down Flat
     manipulatorController.leftTrigger().whileTrue(Hood.setHoodPosCommand(() -> 0));
 
-    manipulatorController
-        .povRight()
-        .whileTrue(
-            Hood.setHoodPosCommand(
-                () -> Hood.degToPos(() -> distToDeg(() -> vision.getDistanceToSpecificTag(0, 8)))));
-
+    if(DriverStation.getAlliance().get() == Alliance.Red){
+      manipulatorController
+          .povRight()
+          .whileTrue(
+              Hood.setHoodPosCommand(
+                  () -> Hood.degToPos(() -> distToDeg(() -> vision.getDistanceToSpecificTag(0, 10)))));
+    }else{
+      manipulatorController
+          .povRight()
+          .whileTrue(
+              Hood.setHoodPosCommand(
+                  () -> Hood.degToPos(() -> distToDeg(() -> vision.getDistanceToSpecificTag(0, 10)))));
+    }
     // Drive Controller Configuration
 
     drive.setDefaultCommand(

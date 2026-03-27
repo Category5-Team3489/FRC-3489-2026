@@ -45,7 +45,7 @@ public class intakeIOTalonFX implements intakeIO {
   @Override
   public void spinThatStuff(double initialSpeed) {
     double currentSpeed = initialSpeed * 12.0;
-    currentSpeed = MathUtil.clamp(currentSpeed, -8, 8);
+    currentSpeed = MathUtil.clamp(currentSpeed, -10, 10);
     // VelocityDutyCycle cole = new VelocityDutyCycle(currentSpeed * 100);
     // intakeMotor.setControl(cole);
 
