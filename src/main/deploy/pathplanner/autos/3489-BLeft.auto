@@ -5,16 +5,15 @@
     "data": {
       "commands": [
         {
-          "type": "sequential",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": null
-                }
-              }
-            ]
+            "pathName": "3489-BLeft-1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shooterOn"
           }
         }
       ]
