@@ -75,6 +75,8 @@ public class RobotContainer {
   private final climber Climber;
   private double ferryToggle = 0.5;
 
+  private final Timer kanye = new Timer();
+
   public double distToDeg(DoubleSupplier dist) {
     double tuff = (dist.getAsDouble() - 6.16) / (-0.068465);
     if (tuff > 70 || tuff < 35) {
@@ -111,13 +113,13 @@ public class RobotContainer {
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
 
-  private Command shootWithIndexDelay(DoubleSupplier speed, double indexDelaySeconds) {
+  private Command shootWithIndexDelay(DoubleSupplier speed, double indexDelaySeconds, Timer timer) {
     return Commands.parallel(
         Shooter.shootAtSpeed(speed.getAsDouble()),
         // Commands.runEnd(() -> Kicker.spinMotor(0.99), () -> Kicker.spinMotor(0.0), Kicker),
         Commands.runEnd(
             () -> {
-              if (manipRightTriggerTimer.get() >= indexDelaySeconds) {
+              if (timer.get() >= indexDelaySeconds) {
                 Index.spinMotor(-0.99);
                 Intake.actuatevoid(-0.3);
                 Intake.spinTheStuffvoid(0.4);
@@ -146,6 +148,13 @@ public class RobotContainer {
               //   Hood.setHoodDefaultPositionVoid();
             },
             Index));
+  }
+
+  private Command resetDriveHeading() {
+    return Commands.runOnce(
+            () -> drive.setPose(new Pose2d(drive.getPose().getTranslation(), Rotation2d.kZero)),
+            drive)
+        .ignoringDisable(true);
   }
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -256,7 +265,8 @@ public class RobotContainer {
 
     NamedCommands.registerCommand("intakeOn", Intake.spinTheStuff(0.4));
 
-    NamedCommands.registerCommand("shooterOn", shootWithIndexDelay(() -> 1, 1.0).withTimeout(2.0));
+    NamedCommands.registerCommand(
+        "shooterOn", shootWithIndexDelay(() -> 1, 1.0, new Timer()).withTimeout(2.0));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -357,7 +367,7 @@ public class RobotContainer {
         .b()
         .whileTrue(Commands.parallel(Intake.actuate(-0.5), Intake.spinTheStuff(0.8)));
     shootTrigger.onFalse(Commands.runOnce(() -> manipRightTriggerTimer.stop()));
-    shootTrigger.whileTrue(shootWithIndexDelay(() -> 1, 1.0));
+    // shootTrigger.whileTrue(shootWithIndexDelay(() -> 1, 1.0));
     controller
         .a()
         .whileTrue(
@@ -387,15 +397,7 @@ public class RobotContainer {
                 () -> -controller.getRightX() * (1 - controller.getLeftTriggerAxis())));
 
     // Reset gyro to 0 when B button is pressed
-    controller
-        .b()
-        .onTrue(
-            Commands.runOnce(
-                    () ->
-                        drive.setPose(
-                            new Pose2d(drive.getPose().getTranslation(), Rotation2d.kZero)),
-                    drive)
-                .ignoringDisable(true));
+    controller.b().onTrue(resetDriveHeading());
 
     // controller
     //     .y()
@@ -499,20 +501,23 @@ public class RobotContainer {
             }));
     shootTrigger.onFalse(Commands.runOnce(() -> manipRightTriggerTimer.stop()));
     shootTrigger.whileTrue(
-        shootWithIndexDelay(() -> 0.8, 1.0).alongWith(Hood.setHoodPosCommand(() -> -4.2)));
+        shootWithIndexDelay(() -> 0.72, 1.0, manipRightTriggerTimer)
+            .alongWith(Hood.setHoodPosCommand(() -> -4.2)));
 
     // Intake - Acctuate In
     manipulatorController.leftBumper().whileTrue(Intake.retract()); // (Intake.actuate(-0.6));
-
-    // Hood - Down Flat
     manipulatorController
         .leftTrigger()
-        .whileTrue(
-            Shooter.shootAtSpeed(() -> 0.8)
-                .alongWith(
-                    Commands.run(() -> Index.spinMotor(-0.99)),
-                    Commands.run(() -> Kicker.spinMotor(0.99))));
-
+        .onTrue(
+            Commands.runOnce(
+                () -> {
+                  kanye.stop();
+                  kanye.reset();
+                  kanye.start();
+                }));
+    manipulatorController.leftTrigger().onFalse(Commands.runOnce(() -> kanye.stop()));
+    // Hood - Down Flat
+    manipulatorController.leftTrigger().whileTrue(shootWithIndexDelay(() -> 0.62, 1.0, kanye));
     // if (DriverStation.getAlliance().get() == Alliance.Red) {
     manipulatorController.povRight().whileTrue(Hood.setHoodPosCommand(() -> -3.95));
 
@@ -550,15 +555,7 @@ public class RobotContainer {
                 () -> -controller.getRightX() * (1 - controller.getLeftTriggerAxis())));
 
     // Reset gyro to 0 when B button is pressed
-    controller
-        .b()
-        .onTrue(
-            Commands.runOnce(
-                    () ->
-                        drive.setPose(
-                            new Pose2d(drive.getPose().getTranslation(), Rotation2d.kZero)),
-                    drive)
-                .ignoringDisable(true));
+    controller.b().onTrue(resetDriveHeading());
   }
 
   /**
