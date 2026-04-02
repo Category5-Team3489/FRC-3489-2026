@@ -13,6 +13,8 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
@@ -460,11 +462,11 @@ public class RobotContainer {
         .onTrue(Commands.runOnce(() -> Hood.setDefaultPosition(0), Hood));
 
     // Intake - Intake Fuel
-    manipulatorController.x().whileTrue(Intake.spinTheStuff(0.8));
+    manipulatorController.x().whileTrue(Intake.spinTheStuff(1));
     // manipulatorController.x().whileFalse(Intake.spinTheStuff(0.0));
 
     // Intake - Outtake Fuel
-    manipulatorController.y().whileTrue(Intake.spinTheStuff(-0.8));
+    manipulatorController.y().whileTrue(Intake.spinTheStuff(-1));
     // manipulatorController.y().toggleOnFalse(Intake.spinTheStuff(0.0));
 
     // Spindexer - Agitate (verified)
@@ -516,19 +518,27 @@ public class RobotContainer {
                   kanye.start();
                 }));
     manipulatorController.leftTrigger().onFalse(Commands.runOnce(() -> kanye.stop()));
-    // Hood - Down Flat
-    manipulatorController.leftTrigger().whileTrue(shootWithIndexDelay(() -> 0.62, 1.0, kanye));
-    // if (DriverStation.getAlliance().get() == Alliance.Red) {
+    // Hood - Do  m mhgbn9njjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjqwn Flat
+    manipulatorController.leftTrigger().whileTrue(shootWithIndexDelay(() -> 0.76, 1.0, kanye));
+    // if (Drive      rStation.getAlliance().get() == Alliance.Red) {
     manipulatorController.povRight().whileTrue(Hood.setHoodPosCommand(() -> -3.95));
 
     // Drive Controller Configuration
-
-    drive.setDefaultCommand(
-        DriveCommands.joystickDrive(
-            drive,
-            () -> -controller.getLeftY(),
-            () -> -controller.getLeftX(),
-            () -> -controller.getRightX()));
+    if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) {
+      drive.setDefaultCommand(
+          DriveCommands.joystickDrive(
+              drive,
+              () -> -controller.getLeftY(),
+              () -> -controller.getLeftX(),
+              () -> -controller.getRightX()));
+    } else {
+      drive.setDefaultCommand(
+          DriveCommands.joystickDrive(
+              drive,
+              () -> controller.getLeftY(),
+              () -> controller.getLeftX(),
+              () -> -controller.getRightX()));
+    }
 
     controller.povUp().whileTrue(DriveCommands.joystickDrive(drive, () -> 10, () -> 0, () -> 0));
     controller.povDown().whileTrue(DriveCommands.joystickDrive(drive, () -> -10, () -> 0, () -> 0));

@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.vision.Vision;
 import java.util.function.DoubleSupplier;
+import org.littletonrobotics.junction.Logger;
 
 public class hood extends SubsystemBase {
   public hoodIO io;
@@ -16,6 +17,7 @@ public class hood extends SubsystemBase {
 
   public void periodic() {
     // System.out.println("Degrees: " + posToDeg(() -> io.getDegrees()));
+    Logger.recordOutput("Hood Angle", io.getDegrees());
   }
 
   public double posToDeg(DoubleSupplier yeah) {
