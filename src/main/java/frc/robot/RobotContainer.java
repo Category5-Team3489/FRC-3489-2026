@@ -265,10 +265,15 @@ public class RobotContainer {
         break;
     }
 
-    NamedCommands.registerCommand("intakeOn", Intake.spinTheStuff(0.4));
+    NamedCommands.registerCommand("intakeOn", Intake.spinTheStuff(0.4).withTimeout(2));
 
     NamedCommands.registerCommand(
-        "shooterOn", shootWithIndexDelay(() -> 1, 1.0, new Timer()).withTimeout(2.0));
+        "shooterOn", Commands.parallel(Shooter.shootAtSpeed(0.72),
+        Commands.run(() -> Index.spinMotor(-0.99)),
+        Commands.run(() -> Intake.actuatevoid(-0.3)),
+        Commands.run(() -> Intake.spinTheStuffvoid(0.4)),
+        Commands.run(() -> Kicker.spinMotor(0.99))
+        ));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
