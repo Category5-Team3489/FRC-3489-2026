@@ -104,7 +104,7 @@ public class Vision extends SubsystemBase {
 
       }
 
-      return latestDist
+      return latestDist;
   }
 
   public double getAngleToSpecificTag(int cameraIndex, int targetTagId) {
