@@ -101,6 +101,9 @@ public class Vision extends SubsystemBase {
 
   @Override
   public void periodic() {
+    Logger.recordOutput("Vision ID 0:", getDistanceToSpecificTag(0, 10));
+    Logger.recordOutput("Vision ID 1:", getDistanceToSpecificTag(1, 10));
+
     for (int i = 0; i < io.length; i++) {
       io[i].updateInputs(inputs[i]);
       Logger.processInputs("Vision/Camera" + Integer.toString(i), inputs[i]);

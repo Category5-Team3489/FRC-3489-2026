@@ -34,7 +34,7 @@ public class TunerConstants {
   // When using closed-loop control, the drive motor uses the control
   // output type specified by SwerveModuleConstants.DriveMotorClosedLoopOutput
   private static final Slot0Configs driveGains =
-      new Slot0Configs().withKP(1).withKI(0).withKD(0).withKS(0).withKV(0.124);
+      new Slot0Configs().withKP(2).withKI(0).withKD(0).withKS(0).withKV(0.124);
 
   // The closed-loop output type to use for the steer motors;
   // This affects the PID/FF gains for the steer motors
@@ -90,8 +90,8 @@ public class TunerConstants {
   private static final double kSteerGearRatio = 21.428571428571427;
   private static final Distance kWheelRadius = Inches.of(2);
 
-  private static final boolean kInvertLeftSide = false;
-  private static final boolean kInvertRightSide = true;
+  private static final boolean kInvertLeftSide = true;
+  private static final boolean kInvertRightSide = false;
 
   private static final int kPigeonId = 13;
 
@@ -135,48 +135,48 @@ public class TunerConstants {
               .withDriveFrictionVoltage(kDriveFrictionVoltage);
 
   // Front Left
-  private static final int kFrontLeftDriveMotorId = 5;
-  private static final int kFrontLeftSteerMotorId = 4;
-  private static final int kFrontLeftEncoderId = 34;
-  private static final Angle kFrontLeftEncoderOffset = Rotations.of(0.224609375);
+  private static final int kFrontLeftDriveMotorId = 8;
+  private static final int kFrontLeftSteerMotorId = 6;
+  private static final int kFrontLeftEncoderId = 9;
+  private static final Angle kFrontLeftEncoderOffset = Rotations.of(0.294189453125);
   private static final boolean kFrontLeftSteerMotorInverted = true;
   private static final boolean kFrontLeftEncoderInverted = false;
 
-  private static final Distance kFrontLeftXPos = Inches.of(10.5);
-  private static final Distance kFrontLeftYPos = Inches.of(10.5);
+  private static final Distance kFrontLeftXPos = Inches.of(11);
+  private static final Distance kFrontLeftYPos = Inches.of(11);
 
   // Front Right
-  private static final int kFrontRightDriveMotorId = 3;
-  private static final int kFrontRightSteerMotorId = 2;
-  private static final int kFrontRightEncoderId = 12;
-  private static final Angle kFrontRightEncoderOffset = Rotations.of(0.31787109375);
+  private static final int kFrontRightDriveMotorId = 5;
+  private static final int kFrontRightSteerMotorId = 4;
+  private static final int kFrontRightEncoderId = 11;
+  private static final Angle kFrontRightEncoderOffset = Rotations.of(0.20458984375);
   private static final boolean kFrontRightSteerMotorInverted = true;
   private static final boolean kFrontRightEncoderInverted = false;
 
-  private static final Distance kFrontRightXPos = Inches.of(10.5);
-  private static final Distance kFrontRightYPos = Inches.of(-10.5);
+  private static final Distance kFrontRightXPos = Inches.of(11);
+  private static final Distance kFrontRightYPos = Inches.of(-11);
 
   // Back Left
-  private static final int kBackLeftDriveMotorId = 7;
-  private static final int kBackLeftSteerMotorId = 6;
-  private static final int kBackLeftEncoderId = 9;
-  private static final Angle kBackLeftEncoderOffset = Rotations.of(-0.4287109375);
+  private static final int kBackLeftDriveMotorId = 0;
+  private static final int kBackLeftSteerMotorId = 7;
+  private static final int kBackLeftEncoderId = 12;
+  private static final Angle kBackLeftEncoderOffset = Rotations.of(-0.190185546875);
   private static final boolean kBackLeftSteerMotorInverted = true;
   private static final boolean kBackLeftEncoderInverted = false;
 
-  private static final Distance kBackLeftXPos = Inches.of(-10.5);
-  private static final Distance kBackLeftYPos = Inches.of(10.5);
+  private static final Distance kBackLeftXPos = Inches.of(-11);
+  private static final Distance kBackLeftYPos = Inches.of(11);
 
   // Back Right
-  private static final int kBackRightDriveMotorId = 1;
-  private static final int kBackRightSteerMotorId = 8;
-  private static final int kBackRightEncoderId = 10;
-  private static final Angle kBackRightEncoderOffset = Rotations.of(0.38720703125);
+  private static final int kBackRightDriveMotorId = 2;
+  private static final int kBackRightSteerMotorId = 3;
+  private static final int kBackRightEncoderId = 39;
+  private static final Angle kBackRightEncoderOffset = Rotations.of(-0.43603515625);
   private static final boolean kBackRightSteerMotorInverted = true;
   private static final boolean kBackRightEncoderInverted = false;
 
-  private static final Distance kBackRightXPos = Inches.of(-10.5);
-  private static final Distance kBackRightYPos = Inches.of(-10.5);
+  private static final Distance kBackRightXPos = Inches.of(-11);
+  private static final Distance kBackRightYPos = Inches.of(-11);
 
   public static final SwerveModuleConstants<
           TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration>
