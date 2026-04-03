@@ -369,9 +369,7 @@ public class RobotContainer {
     manipulatorController
         .x()
         .whileTrue(
-            Hood.setHoodPosCommand(
-                () ->
-                    Hood.degToPos(() -> distToDeg(() -> vision.getDistanceToSpecificTag(0, 10)))));
+            Hood.setHoodAngle(() -> distToDeg(() -> vision.getDistanceToSpecificTag(0, 10))));
     manipulatorController
         .b()
         .whileTrue(Commands.parallel(Intake.actuate(-0.5), Intake.spinTheStuff(0.8)));

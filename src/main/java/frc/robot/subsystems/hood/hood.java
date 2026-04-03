@@ -8,6 +8,8 @@ import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.Logger;
 
 public class hood extends SubsystemBase {
+  private static final double DEGREES_PER_ROTATION = 3.48;
+  private static final double DEGREES_OFFSET = 63.035;
   public hoodIO io;
   public boolean isFerryMode = false;
   // public final double maxHoodPos = -9.342285;
@@ -26,11 +28,11 @@ public class hood extends SubsystemBase {
   }
 
   public double posToDeg(DoubleSupplier yeah) {
-    return (3.48) * yeah.getAsDouble() + 63.035;
+    return DEGREES_PER_ROTATION * yeah.getAsDouble() + DEGREES_OFFSET;
   }
 
   public double degToPos(DoubleSupplier no) {
-    return (no.getAsDouble() - 63.035) / 3.48;
+    return (no.getAsDouble() - DEGREES_OFFSET) / DEGREES_PER_ROTATION;
   }
 
   public hood(hoodIO givenIo) {
@@ -50,8 +52,7 @@ public class hood extends SubsystemBase {
   }
 
   public Command setHoodAngle(DoubleSupplier degrees) {
-    // System.out.println(degrees.getAsDouble());
-    return Commands.run(() -> io.setHoodAngleDegrees(degrees.getAsDouble()));
+    return Commands.run(() -> io.setHoodAngleDegrees(degrees.getAsDouble()), this);
   }
 
   public Command setHoodAngleVision(Vision eyes, int CamIndex) {
