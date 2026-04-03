@@ -148,7 +148,7 @@ public class Vision extends SubsystemBase {
     int[] ids = inputs[cameraIndex].tagIds;
     return (ids != null && ids.length > 0) ? ids[0] : -1;
   }
-
+  // private hood Hood;
   @Override
   public void periodic() {
     Logger.recordOutput("Vision ID 0:", getDistanceToSpecificTag(0, 10));

@@ -56,6 +56,7 @@ import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIOPhotonVision;
 import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 import java.util.function.DoubleSupplier;
+import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -274,7 +275,7 @@ public class RobotContainer {
             Commands.run(() -> Index.spinMotor(-0.99)),
             Commands.run(() -> Intake.actuatevoid(-0.3)),
             Commands.run(() -> Intake.spinTheStuffvoid(0.4)),
-            Commands.run(() -> Kicker.spinMotor(0.99)).withTimeout(4)));
+            Commands.run(() -> Kicker.spinMotor(0.99)).withTimeout(10)));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -438,6 +439,20 @@ public class RobotContainer {
     Hood.setDefaultCommand(
         Hood.setHoodDefaultPositionCommand(() -> Math.abs(manipulatorController.getRightY() * 10)));
     Climber.setDefaultCommand(Climber.moveClimbMotor(() -> manipulatorController.getLeftY()));
+
+    controller
+        .x()
+        .whileTrue(
+            Hood.setHoodPosCommand(
+                    () ->
+                        Hood.degToPos(
+                            () -> distToDeg(() -> vision.getLatestDistanceToSpecifigTag(1, 10))))
+                .alongWith(
+                    Commands.run(
+                        () ->
+                            Logger.recordOutput(
+                                "Expected angle:",
+                                distToDeg(() -> vision.getLatestDistanceToSpecifigTag(1, 10))))));
 
     // Hood - Ferry Mode
     manipulatorController
