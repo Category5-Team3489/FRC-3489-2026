@@ -29,6 +29,7 @@ public class Vision extends SubsystemBase {
   private final VisionIO[] io;
   private final VisionIOInputsAutoLogged[] inputs;
   private final Alert[] disconnectedAlerts;
+  private double latestDist;
 
   public Vision(VisionConsumer consumer, VisionIO... io) {
     this.consumer = consumer;
@@ -80,6 +81,39 @@ public class Vision extends SubsystemBase {
 
     return -1.0;
   }
+
+  public double getLatestDistanceToSpecifigTag(int cameraIndex, int targetTagId){
+      if (cameraIndex < 0 || cameraIndex >= inputs.length){
+          return latestDist;
+      }
+
+      var targetObs = inputs[cameraIndex].latestTargetObservation;
+
+      if (targetObs.id() == targetTagId) {
+        double xd = targetObs.transform3d().getX();
+        double yd = targetObs.transform3d().getY();
+        double zd = targetObs.transform3d().getZ();
+
+        System.out.println("XD: " + xd);
+        System.out.println("YD: " + yd);
+        System.out.println("ZD: " + zd); // add this, was probably 0 before
+
+        latestDist = Math.sqrt((xd * xd) + (yd * yd) + (zd * zd));
+
+
+
+      }
+
+      return latestDist
+  }
+
+  public double getAngleToSpecificTag(int cameraIndex, int targetTagId){
+      if(cameraIndex < 0 || cameraIndex >= inputs.length) return -1.0;
+
+      var targetObs = inputs.[cameraIndex].latestTargetObservation;
+
+  }
+
   // /**
   //  * Returns the X angle to the best target, which can be used for simple servoing with vision.
   //  *
