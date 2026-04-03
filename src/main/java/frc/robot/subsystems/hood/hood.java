@@ -8,6 +8,8 @@ import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.Logger;
 
 public class hood extends SubsystemBase {
+  private static final double DEGREES_PER_ROTATION = 3.48;
+  private static final double DEGREES_OFFSET = 63.035;
   public hoodIO io;
   public boolean isFerryMode = false;
   // public final double maxHoodPos = -9.342285;
@@ -15,22 +17,47 @@ public class hood extends SubsystemBase {
   public final double minHoodPos = -0.05;
   private double defaultPosition = 0.0;
   private double CONSTANT = 1;
+  private double targetPositionRotations = 0.0;
+  private double targetAngleDegrees = DEGREES_OFFSET;
 
   public double positionToDeg(double pos) {
     return pos * CONSTANT;
   }
 
   public void periodic() {
-    // System.out.println("Degrees: " + posToDeg(() -> io.getDegrees()));
-    Logger.recordOutput("Hood Angle", io.getPos());
+    double currentPositionRotations = io.getPos();
+    Logger.recordOutput("Hood/CurrentPositionRotations", currentPositionRotations);
+    Logger.recordOutput("Hood/CurrentAngleDegrees", positionToDegrees(currentPositionRotations));
+    Logger.recordOutput("Hood/TargetPositionRotations", targetPositionRotations);
+    Logger.recordOutput("Hood/TargetAngleDegrees", targetAngleDegrees);
   }
 
   public double posToDeg(DoubleSupplier yeah) {
-    return (3.48) * yeah.getAsDouble() + 63.035;
+    return DEGREES_PER_ROTATION * yeah.getAsDouble() + DEGREES_OFFSET;
   }
 
   public double degToPos(DoubleSupplier no) {
-    return (no.getAsDouble() - 63.035) / 3.48;
+    return (no.getAsDouble() - DEGREES_OFFSET) / DEGREES_PER_ROTATION;
+  }
+
+  private double positionToDegrees(double positionRotations) {
+    return DEGREES_PER_ROTATION * positionRotations + DEGREES_OFFSET;
+  }
+
+  private double degreesToPosition(double degrees) {
+    return (degrees - DEGREES_OFFSET) / DEGREES_PER_ROTATION;
+  }
+
+  private void setTrackedPosition(double positionRotations) {
+    targetPositionRotations = positionRotations;
+    targetAngleDegrees = positionToDegrees(positionRotations);
+    io.setHoodPos(positionRotations);
+  }
+
+  private void setTrackedAngle(double degrees) {
+    targetAngleDegrees = degrees;
+    targetPositionRotations = degreesToPosition(degrees);
+    io.setHoodAngleDegrees(degrees);
   }
 
   public hood(hoodIO givenIo) {
@@ -42,22 +69,21 @@ public class hood extends SubsystemBase {
   }
 
   public Command setHoodPosCommand(DoubleSupplier pos) {
-    return Commands.run(() -> io.setHoodPos(pos.getAsDouble()), this);
+    return Commands.run(() -> setTrackedPosition(pos.getAsDouble()), this);
   }
 
   public void setHoodPosVoid(DoubleSupplier pos) {
-    io.setHoodPos(pos.getAsDouble());
+    setTrackedPosition(pos.getAsDouble());
   }
 
   public Command setHoodAngle(DoubleSupplier degrees) {
-    // System.out.println(degrees.getAsDouble());
-    return Commands.run(() -> io.setHoodAngleDegrees(degrees.getAsDouble()));
+    return Commands.run(() -> setTrackedAngle(degrees.getAsDouble()), this);
   }
 
   public Command setHoodAngleVision(Vision eyes, int CamIndex) {
     return Commands.run(
         () ->
-            io.setHoodAngleDegrees(
+            setTrackedAngle(
                 // MathUtil.clamp(eyes.getDistanceToSpecificTag(CamIndex, 10), 0.0, 5.0)));
                 -10.0),
         this);
@@ -69,7 +95,8 @@ public class hood extends SubsystemBase {
 
   public Command setFerryMode(boolean ferryMode) {
     this.isFerryMode = ferryMode;
-    return Commands.run(() -> io.setHoodPos(ferryMode ? this.maxHoodPos : this.minHoodPos), this);
+    return Commands.run(
+        () -> setTrackedPosition(ferryMode ? this.maxHoodPos : this.minHoodPos), this);
   }
 
   public boolean isFerryMode() {
@@ -81,10 +108,10 @@ public class hood extends SubsystemBase {
   }
 
   public Command setHoodDefaultPositionCommand(DoubleSupplier stick) {
-    return Commands.run(() -> io.setHoodPos(this.defaultPosition - stick.getAsDouble()), this);
+    return Commands.run(() -> setTrackedPosition(this.defaultPosition - stick.getAsDouble()), this);
   }
 
   public void setHoodDefaultPositionVoid() {
-    io.setHoodPos(this.defaultPosition);
+    setTrackedPosition(this.defaultPosition);
   }
 }
