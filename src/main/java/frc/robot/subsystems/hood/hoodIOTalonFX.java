@@ -22,7 +22,7 @@ public class hoodIOTalonFX implements hoodIO {
   }
 
   @Override
-  public double getDegrees() {
+  public double getPos() {
     return motor.getPosition().getValueAsDouble();
   }
 

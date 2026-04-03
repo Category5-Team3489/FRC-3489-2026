@@ -34,6 +34,8 @@ public class DriveCommands {
   private static final double DEADBAND = 0.05;
   private static final double LINEAR_INPUT_EXPONENT = 1.3;
   private static final double ANGULAR_INPUT_EXPONENT = 1.2;
+  private static final double HEADING_HOLD_ENGAGE_SPEED_MPS = 0.15;
+  private static final double HEADING_HOLD_MAX_OMEGA_RAD_PER_SEC = 2.0;
   private static final double ANGLE_KP = 5.0;
   private static final double ANGLE_KD = 0.4;
   private static final double ANGLE_MAX_VELOCITY = 8.0;
@@ -67,24 +69,65 @@ public class DriveCommands {
       DoubleSupplier xSupplier,
       DoubleSupplier ySupplier,
       DoubleSupplier omegaSupplier) {
+    ProfiledPIDController headingController =
+        new ProfiledPIDController(
+            ANGLE_KP,
+            0.0,
+            ANGLE_KD,
+            new TrapezoidProfile.Constraints(ANGLE_MAX_VELOCITY, ANGLE_MAX_ACCELERATION));
+    headingController.enableContinuousInput(-Math.PI, Math.PI);
+
+    class HeadingHoldState {
+      private Rotation2d targetHeading = Rotation2d.kZero;
+      private boolean headingHoldActive = false;
+    }
+
+    HeadingHoldState state = new HeadingHoldState();
+
     return Commands.run(
         () -> {
           // Get linear velocity
           Translation2d linearVelocity =
               getLinearVelocityFromJoysticks(xSupplier.getAsDouble(), ySupplier.getAsDouble());
+          double linearSpeedMetersPerSec =
+              linearVelocity.getNorm() * drive.getMaxLinearSpeedMetersPerSec();
 
           // Apply rotation deadband
-          double omega = MathUtil.applyDeadband(omegaSupplier.getAsDouble(), DEADBAND);
+          double omegaInput = MathUtil.applyDeadband(omegaSupplier.getAsDouble(), DEADBAND);
+          boolean driverIsRotating = Math.abs(omegaInput) > 0.0;
 
           // Mild expo keeps rotation responsive without the heavy slowdown from squaring.
-          omega = Math.copySign(Math.pow(Math.abs(omega), ANGULAR_INPUT_EXPONENT), omega);
+          double omegaCommandRadPerSec =
+              Math.copySign(Math.pow(Math.abs(omegaInput), ANGULAR_INPUT_EXPONENT), omegaInput)
+                  * drive.getMaxAngularSpeedRadPerSec();
+          boolean shouldHoldHeading =
+              !driverIsRotating && linearSpeedMetersPerSec > HEADING_HOLD_ENGAGE_SPEED_MPS;
+
+          if (shouldHoldHeading) {
+            if (!state.headingHoldActive) {
+              state.targetHeading = drive.getRotation();
+              headingController.reset(drive.getRotation().getRadians());
+              state.headingHoldActive = true;
+            }
+
+            omegaCommandRadPerSec =
+                MathUtil.clamp(
+                    headingController.calculate(
+                        drive.getRotation().getRadians(), state.targetHeading.getRadians()),
+                    -HEADING_HOLD_MAX_OMEGA_RAD_PER_SEC,
+                    HEADING_HOLD_MAX_OMEGA_RAD_PER_SEC);
+          } else {
+            state.targetHeading = drive.getRotation();
+            headingController.reset(drive.getRotation().getRadians());
+            state.headingHoldActive = false;
+          }
 
           // Convert to field relative speeds & send command
           ChassisSpeeds speeds =
               new ChassisSpeeds(
                   linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec(),
                   linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec(),
-                  omega * drive.getMaxAngularSpeedRadPerSec());
+                  omegaCommandRadPerSec);
           boolean isFlipped =
               DriverStation.getAlliance().isPresent()
                   && DriverStation.getAlliance().get() == Alliance.Red;

@@ -14,10 +14,15 @@ public class hood extends SubsystemBase {
   public final double maxHoodPos = -9.0;
   public final double minHoodPos = -0.05;
   private double defaultPosition = 0.0;
+  private double CONSTANT = 1;
+
+  public double positionToDeg(double pos) {
+    return pos * CONSTANT;
+  }
 
   public void periodic() {
     // System.out.println("Degrees: " + posToDeg(() -> io.getDegrees()));
-    Logger.recordOutput("Hood Angle", io.getDegrees());
+    Logger.recordOutput("Hood Angle", io.getPos());
   }
 
   public double posToDeg(DoubleSupplier yeah) {
