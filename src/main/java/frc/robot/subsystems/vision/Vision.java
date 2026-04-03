@@ -82,55 +82,52 @@ public class Vision extends SubsystemBase {
     return -1.0;
   }
 
-  public double getLatestDistanceToSpecifigTag(int cameraIndex, int targetTagId){
-      if (cameraIndex < 0 || cameraIndex >= inputs.length){
-          return latestDist;
-      }
-
-      var targetObs = inputs[cameraIndex].latestTargetObservation;
-
-      if (targetObs.id() == targetTagId) {
-        double xd = targetObs.transform3d().getX();
-        double yd = targetObs.transform3d().getY();
-        double zd = targetObs.transform3d().getZ();
-
-        System.out.println("XD: " + xd);
-        System.out.println("YD: " + yd);
-        System.out.println("ZD: " + zd); // add this, was probably 0 before
-
-        latestDist = Math.sqrt((xd * xd) + (yd * yd) + (zd * zd));
-
-
-
-      }
-
+  public double getLatestDistanceToSpecifigTag(int cameraIndex, int targetTagId) {
+    if (cameraIndex < 0 || cameraIndex >= inputs.length) {
       return latestDist;
+    }
+
+    var targetObs = inputs[cameraIndex].latestTargetObservation;
+
+    if (targetObs.id() == targetTagId) {
+      double xd = targetObs.transform3d().getX();
+      double yd = targetObs.transform3d().getY();
+      double zd = targetObs.transform3d().getZ();
+
+      System.out.println("XD: " + xd);
+      System.out.println("YD: " + yd);
+      System.out.println("ZD: " + zd); // add this, was probably 0 before
+
+      latestDist = Math.sqrt((xd * xd) + (yd * yd) + (zd * zd));
+    }
+
+    return latestDist;
   }
 
   public double getAngleToSpecificTag(int cameraIndex, int targetTagId) {
-      // 1. Array access syntax fix: inputs[cameraIndex] (no dot before bracket)
-      if (cameraIndex < 0 || cameraIndex >= inputs.length) return -1.0;
-  
-      var targetObs = inputs[cameraIndex].latestTargetObservation;
-  
-      // 2. Safety check: make sure targetObs isn't null before calling methods
-      if (targetObs != null && targetObs.id() == targetTagId) {
-          // You can pull the transform once to keep the code clean
-          var transform = targetObs.transform3d();
-          double xd = transform.getX();
-          double yd = transform.getY();
-  
-          // 3. Use Math.atan2(y, x)
-          // This is safer than y/x because it handles the 90-degree case (x=0) 
-          // and keeps the correct sign for all quadrants.
-          double angleRadians = Math.atan2(yd, xd);
-  
-          // 4. Conversion: Math.atan2 returns Radians. 
-          // Most FRC gyro/drivetrain logic uses Degrees.
-          return Math.toDegrees(angleRadians);
-      }
-  
-      return -1.0;
+    // 1. Array access syntax fix: inputs[cameraIndex] (no dot before bracket)
+    if (cameraIndex < 0 || cameraIndex >= inputs.length) return -1.0;
+
+    var targetObs = inputs[cameraIndex].latestTargetObservation;
+
+    // 2. Safety check: make sure targetObs isn't null before calling methods
+    if (targetObs != null && targetObs.id() == targetTagId) {
+      // You can pull the transform once to keep the code clean
+      var transform = targetObs.transform3d();
+      double xd = transform.getX();
+      double yd = transform.getY();
+
+      // 3. Use Math.atan2(y, x)
+      // This is safer than y/x because it handles the 90-degree case (x=0)
+      // and keeps the correct sign for all quadrants.
+      double angleRadians = Math.atan2(yd, xd);
+
+      // 4. Conversion: Math.atan2 returns Radians.
+      // Most FRC gyro/drivetrain logic uses Degrees.
+      return Math.toDegrees(angleRadians);
+    }
+
+    return -1.0;
   }
 
   // /**

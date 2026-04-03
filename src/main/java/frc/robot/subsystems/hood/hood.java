@@ -16,8 +16,8 @@ public class hood extends SubsystemBase {
   private double defaultPosition = 0.0;
   private double CONSTANT = 1;
 
-  public double positionToDeg(double pos){
-      return pos * CONSTANT;
+  public double positionToDeg(double pos) {
+    return pos * CONSTANT;
   }
 
   public void periodic() {

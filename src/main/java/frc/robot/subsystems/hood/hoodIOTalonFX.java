@@ -11,7 +11,6 @@ public class hoodIOTalonFX implements hoodIO {
   private final double maxActPos = 20.5;
   private final double minActPos = 0.5;
   private boolean isExtended = false;
-  
 
   public hoodIOTalonFX(int motorID) {
     motor = new TalonFX(motorID);
