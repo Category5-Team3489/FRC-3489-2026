@@ -271,11 +271,12 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "shooterOn",
         Commands.parallel(
-            Shooter.shootAtSpeed(0.72),
-            Commands.run(() -> Index.spinMotor(-0.99)),
-            Commands.run(() -> Intake.actuatevoid(-0.3)),
-            Commands.run(() -> Intake.spinTheStuffvoid(0.4)),
-            Commands.run(() -> Kicker.spinMotor(0.99))).withTimeout(10));
+                Shooter.shootAtSpeed(0.72),
+                Commands.run(() -> Index.spinMotor(-0.99)),
+                Commands.run(() -> Intake.actuatevoid(-0.3)),
+                Commands.run(() -> Intake.spinTheStuffvoid(0.4)),
+                Commands.run(() -> Kicker.spinMotor(0.99)))
+            .withTimeout(10));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
