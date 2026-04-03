@@ -112,6 +112,20 @@ public class Vision extends SubsystemBase {
 
       var targetObs = inputs.[cameraIndex].latestTargetObservation;
 
+      if (targetObs.id() == targetTagId) {
+        double xd = targetObs.transform3d().getX();
+        double yd = targetObs.transform3d().getY();
+        double zd = targetObs.transform3d().getZ();
+
+        System.out.println("XD: " + xd);
+        System.out.println("YD: " + yd);
+        System.out.println("ZD: " + zd); // add this, was probably 0 before
+
+        return Math.arctan(targetObs.transform3d().getY()/targetObs.transform3d().getX())
+
+      }
+
+      return -1.0
   }
 
   // /**
