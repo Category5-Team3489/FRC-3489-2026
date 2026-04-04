@@ -187,9 +187,9 @@ public class RobotContainer {
         // Turrent = new turrent(new turrentIOTalonFX(0));
         Index = new index(new indexIOTalonFX(16));
         Kicker = new kicker(new kickerIOTalonFX(14));
-        Intake = new intake(new intakeIOTalonFX(22, 23, 24));
+        Intake = new intake(new intakeIOTalonFX(17, 23, 24));
 
-        Shooter = new shooter(0.4, new shooterIOTalonFX(17, 20));
+        Shooter = new shooter(0.4, new shooterIOTalonFX(32, 20));
 
         // The ModuleIOTalonFXS implementation provides an example implementation for
         // TalonFXS controller connected to a CANdi with a PWM encoder. The
