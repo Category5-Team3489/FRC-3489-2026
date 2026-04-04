@@ -82,9 +82,9 @@ public class RobotContainer {
 
   public double distToDeg(DoubleSupplier dist) {
     double tuff = (dist.getAsDouble() - 6.16) / (-0.068465);
-    if (tuff > 70 || tuff < 35) {
-      return 50;
-    }
+    // if (tuff > 70 || tuff < 35) {
+    //   return 50;
+    // }
     return tuff;
   }
 
