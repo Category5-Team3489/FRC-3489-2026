@@ -267,7 +267,7 @@ public class RobotContainer {
     }
 
     NamedCommands.registerCommand("intakeOn", Intake.spinTheStuff(0.4).withTimeout(2));
-
+    NamedCommands.registerCommand("intakeOut", Intake.extend().withTimeout(2));
     NamedCommands.registerCommand(
         "shooterOn",
         Commands.parallel(
