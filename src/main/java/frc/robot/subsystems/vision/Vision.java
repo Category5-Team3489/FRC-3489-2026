@@ -140,6 +140,28 @@ public class Vision extends SubsystemBase {
 
     return latestDist;
   }
+  
+  public double getLatestDistanceToSpecifigTag(int cameraIndex, int targetTagId) {
+    if (cameraIndex < 0 || cameraIndex >= inputs.length) {
+      return latestDist;
+    }
+
+    var targetObs = inputs[cameraIndex].latestTargetObservation;
+
+    if (targetObs.id() == targetTagId) {
+      double xd = targetObs.transform3d().getX();
+      double yd = targetObs.transform3d().getY();
+      double zd = targetObs.transform3d().getZ();
+
+      System.out.println("XD: " + xd);
+      System.out.println("YD: " + yd);
+      System.out.println("ZD: " + zd); // add this, was probably 0 before
+
+      latestDist = Math.sqrt((xd * xd) + (yd * yd) + (zd * zd));
+    }
+
+    return latestDist;
+  }
 
   public double getAngleToSpecificTag(int cameraIndex, int targetTagId) {
     // 1. Array access syntax fix: inputs[cameraIndex] (no dot before bracket)
