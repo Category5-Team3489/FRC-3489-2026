@@ -78,6 +78,7 @@ public class Vision extends SubsystemBase {
 
       return Math.sqrt((xd * xd) + (yd * yd) + (zd * zd)); // pure 3D norm
     }
+    
 
     // Fallback
     for (var obs : inputs[cameraIndex].poseObservations) {
@@ -141,26 +142,33 @@ public class Vision extends SubsystemBase {
     return latestDist;
   }
   
-  public double getLatestDistanceToSpecifigTag(int cameraIndex, int targetTagId) {
-    if (cameraIndex < 0 || cameraIndex >= inputs.length) {
-      return latestDist;
-    }
-
-    var targetObs = inputs[cameraIndex].latestTargetObservation;
-
-    if (targetObs.id() == targetTagId) {
-      double xd = targetObs.transform3d().getX();
-      double yd = targetObs.transform3d().getY();
-      double zd = targetObs.transform3d().getZ();
-
-      System.out.println("XD: " + xd);
-      System.out.println("YD: " + yd);
-      System.out.println("ZD: " + zd); // add this, was probably 0 before
-
-      latestDist = Math.sqrt((xd * xd) + (yd * yd) + (zd * zd));
-    }
-
-    return latestDist;
+  public double getLatestDistanceToSpecificTagSet(int cameraIndex, int... targetTagIds) {
+      // 1. Bounds checking
+      if (cameraIndex < 0 || cameraIndex >= inputs.length) {
+          return latestDist; // Return a default or cached value
+      }
+  
+      var targetObs = inputs[cameraIndex].latestTargetObservation;
+      
+      // 2. Check if the observation exists and matches any ID in our list
+      if (targetObs != null) {
+          for (int id : targetTagIds) {
+              if (targetObs.id() == id) {
+                  double x = targetObs.transform3d().getX();
+                  double y = targetObs.transform3d().getY();
+                  double z = targetObs.transform3d().getZ();
+  
+                  // 3. 3D Distance Formula: d = sqrt(x² + y² + z²)
+                  double distance = Math.sqrt(x * x + y * y + z * z);
+                  
+                  // Update your cached value if needed
+                  this.latestDist = distance; 
+                  return distance;
+              }
+          }
+      }
+  
+      return latestDist; // Return previous best if no match found
   }
 
   public double getAngleToSpecificTag(int cameraIndex, int targetTagId) {
