@@ -1,0 +1,49 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "shooterOn"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "3489-DPT-1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "3489-DPT-2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "autoHood"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "autoTurret"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shooterOn"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

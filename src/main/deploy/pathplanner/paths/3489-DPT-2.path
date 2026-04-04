@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 0.6066050852918878,
+        "y": 5.9579571553602815
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.5195303909306714,
+        "y": 5.362694876713262
+      },
+      "isLocked": false,
+      "linkedName": "DPT-End"
+    },
+    {
+      "anchor": {
+        "x": 1.5703123400970829,
+        "y": 4.846514505872643
+      },
+      "prevControl": {
+        "x": 1.4640564654911639,
+        "y": 5.072810084953922
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 146.659292653523
+  },
+  "reversed": false,
+  "folder": null,
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 179.49297093908535
+  },
+  "useDefaultConstraints": true
+}
