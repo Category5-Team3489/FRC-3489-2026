@@ -289,7 +289,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("autoHood", Hood.setHoodPosCommand(
             () ->
                 Hood.degToPos(
-                    () -> distToDeg(() -> vision.getLatestDistanceToSpecifigTag(0, 10)));
+                    () -> distToDeg(() -> vision.getLatestDistanceToSpecifigTag(0, 10)))));
     NamedCommands.registerCommand("autoTurret", Commands.run(() -> System.out.println("hi")));
 
     // Set up auto routines
