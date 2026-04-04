@@ -436,7 +436,12 @@ public class RobotContainer {
             // Intake.extend()
             ));
     Hood.setDefaultCommand(
-        Hood.setHoodDefaultPositionCommand(() -> Math.abs(manipulatorController.getRightY() * 10)));
+        Commands.run(
+            () ->
+                Logger.recordOutput(
+                    "Expected angle:",
+                    distToDeg(() -> vision.getLatestDistanceToSpecifigTag(0, 10))),
+            Hood));
     Climber.setDefaultCommand(Climber.moveClimbMotor(() -> manipulatorController.getLeftY()));
 
     controller
@@ -445,13 +450,13 @@ public class RobotContainer {
             Hood.setHoodPosCommand(
                     () ->
                         Hood.degToPos(
-                            () -> distToDeg(() -> vision.getLatestDistanceToSpecifigTag(1, 10))))
+                            () -> distToDeg(() -> vision.getLatestDistanceToSpecifigTag(0, 10))))
                 .alongWith(
                     Commands.run(
                         () ->
                             Logger.recordOutput(
                                 "Expected angle:",
-                                distToDeg(() -> vision.getLatestDistanceToSpecifigTag(1, 10))))));
+                                distToDeg(() -> vision.getLatestDistanceToSpecifigTag(0, 10))))));
 
     // Hood - Ferry Mode
     manipulatorController
@@ -539,7 +544,7 @@ public class RobotContainer {
                 }));
     manipulatorController.leftTrigger().onFalse(Commands.runOnce(() -> kanye.stop()));
     // Hood - Do  m mhgbn9njjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjqwn Flat
-    manipulatorController.leftTrigger().whileTrue(shootWithIndexDelay(() -> 0.76, 1.0, kanye));
+    manipulatorController.leftTrigger().whileTrue(shootWithIndexDelay(() -> 0.70, 1.0, kanye));
     // if (Drive      rStation.getAlliance().get() == Alliance.Red) {
     manipulatorController.povRight().whileTrue(Hood.setHoodPosCommand(() -> -3.95));
 
