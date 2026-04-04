@@ -99,7 +99,7 @@ public class Vision extends SubsystemBase {
       Transform3d trueTargetObs1TRANSFORM = targetObs1TRANSFORM.plus(fromCenter1);
       
       Rotation3d rotation1 = new Rotation3d(0, 0, Math.toDegrees(theta1));
-      Transform3d true1 = new Transform3d(new Translation3d(), rotation1);
+      Transform3d true1 = new Transform3d(trueTargetObs1TRANSFORM.getTranslation(), rotation1);
       
       var targetObs2 = inputs[cameraIndex2].latestTargetObservation;
       
@@ -108,7 +108,7 @@ public class Vision extends SubsystemBase {
       Transform3d trueTargetObs2TRANSFORM = targetObs2TRANSFORM.plus(fromCenter2);
       
       Rotation3d rotation2 = new Rotation3d(0, 0, Math.toDegrees(theta2));
-      Transform3d true2 = new Transform3d(new Translation3d(), rotation2);
+      Transform3d true2 = new Transform3d(trueTargetObs2TRANSFORM.getTranslation(), rotation2);
       
       return new Transform3d(
           Meters.of(true1.getX() + (true2.getX() - true1.getX()) * 0.5),
