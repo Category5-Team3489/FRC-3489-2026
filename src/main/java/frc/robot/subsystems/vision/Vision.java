@@ -9,13 +9,20 @@ package frc.robot.subsystems.vision;
 
 import static frc.robot.subsystems.vision.VisionConstants.*;
 
+import edu.wpi.first.units.Units;
+import edu.wpi.first.units.measure.Distance;
+import static edu.wpi.first.units.Units.*;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.units.DistanceUnit;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -80,6 +87,36 @@ public class Vision extends SubsystemBase {
     }
 
     return -1.0;
+  }
+  
+  
+  
+  public Transform3d getTrueTagPoses(int cameraIndex1, Transform3d fromCenter1, double theta1, int cameraIndex2, Transform3d fromCenter2, double theta2){
+      var targetObs1 = inputs[cameraIndex1].latestTargetObservation;
+      
+      Transform3d targetObs1TRANSFORM = targetObs1.transform3d();
+      
+      Transform3d trueTargetObs1TRANSFORM = targetObs1TRANSFORM.plus(fromCenter1);
+      
+      Rotation3d rotation1 = new Rotation3d(0, 0, Math.toDegrees(theta1));
+      Transform3d true1 = new Transform3d(new Translation3d(), rotation1);
+      
+      var targetObs2 = inputs[cameraIndex2].latestTargetObservation;
+      
+      Transform3d targetObs2TRANSFORM = targetObs2.transform3d();
+      
+      Transform3d trueTargetObs2TRANSFORM = targetObs2TRANSFORM.plus(fromCenter2);
+      
+      Rotation3d rotation2 = new Rotation3d(0, 0, Math.toDegrees(theta2));
+      Transform3d true2 = new Transform3d(new Translation3d(), rotation2);
+      
+      return new Transform3d(
+          Meters.of(true1.getX() + (true2.getX() - true1.getX()) * 0.5),
+          Meters.of(true1.getY() + (true2.getY() - true1.getY()) * 0.5),
+          Meters.of(true1.getY() + (true2.getY() - true1.getY()) * 0.5),
+          new Rotation3d()
+      );
+      
   }
 
   public double getLatestDistanceToSpecifigTag(int cameraIndex, int targetTagId) {
