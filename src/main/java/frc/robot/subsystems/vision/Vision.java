@@ -74,7 +74,6 @@ public class Vision extends SubsystemBase {
 
       return Math.sqrt((xd * xd) + (yd * yd) + (zd * zd)); // pure 3D norm
     }
-    
 
     // Fallback
     for (var obs : inputs[cameraIndex].poseObservations) {
@@ -139,34 +138,37 @@ public class Vision extends SubsystemBase {
 
     return latestDist;
   }
-  
-  public double getLatestDistanceToSpecificTagSet(int cameraIndex, int... targetTagIds) {
-      // 1. Bounds checking
-      if (cameraIndex < 0 || cameraIndex >= inputs.length) {
-          return latestDist; // Return a default or cached value
+
+  public double getLatestDistanceToSpecificTagSet(
+      int cameraIndex, int targetTagId1, int targetTagId2, int targetTadId3, int targetTagId4) {
+    // 1. Bounds checking
+    if (cameraIndex < 0 || cameraIndex >= inputs.length) {
+      return latestDist; // Return a default or cached value
+    }
+
+    var targetObs = inputs[cameraIndex].latestTargetObservation;
+
+    // 2. Check if the observation exists and matches any ID in our list
+    if (targetObs != null) {
+      if (targetObs.id() == targetTagId1
+          || targetObs.id() == targetTagId2
+          || targetObs.id() == targetTadId3
+          || targetObs.id() == targetTagId4) {
+        double x = targetObs.transform3d().getX();
+        double y = targetObs.transform3d().getY();
+        double z = targetObs.transform3d().getZ();
+
+        // 3. 3D Distance Formula: d = sqrt(x² + y² + z²)
+
+        double distance = Math.sqrt(x * x + y * y + z * z);
+
+        // Update your cached value if needed
+        this.latestDist = distance;
+        return distance;
       }
-  
-      var targetObs = inputs[cameraIndex].latestTargetObservation;
-      
-      // 2. Check if the observation exists and matches any ID in our list
-      if (targetObs != null) {
-          for (int id : targetTagIds) {
-              if (targetObs.id() == id) {
-                  double x = targetObs.transform3d().getX();
-                  double y = targetObs.transform3d().getY();
-                  double z = targetObs.transform3d().getZ();
-  
-                  // 3. 3D Distance Formula: d = sqrt(x² + y² + z²)
-                  double distance = Math.sqrt(x * x + y * y + z * z);
-                  
-                  // Update your cached value if needed
-                  this.latestDist = distance; 
-                  return distance;
-              }
-          }
-      }
-  
-      return latestDist; // Return previous best if no match found
+    }
+
+    return latestDist; // Return previous best if no match found
   }
 
   public double getAngleToSpecificTag(int cameraIndex, int targetTagId) {

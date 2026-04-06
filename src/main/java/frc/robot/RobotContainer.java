@@ -85,6 +85,11 @@ public class RobotContainer {
     // if (tuff > 70 || tuff < 35) {
     //   return 50;
     // }
+
+    if (tuff > 85) {
+      return 50;
+    }
+
     return tuff;
   }
 
@@ -124,7 +129,7 @@ public class RobotContainer {
             () -> {
               if (timer.get() >= indexDelaySeconds) {
                 Index.spinMotor(-0.99);
-                Intake.actuatevoid(-0.3);
+                Intake.actuatevoid(-0.15);
                 Intake.spinTheStuffvoid(0.4);
                 Kicker.spinMotor(0.99);
                 // if (Shooter.getFerry() == 0.7) {
@@ -271,7 +276,7 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "shooterOn",
         Commands.parallel(
-                Shooter.shootAtSpeed(0.72),
+                Shooter.shootAtSpeed(0.65),
                 Commands.run(() -> Index.spinMotor(-0.99)),
                 Commands.run(() -> Intake.actuatevoid(-0.3)),
                 Commands.run(() -> Intake.spinTheStuffvoid(0.4)),
@@ -437,11 +442,12 @@ public class RobotContainer {
             ));
     Hood.setDefaultCommand(
         Commands.run(
-            () ->
-                Logger.recordOutput(
-                    "Expected angle:",
-                    distToDeg(() -> vision.getLatestDistanceToSpecifigTag(0, 10))),
-            Hood));
+                () ->
+                    Logger.recordOutput(
+                        "Expected angle:",
+                        distToDeg(() -> vision.getLatestDistanceToSpecifigTag(0, 10))),
+                Hood)
+            .alongWith(Hood.setHoodDefaultPositionCommand(() -> 0)));
     Climber.setDefaultCommand(Climber.moveClimbMotor(() -> manipulatorController.getLeftY()));
 
     controller
@@ -450,14 +456,20 @@ public class RobotContainer {
             Hood.setHoodPosCommand(
                     () ->
                         Hood.degToPos(
-                            () -> distToDeg(() -> vision.getLatestDistanceToSpecifigTag(0, 10))))
+                            () ->
+                                distToDeg(
+                                    () ->
+                                        vision.getLatestDistanceToSpecificTagSet(0, 10, 9, 3, 4))))
                 .alongWith(
                     Commands.run(
                         () ->
                             Logger.recordOutput(
                                 "Expected angle:",
-                                distToDeg(() -> vision.getLatestDistanceToSpecifigTag(0, 10))))));
-
+                                distToDeg(
+                                    () ->
+                                        vision.getLatestDistanceToSpecificTagSet(
+                                            0, 10, 9, 3, 4))))));
+    controller.y().onTrue(Commands.run(() -> Hood.resetHood()));
     // Hood - Ferry Mode
     manipulatorController
         .povUp()
@@ -544,7 +556,7 @@ public class RobotContainer {
                 }));
     manipulatorController.leftTrigger().onFalse(Commands.runOnce(() -> kanye.stop()));
     // Hood - Do  m mhgbn9njjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjqwn Flat
-    manipulatorController.leftTrigger().whileTrue(shootWithIndexDelay(() -> 0.70, 1.0, kanye));
+    manipulatorController.leftTrigger().whileTrue(shootWithIndexDelay(() -> 0.60, 1.0, kanye));
     // if (Drive      rStation.getAlliance().get() == Alliance.Red) {
     manipulatorController.povRight().whileTrue(Hood.setHoodPosCommand(() -> -3.95));
 
