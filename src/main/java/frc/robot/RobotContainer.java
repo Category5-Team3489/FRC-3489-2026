@@ -469,7 +469,7 @@ public class RobotContainer {
                                     () ->
                                         vision.getLatestDistanceToSpecificTagSet(
                                             0, 10, 9, 3, 4))))));
-    controller.y().onTrue(Commands.run(() -> Hood.resetHood()));
+    // controller.y().onTrue(Commands.run(() -> Hood.resetHood()));
     // Hood - Ferry Mode
     manipulatorController
         .povUp()
