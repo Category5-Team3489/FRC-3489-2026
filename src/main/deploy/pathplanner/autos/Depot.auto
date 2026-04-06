@@ -5,15 +5,9 @@
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "shooterOn"
-          }
-        },
-        {
           "type": "path",
           "data": {
-            "pathName": "3489-DPT-1"
+            "pathName": "Depot"
           }
         },
         {
@@ -37,7 +31,7 @@
         {
           "type": "named",
           "data": {
-            "name": "shooterOn"
+            "name": "shooterOnLong"
           }
         }
       ]
