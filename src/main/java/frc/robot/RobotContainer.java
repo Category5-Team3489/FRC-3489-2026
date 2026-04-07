@@ -395,7 +395,9 @@ public class RobotContainer {
               manipRightTriggerTimer.reset();
               manipRightTriggerTimer.start();
             }));
-    manipulatorController.leftTrigger().onTrue(Index.agitate().alongWith(Commands.run(() -> Kicker.spinMotor(7))).withTimeout(2));
+    manipulatorController
+        .leftTrigger()
+        .onTrue(Index.agitate().alongWith(Commands.run(() -> Kicker.spinMotor(7))).withTimeout(2));
     manipulatorController.rightBumper().whileTrue(Commands.run(() -> Index.spinMotor(1)));
     manipulatorController.leftBumper().whileTrue(Commands.run(() -> Index.spinMotor(-1)));
     manipulatorController.povUp().whileTrue(Intake.actuate(0.6));
@@ -613,7 +615,7 @@ public class RobotContainer {
                 }));
     manipulatorController.leftTrigger().onFalse(Commands.runOnce(() -> kanye.stop()));
     // Hood - Do  m mhgbn9njjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjqwn Flat
-    manipulatorController.leftTrigger().whileTrue(shootWithIndexDelay(() -> 0.60, 1.0, kanye));
+    manipulatorController.leftTrigger().whileTrue(shootWithIndexDelay(() -> 0.66, 1.0, kanye));
     // if (Drive      rStation.getAlliance().get() == Alliance.Red) {
     manipulatorController.povRight().whileTrue(Hood.setHoodPosCommand(() -> -3.95));
 
