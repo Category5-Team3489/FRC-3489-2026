@@ -321,8 +321,7 @@ public class RobotContainer {
                 Commands.run(() -> Index.spinMotor(-0.99)),
                 Commands.run(() -> Intake.actuatevoid(-0.3)),
                 Commands.run(() -> Intake.spinTheStuffvoid(0.4)),
-                Commands.run(() -> Kicker.spinMotor(0.99)))
-            .withTimeout(2));
+                Commands.run(() -> Kicker.spinMotor(0.99))));
     NamedCommands.registerCommand(
         "autoHood",
         Hood.setHoodPosCommand(
