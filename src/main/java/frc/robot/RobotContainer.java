@@ -154,7 +154,9 @@ public class RobotContainer {
               Kicker.spinMotor(0.0);
               //   Hood.setHoodDefaultPositionVoid();
             },
-            Index));
+            Index,
+            Intake,
+            Kicker));
   }
 
   private Command resetDriveHeading() {
@@ -307,16 +309,23 @@ public class RobotContainer {
     NamedCommands.registerCommand("intakeOut", Intake.extend().withTimeout(2));
     NamedCommands.registerCommand(
         "shooterOnLong",
-        Commands.parallel(Shooter.shootAtSpeed(1), Commands.run(() -> Index.spinMotor(-0.99)))
+        Commands.parallel(
+                Shooter.shootAtSpeed(1),
+                Commands.run(() -> Index.spinMotor(-0.99), Index),
+                Commands.run(() -> Kicker.spinMotor(0.99), Kicker))
             .withTimeout(10));
     NamedCommands.registerCommand(
         "shooterOnShortKanye",
         Commands.parallel(
             Shooter.shootAtSpeed(0.72),
-            Commands.run(() -> Index.spinMotor(-0.99)),
-            Commands.run(() -> Intake.actuatevoid(-0.3)),
-            Commands.run(() -> Intake.spinTheStuffvoid(0.4)),
-            Commands.run(() -> Kicker.spinMotor(0.99))));
+            Commands.run(() -> Index.spinMotor(-0.99), Index),
+            Commands.run(
+                () -> {
+                  Intake.actuatevoid(-0.3);
+                  Intake.spinTheStuffvoid(0.4);
+                },
+                Intake),
+            Commands.run(() -> Kicker.spinMotor(0.99), Kicker)));
     NamedCommands.registerCommand(
         "autoHood",
         Hood.setHoodPosCommand(
