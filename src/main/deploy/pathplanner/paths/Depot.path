@@ -53,15 +53,25 @@
   "eventMarkers": [
     {
       "name": "intakeOut",
-      "waypointRelativePos": 0.22857142857142876,
+      "waypointRelativePos": 0.019748653500897644,
       "endWaypointRelativePos": null,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "intakeOut"
+        }
+      }
     },
     {
       "name": "intakeOn",
       "waypointRelativePos": 0.7404761904761906,
       "endWaypointRelativePos": 1.0,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "intakeOn"
+        }
+      }
     }
   ],
   "globalConstraints": {
