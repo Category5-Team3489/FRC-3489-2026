@@ -182,16 +182,20 @@ public class Vision extends SubsystemBase {
       // You can pull the transform once to keep the code clean
       var transform = targetObs.transform3d();
       double xd = transform.getX();
-      double yd = transform.getY();
+      double yd = transform.getY() - 0.5;
 
       // 3. Use Math.atan2(y, x)
       // This is safer than y/x because it handles the 90-degree case (x=0)
       // and keeps the correct sign for all quadrants.
-      double angleRadians = Math.atan2(yd, xd);
+      double angleRadians = Math.toDegrees(Math.abs(Math.atan2(Math.abs(yd), Math.abs(xd))));
+
+      if (yd < 0) {
+        angleRadians *= -1;
+      }
 
       // 4. Conversion: Math.atan2 returns Radians.
       // Most FRC gyro/drivetrain logic uses Degrees.
-      return Math.toDegrees(angleRadians);
+      return angleRadians;
     }
 
     return -1.0;
@@ -219,7 +223,8 @@ public class Vision extends SubsystemBase {
   @Override
   public void periodic() {
     Logger.recordOutput("Vision ID 0:", getDistanceToSpecificTag(0, 10));
-    Logger.recordOutput("Vision ID 1:", getDistanceToSpecificTag(1, 10));
+    Logger.recordOutput("Vision ID hi2:", getDistanceToSpecificTag(0, 3));
+    Logger.recordOutput("Vision hi:", getAngleToSpecificTag(0, 3));
 
     for (int i = 0; i < io.length; i++) {
       io[i].updateInputs(inputs[i]);

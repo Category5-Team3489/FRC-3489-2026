@@ -70,6 +70,7 @@ public class RobotContainer {
   private final Elastic notif = new Elastic();
   private final Timer manipRightTriggerTimer = new Timer();
   private final Drive drive;
+  private final Drive kanyeDrive;
   private final Vision vision;
   private final intake Intake;
   private final shooter Shooter;
@@ -174,6 +175,15 @@ public class RobotContainer {
         // Real robot, instantiate hardware IO implementations
         // ModuleIOTalonF
         Turrent = new turrent(new turrentIOTalonFX(15, 18));
+
+        kanyeDrive =
+            new Drive(
+                new GyroIO() {},
+                new ModuleIO() {},
+                new ModuleIO() {},
+                new ModuleIO() {},
+                new ModuleIO() {});
+
         drive =
             new Drive(
                 new GyroIOPigeon2(),
@@ -184,7 +194,7 @@ public class RobotContainer {
         // Real robot, instantiate hardware IO implementations
         vision =
             new Vision(
-                drive::addVisionMeasurement,
+                kanyeDrive::addVisionMeasurement,
                 // new VisionIOPhotonVision(camera0Name, robotToCamera0),
                 // new VisionIOPhotonVision(camera1Name, robotToCamera1),
                 new VisionIOPhotonVision(camera2Name, robotToCamera2));
@@ -223,6 +233,14 @@ public class RobotContainer {
         Intake = new intake(new intakeIOSim());
         Index = new index(new indexIOSim());
         Kicker = new kicker(new kickerIOSim());
+
+        kanyeDrive =
+            new Drive(
+                new GyroIO() {},
+                new ModuleIO() {},
+                new ModuleIO() {},
+                new ModuleIO() {},
+                new ModuleIO() {});
         // Turrent = new turrent(new turrentIOSim(1));
         // Sim robot, instantiate physics sim IO implementations
         drive =
@@ -235,7 +253,7 @@ public class RobotContainer {
         // Sim robot, instantiate physics sim IO implementations
         vision =
             new Vision(
-                drive::addVisionMeasurement,
+                kanyeDrive::addVisionMeasurement,
                 // new VisionIOPhotonVisionSim(camera0Name, robotToCamera0, drive::getPose),
                 // new VisionIOPhotonVisionSim(camera1Name, robotToCamera1, drive::getPose),
                 new VisionIOPhotonVisionSim(camera2Name, robotToCamera2, drive::getPose));
@@ -252,6 +270,15 @@ public class RobotContainer {
         // Replayed robot, disable IO implementations
         Index = new index(new indexIOTalonFX(14));
         Kicker = new kicker(new kickerIOTalonFX(16));
+
+        kanyeDrive =
+            new Drive(
+                new GyroIO() {},
+                new ModuleIO() {},
+                new ModuleIO() {},
+                new ModuleIO() {},
+                new ModuleIO() {});
+
         drive =
             new Drive(
                 new GyroIO() {},
@@ -263,7 +290,7 @@ public class RobotContainer {
         // (Use same number of dummy implementations as the real robot)
         vision =
             new Vision(
-                drive::addVisionMeasurement,
+                kanyeDrive::addVisionMeasurement,
                 // new VisionIOPhotonVision(camera0Name, robotToCamera0),
                 // new VisionIOPhotonVision(camera1Name, robotToCamera1),
                 new VisionIOPhotonVision(camera2Name, robotToCamera2));
@@ -431,7 +458,14 @@ public class RobotContainer {
 
     // Default command, normal field-relative drive
     // Use a supplier so the joystick is sampled each scheduler cycle.
-    Turrent.setDefaultCommand(Turrent.turnTurrent(() -> 0));
+    Turrent.setDefaultCommand(Turrent.turnTurrent(() -> manipulatorController.getRightX() * 0.2));
+    controller
+        .rightBumper()
+        .whileTrue(
+            Commands.run(
+                () ->
+                    Turrent.setTurrentAngle(
+                        () -> Turrent.posToDeg(() -> vision.getAngleToSpecificTag(0, 3) * 4))));
     Index.setDefaultCommand(Commands.run(() -> Index.spinMotor(0), Index));
     Kicker.setDefaultCommand(Commands.run(() -> Kicker.spinMotor(0), Kicker));
     Shooter.setDefaultCommand(Shooter.shootAtSpeed(0.1));
@@ -445,8 +479,7 @@ public class RobotContainer {
                 () ->
                     Logger.recordOutput(
                         "Expected angle:",
-                        distToDeg(() -> vision.getLatestDistanceToSpecifigTag(0, 10))),
-                Hood)
+                        distToDeg(() -> vision.getLatestDistanceToSpecifigTag(0, 10))))
             .alongWith(Hood.setHoodDefaultPositionCommand(() -> 0)));
     Climber.setDefaultCommand(Climber.moveClimbMotor(() -> manipulatorController.getLeftY()));
 
@@ -561,21 +594,12 @@ public class RobotContainer {
     manipulatorController.povRight().whileTrue(Hood.setHoodPosCommand(() -> -3.95));
 
     // Drive Controller Configuration
-    if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) {
-      drive.setDefaultCommand(
-          DriveCommands.joystickDrive(
-              drive,
-              () -> -controller.getLeftY(),
-              () -> -controller.getLeftX(),
-              () -> -controller.getRightX()));
-    } else {
-      drive.setDefaultCommand(
+    drive.setDefaultCommand(
           DriveCommands.joystickDrive(
               drive,
               () -> controller.getLeftY(),
               () -> controller.getLeftX(),
               () -> -controller.getRightX()));
-    }
 
     controller.povUp().whileTrue(DriveCommands.joystickDrive(drive, () -> 10, () -> 0, () -> 0));
     controller.povDown().whileTrue(DriveCommands.joystickDrive(drive, () -> -10, () -> 0, () -> 0));
