@@ -13,8 +13,6 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
@@ -318,7 +316,9 @@ public class RobotContainer {
                 Commands.run(() -> Intake.spinTheStuffvoid(0.4)),
                 Commands.run(() -> Kicker.spinMotor(0.99)))
             .withTimeout(2));
-    NamedCommands.registerCommand("autoHood", Hood.setHoodPosCommand(
+    NamedCommands.registerCommand(
+        "autoHood",
+        Hood.setHoodPosCommand(
             () ->
                 Hood.degToPos(
                     () -> distToDeg(() -> vision.getLatestDistanceToSpecifigTag(0, 10)))));
@@ -609,11 +609,11 @@ public class RobotContainer {
 
     // Drive Controller Configuration
     drive.setDefaultCommand(
-          DriveCommands.joystickDrive(
-              drive,
-              () -> controller.getLeftY(),
-              () -> controller.getLeftX(),
-              () -> -controller.getRightX()));
+        DriveCommands.joystickDrive(
+            drive,
+            () -> controller.getLeftY(),
+            () -> controller.getLeftX(),
+            () -> -controller.getRightX()));
 
     controller.povUp().whileTrue(DriveCommands.joystickDrive(drive, () -> 10, () -> 0, () -> 0));
     controller.povDown().whileTrue(DriveCommands.joystickDrive(drive, () -> -10, () -> 0, () -> 0));
