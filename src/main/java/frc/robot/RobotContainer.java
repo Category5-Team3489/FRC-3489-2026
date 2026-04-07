@@ -395,7 +395,7 @@ public class RobotContainer {
               manipRightTriggerTimer.reset();
               manipRightTriggerTimer.start();
             }));
-    manipulatorController.leftTrigger().onTrue(Index.agitate());
+    manipulatorController.leftTrigger().onTrue(Index.agitate().alongWith(Commands.run(() -> Kicker.spinMotor(7))).withTimeout(2));
     manipulatorController.rightBumper().whileTrue(Commands.run(() -> Index.spinMotor(1)));
     manipulatorController.leftBumper().whileTrue(Commands.run(() -> Index.spinMotor(-1)));
     manipulatorController.povUp().whileTrue(Intake.actuate(0.6));
