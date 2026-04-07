@@ -307,21 +307,16 @@ public class RobotContainer {
     NamedCommands.registerCommand("intakeOut", Intake.extend().withTimeout(2));
     NamedCommands.registerCommand(
         "shooterOnLong",
-        Commands.parallel(
-                Shooter.shootAtSpeed(0.65),
-                Commands.run(() -> Index.spinMotor(-0.99)),
-                Commands.run(() -> Intake.actuatevoid(-0.3)),
-                Commands.run(() -> Intake.spinTheStuffvoid(0.4)),
-                Commands.run(() -> Kicker.spinMotor(0.99)))
+        Commands.parallel(Shooter.shootAtSpeed(1), Commands.run(() -> Index.spinMotor(-0.99)))
             .withTimeout(10));
     NamedCommands.registerCommand(
         "shooterOnShortKanye",
         Commands.parallel(
-                Shooter.shootAtSpeed(0.72),
-                Commands.run(() -> Index.spinMotor(-0.99)),
-                Commands.run(() -> Intake.actuatevoid(-0.3)),
-                Commands.run(() -> Intake.spinTheStuffvoid(0.4)),
-                Commands.run(() -> Kicker.spinMotor(0.99))));
+            Shooter.shootAtSpeed(0.72),
+            Commands.run(() -> Index.spinMotor(-0.99)),
+            Commands.run(() -> Intake.actuatevoid(-0.3)),
+            Commands.run(() -> Intake.spinTheStuffvoid(0.4)),
+            Commands.run(() -> Kicker.spinMotor(0.99))));
     NamedCommands.registerCommand(
         "autoHood",
         Hood.setHoodPosCommand(
