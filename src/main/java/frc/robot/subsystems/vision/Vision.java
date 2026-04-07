@@ -74,7 +74,6 @@ public class Vision extends SubsystemBase {
 
       return Math.sqrt((xd * xd) + (yd * yd) + (zd * zd)); // pure 3D norm
     }
-    
 
     // Fallback
     for (var obs : inputs[cameraIndex].poseObservations) {
@@ -139,34 +138,37 @@ public class Vision extends SubsystemBase {
 
     return latestDist;
   }
-  
-  public double getLatestDistanceToSpecificTagSet(int cameraIndex, int... targetTagIds) {
-      // 1. Bounds checking
-      if (cameraIndex < 0 || cameraIndex >= inputs.length) {
-          return latestDist; // Return a default or cached value
+
+  public double getLatestDistanceToSpecificTagSet(
+      int cameraIndex, int targetTagId1, int targetTagId2, int targetTadId3, int targetTagId4) {
+    // 1. Bounds checking
+    if (cameraIndex < 0 || cameraIndex >= inputs.length) {
+      return latestDist; // Return a default or cached value
+    }
+
+    var targetObs = inputs[cameraIndex].latestTargetObservation;
+
+    // 2. Check if the observation exists and matches any ID in our list
+    if (targetObs != null) {
+      if (targetObs.id() == targetTagId1
+          || targetObs.id() == targetTagId2
+          || targetObs.id() == targetTadId3
+          || targetObs.id() == targetTagId4) {
+        double x = targetObs.transform3d().getX();
+        double y = targetObs.transform3d().getY();
+        double z = targetObs.transform3d().getZ();
+
+        // 3. 3D Distance Formula: d = sqrt(x² + y² + z²)
+
+        double distance = Math.sqrt(x * x + y * y + z * z);
+
+        // Update your cached value if needed
+        this.latestDist = distance;
+        return distance;
       }
-  
-      var targetObs = inputs[cameraIndex].latestTargetObservation;
-      
-      // 2. Check if the observation exists and matches any ID in our list
-      if (targetObs != null) {
-          for (int id : targetTagIds) {
-              if (targetObs.id() == id) {
-                  double x = targetObs.transform3d().getX();
-                  double y = targetObs.transform3d().getY();
-                  double z = targetObs.transform3d().getZ();
-  
-                  // 3. 3D Distance Formula: d = sqrt(x² + y² + z²)
-                  double distance = Math.sqrt(x * x + y * y + z * z);
-                  
-                  // Update your cached value if needed
-                  this.latestDist = distance; 
-                  return distance;
-              }
-          }
-      }
-  
-      return latestDist; // Return previous best if no match found
+    }
+
+    return latestDist; // Return previous best if no match found
   }
 
   public double getAngleToSpecificTag(int cameraIndex, int targetTagId) {
@@ -180,16 +182,20 @@ public class Vision extends SubsystemBase {
       // You can pull the transform once to keep the code clean
       var transform = targetObs.transform3d();
       double xd = transform.getX();
-      double yd = transform.getY();
+      double yd = transform.getY() - 0.5;
 
       // 3. Use Math.atan2(y, x)
       // This is safer than y/x because it handles the 90-degree case (x=0)
       // and keeps the correct sign for all quadrants.
-      double angleRadians = Math.atan2(yd, xd);
+      double angleRadians = Math.toDegrees(Math.abs(Math.atan2(Math.abs(yd), Math.abs(xd))));
+
+      if (yd < 0) {
+        angleRadians *= -1;
+      }
 
       // 4. Conversion: Math.atan2 returns Radians.
       // Most FRC gyro/drivetrain logic uses Degrees.
-      return Math.toDegrees(angleRadians);
+      return angleRadians;
     }
 
     return -1.0;
@@ -217,7 +223,8 @@ public class Vision extends SubsystemBase {
   @Override
   public void periodic() {
     Logger.recordOutput("Vision ID 0:", getDistanceToSpecificTag(0, 10));
-    Logger.recordOutput("Vision ID 1:", getDistanceToSpecificTag(1, 10));
+    Logger.recordOutput("Vision ID hi2:", getDistanceToSpecificTag(0, 3));
+    Logger.recordOutput("Vision hi:", getAngleToSpecificTag(0, 3));
 
     for (int i = 0; i < io.length; i++) {
       io[i].updateInputs(inputs[i]);
