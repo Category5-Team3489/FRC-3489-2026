@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.0,
-        "y": 7.0
+        "x": 0.6066050852918878,
+        "y": 5.9579571553602815
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.0,
-        "y": 7.0
+        "x": 0.8181704545454542,
+        "y": 5.735625
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "DPT-End"
     },
     {
       "anchor": {
-        "x": 4.0,
-        "y": 6.0
+        "x": 1.745784090909091,
+        "y": 4.653409090909091
       },
       "prevControl": {
-        "x": 3.0,
-        "y": 6.0
+        "x": 1.1273749999999998,
+        "y": 5.426420454545455
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 154.72900091782896
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 179.49297093908535
   },
   "useDefaultConstraints": true
 }
