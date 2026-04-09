@@ -13,6 +13,8 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
@@ -507,25 +509,7 @@ public class RobotContainer {
             .alongWith(Hood.setHoodDefaultPositionCommand(() -> 0)));
     Climber.setDefaultCommand(Climber.moveClimbMotor(() -> manipulatorController.getLeftY()));
 
-    controller
-        .x()
-        .whileTrue(
-            Hood.setHoodPosCommand(
-                    () ->
-                        Hood.degToPos(
-                            () ->
-                                distToDeg(
-                                    () ->
-                                        vision.getLatestDistanceToSpecificTagSet(0, 10, 9, 3, 4))))
-                .alongWith(
-                    Commands.run(
-                        () ->
-                            Logger.recordOutput(
-                                "Expected angle:",
-                                distToDeg(
-                                    () ->
-                                        vision.getLatestDistanceToSpecificTagSet(
-                                            0, 10, 9, 3, 4))))));
+    
     // controller.y().onTrue(Commands.run(() -> Hood.resetHood()));
     // Hood - Ferry Mode
     manipulatorController
@@ -596,9 +580,39 @@ public class RobotContainer {
               manipRightTriggerTimer.start();
             }));
     shootTrigger.onFalse(Commands.runOnce(() -> manipRightTriggerTimer.stop()));
-    shootTrigger.whileTrue(
-        shootWithIndexDelay(() -> 0.72, 1.0, manipRightTriggerTimer)
-            .alongWith(Hood.setHoodPosCommand(() -> -4.2)));
+    if(DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red){
+        shootTrigger.whileTrue(
+            shootWithIndexDelay(() -> 0.75, 1.0, manipRightTriggerTimer)
+                .alongWith(Commands.run(
+                () ->
+                    Turrent.setTurrentAngle(
+                        () -> Turrent.posToDeg(
+                                        () ->
+                                            vision.getLatestDistanceToSpecificTagSet(0, 10, 9, 8, 5, 11, 2)))),
+                Hood.setHoodPosCommand(
+                    () -> Hood.degToPos(
+                        () -> distToDeg(
+                            () -> vision.getLatestDistanceToSpecificTagSet(0, 10, 9, 8, 5, 11, 2)
+                        )
+                    )
+                )));
+    }else{
+        shootTrigger.whileTrue(
+        shootWithIndexDelay(() -> 0.75, 1.0, manipRightTriggerTimer)
+            .alongWith(Commands.run(
+                () ->
+                    Turrent.setTurrentAngle(
+                        () -> Turrent.posToDeg(
+                                    () ->
+                                        vision.getLatestDistanceToSpecificTagSet(0, 18, 27, 26, 25, 21, 24)))),
+            Hood.setHoodPosCommand(
+                    () -> Hood.degToPos(
+                        () -> distToDeg(
+                            () -> vision.getLatestDistanceToSpecificTagSet(0, 18, 27, 26, 25, 21, 24)
+                        )
+                    )
+                )));
+    }
 
     // Intake - Acctuate In
     manipulatorController.leftBumper().whileTrue(Intake.retract()); // (Intake.actuate(-0.6));
@@ -613,7 +627,40 @@ public class RobotContainer {
                 }));
     manipulatorController.leftTrigger().onFalse(Commands.runOnce(() -> kanye.stop()));
     // Hood - Do  m mhgbn9njjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjqwn Flat
-    manipulatorController.leftTrigger().whileTrue(shootWithIndexDelay(() -> 0.60, 1.0, kanye));
+    if(DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red){
+        manipulatorController.leftTrigger().whileTrue(
+            shootWithIndexDelay(() -> 0.60, 1.0, manipRightTriggerTimer)
+                .alongWith(Commands.run(
+                () ->
+                    Turrent.setTurrentAngle(
+                        () -> Turrent.posToDeg(
+                                        () ->
+                                            vision.getLatestDistanceToSpecificTagSet(0, 10, 9, 8, 5, 11, 2)))),
+                Hood.setHoodPosCommand(
+                    () -> Hood.degToPos(
+                        () -> distToDeg(
+                            () -> vision.getLatestDistanceToSpecificTagSet(0, 10, 9, 8, 5, 11, 2)
+                        )
+                    )
+                )));
+    }else{
+        manipulatorController.leftTrigger().whileTrue(
+        shootWithIndexDelay(() -> 0.60, 1.0, manipRightTriggerTimer)
+            .alongWith(Commands.run(
+                () ->
+                    Turrent.setTurrentAngle(
+                        () -> Turrent.posToDeg(
+                                    () ->
+                                        vision.getLatestDistanceToSpecificTagSet(0, 18, 27, 26, 25, 21, 24)))),
+            Hood.setHoodPosCommand(
+                    () -> Hood.degToPos(
+                        () -> distToDeg(
+                            () -> vision.getLatestDistanceToSpecificTagSet(0, 18, 27, 26, 25, 21, 24)
+                        )
+                    )
+                )));
+    }
+
     // if (Drive      rStation.getAlliance().get() == Alliance.Red) {
     manipulatorController.povRight().whileTrue(Hood.setHoodPosCommand(() -> -3.95));
 
