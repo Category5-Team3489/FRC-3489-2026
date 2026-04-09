@@ -26,7 +26,6 @@ import frc.robot.subsystems.vision.VisionIO.PoseObservationType;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.DoubleSupplier;
-
 import org.littletonrobotics.junction.Logger;
 
 public class Vision extends SubsystemBase {
@@ -142,7 +141,13 @@ public class Vision extends SubsystemBase {
   }
 
   public double getLatestDistanceToSpecificTagSet(
-      int cameraIndex, int targetTagId1, int targetTagId2, int targetTadId3, int targetTagId4, int targetTagId5, int targetTagId6) {
+      int cameraIndex,
+      int targetTagId1,
+      int targetTagId2,
+      int targetTadId3,
+      int targetTagId4,
+      int targetTagId5,
+      int targetTagId6) {
     // 1. Bounds checking
     if (cameraIndex < 0 || cameraIndex >= inputs.length) {
       return latestDist; // Return a default or cached value
@@ -237,20 +242,31 @@ public class Vision extends SubsystemBase {
     return hi;
   }
 
-  public double getLatestAngleToSpecificTagSet(int cameraIndex, int targetTagId1, int targetTagId2, int targetTagId3, int targetTagId4, int targetTagId5, int targetTagId6, DoubleSupplier offset) {
+  public double getLatestAngleToSpecificTagSet(
+      int cameraIndex,
+      int targetTagId1,
+      int targetTagId2,
+      int targetTagId3,
+      int targetTagId4,
+      int targetTagId5,
+      int targetTagId6,
+      DoubleSupplier offset) {
     // 1. Array access syntax fix: inputs[cameraIndex] (no dot before bracket)
     if (cameraIndex < 0 || cameraIndex >= inputs.length) return hi;
 
     var targetObs = inputs[cameraIndex].latestTargetObservation;
 
     // 2. Safety check: make sure targetObs isn't null before calling methods
-    if (targetObs != null && (targetObs.id() == targetTagId1) || (targetObs.id() == targetTagId2) || (targetObs.id() == targetTagId3) || (targetObs.id() == targetTagId4) || (targetObs.id() == targetTagId5) || (targetObs.id() == targetTagId6)) {
+    if (targetObs != null && (targetObs.id() == targetTagId1)
+        || (targetObs.id() == targetTagId2)
+        || (targetObs.id() == targetTagId3)
+        || (targetObs.id() == targetTagId4)
+        || (targetObs.id() == targetTagId5)
+        || (targetObs.id() == targetTagId6)) {
       // You can pull the transform once to keep the code clean
       var transform = targetObs.transform3d();
       double xd = transform.getX();
       double yd = transform.getY() - 0.5;
-      
-      
 
       // 3. Use Math.atan2(y, x)
       // This is safer than y/x because it handles the 90-degree case (x=0)
