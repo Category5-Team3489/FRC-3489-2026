@@ -537,7 +537,7 @@ public class RobotContainer {
         .onTrue(Commands.runOnce(() -> Hood.setDefaultPosition(0), Hood));
 
     // Intake - Intake Fuel
-    manipulatorController.x().whileTrue(Intake.spinTheStuff(1));
+    manipulatorController.x().whileTrue(Intake.spinTheStuff(1.5));
     // manipulatorController.x().whileFalse(Intake.spinTheStuff(0.0));
 
     // Intake - Outtake Fuel
@@ -579,7 +579,7 @@ public class RobotContainer {
     shootTrigger.onFalse(Commands.runOnce(() -> manipRightTriggerTimer.stop()));
     if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) {
       shootTrigger.whileTrue(
-          shootWithIndexDelay(() -> 0.75, 1.0, manipRightTriggerTimer)
+          shootWithIndexDelay(() -> 0.71, 1.0, manipRightTriggerTimer)
               .alongWith(
                   Commands.run(
                       () ->
@@ -599,7 +599,7 @@ public class RobotContainer {
                                               0, 10, 9, 8, 5, 11, 2))))));
     } else {
       shootTrigger.whileTrue(
-          shootWithIndexDelay(() -> 0.75, 1.0, manipRightTriggerTimer)
+          shootWithIndexDelay(() -> 0.71, 1.0, manipRightTriggerTimer)
               .alongWith(
                   Commands.run(
                       () ->
@@ -636,7 +636,7 @@ public class RobotContainer {
       manipulatorController
           .leftTrigger()
           .whileTrue(
-              shootWithIndexDelay(() -> 0.60, 1.0, manipRightTriggerTimer)
+              shootWithIndexDelay(() -> 0.65, 1.0, kanye)
                   .alongWith(
                       Commands.run(
                           () ->
@@ -658,7 +658,7 @@ public class RobotContainer {
       manipulatorController
           .leftTrigger()
           .whileTrue(
-              shootWithIndexDelay(() -> 0.60, 1.0, manipRightTriggerTimer)
+              shootWithIndexDelay(() -> 0.65, 1.0, kanye)
                   .alongWith(
                       Commands.run(
                           () ->

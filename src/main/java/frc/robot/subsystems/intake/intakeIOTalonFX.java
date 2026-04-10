@@ -5,8 +5,6 @@ import static edu.wpi.first.units.Units.Amps;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionDutyCycle;
 import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
-import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
-import com.ctre.phoenix6.controls.VoltageOut;
 import edu.wpi.first.math.MathUtil;
 
 public class intakeIOTalonFX implements intakeIO {
@@ -24,7 +22,7 @@ public class intakeIOTalonFX implements intakeIO {
     intakeMotor = new com.ctre.phoenix6.hardware.TalonFX(intakeMotorPort);
     // CurrentLimitsConfigs limits = new CurrentLimitsConfigs();
     // limits.SupplyCurrentLimitEnable = true;
-    // limits.SupplyCurrentLimit = 40;
+    // limits.SupplyCurrentLimit = 45;
     // intakeMotor.getConfigurator().apply(limits);
 
     actuatorMotor1 = new com.ctre.phoenix6.hardware.TalonFX(actmotorport1);
@@ -50,13 +48,6 @@ public class intakeIOTalonFX implements intakeIO {
 
   @Override
   public void spinThatStuff(double initialSpeed) {
-    double currentSpeed = initialSpeed * 12.0;
-    currentSpeed = MathUtil.clamp(currentSpeed, -10, 10);
-    // VelocityDutyCycle cole = new VelocityDutyCycle(currentSpeed * 100);
-    // intakeMotor.setControl(cole);
-    VelocityTorqueCurrentFOC coleg = new VelocityTorqueCurrentFOC(currentSpeed);
-    VoltageOut cole = new VoltageOut(currentSpeed);
-
     intakeMotor.set(initialSpeed);
   }
 
