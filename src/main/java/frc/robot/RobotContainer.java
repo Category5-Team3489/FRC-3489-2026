@@ -632,51 +632,14 @@ public class RobotContainer {
                 }));
     manipulatorController.leftTrigger().onFalse(Commands.runOnce(() -> kanye.stop()));
     // Hood - Do  m mhgbn9njjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjqwn Flat
-    if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) {
-      manipulatorController
-          .leftTrigger()
-          .whileTrue(
-              shootWithIndexDelay(() -> 0.65, 1.0, kanye)
-                  .alongWith(
-                      Commands.run(
-                          () ->
-                              Turrent.setTurrentAngle(
-                                  () ->
-                                      Turrent.posToDeg(
-                                          () ->
-                                              vision.getLatestDistanceToSpecificTagSet(
-                                                  0, 10, 9, 8, 5, 11, 2)))),
-                      Hood.setHoodPosCommand(
-                          () ->
-                              Hood.degToPos(
-                                  () ->
-                                      distToDeg(
-                                          () ->
-                                              vision.getLatestDistanceToSpecificTagSet(
-                                                  0, 10, 9, 8, 5, 11, 2))))));
-    } else {
-      manipulatorController
-          .leftTrigger()
-          .whileTrue(
-              shootWithIndexDelay(() -> 0.65, 1.0, kanye)
-                  .alongWith(
-                      Commands.run(
-                          () ->
-                              Turrent.setTurrentAngle(
-                                  () ->
-                                      Turrent.posToDeg(
-                                          () ->
-                                              vision.getLatestDistanceToSpecificTagSet(
-                                                  0, 18, 27, 26, 25, 21, 24)))),
-                      Hood.setHoodPosCommand(
-                          () ->
-                              Hood.degToPos(
-                                  () ->
-                                      distToDeg(
-                                          () ->
-                                              vision.getLatestDistanceToSpecificTagSet(
-                                                  0, 18, 27, 26, 25, 21, 24))))));
-    }
+
+    manipulatorController
+        .leftTrigger()
+        .whileTrue(
+            Commands.parallel(
+                Shooter.shootAtSpeed(1).alongWith(Commands.run(() -> Intake.spinTheStuff(1))),
+                Commands.run(() -> Index.spinMotor(-0.99)),
+                Commands.run(() -> Kicker.spinMotor(0.99))));
 
     // if (Drive      rStation.getAlliance().get() == Alliance.Red) {
     manipulatorController.povRight().whileTrue(Hood.setHoodPosCommand(() -> -3.95));
