@@ -15,6 +15,12 @@
           "data": {
             "pathName": "New New New Path"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shooterOn"
+          }
         }
       ]
     }

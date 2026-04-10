@@ -16,28 +16,12 @@
     },
     {
       "anchor": {
-        "x": 1.9429957203994292,
-        "y": 3.937960057061342
+        "x": 1.7747931526390865,
+        "y": 4.998930099857347
       },
       "prevControl": {
-        "x": 1.867070975458839,
-        "y": 4.924981741289031
-      },
-      "nextControl": {
-        "x": 1.9688730385164046,
-        "y": 3.6015549215406564
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 1.9429957203994292,
-        "y": 1.2079029957203988
-      },
-      "prevControl": {
-        "x": 2.1824522917047178,
-        "y": 1.1360660243288145
+        "x": 2.014249723944375,
+        "y": 4.927093128465763
       },
       "nextControl": null,
       "isLocked": false,
@@ -46,26 +30,8 @@
   ],
   "rotationTargets": [],
   "constraintZones": [],
-  "pointTowardsZones": [
-    {
-      "fieldPosition": {
-        "x": 4.6,
-        "y": 4.0
-      },
-      "rotationOffset": 180.0,
-      "minWaypointRelativePos": 0.36942070275403954,
-      "maxWaypointRelativePos": 2.0,
-      "name": "Point Towards Zone"
-    }
-  ],
-  "eventMarkers": [
-    {
-      "name": "shooterOnShortKanye",
-      "waypointRelativePos": 0.41120607787274316,
-      "endWaypointRelativePos": 2.0,
-      "command": null
-    }
-  ],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
@@ -76,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -3.3664606634298404
+    "rotation": 155.85445803957828
   },
   "reversed": false,
   "folder": null,
