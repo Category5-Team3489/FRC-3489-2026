@@ -1,5 +1,6 @@
 package frc.robot.subsystems.shooter;
 
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.hardware.TalonFXS;
 import java.util.function.DoubleSupplier;
 
@@ -11,6 +12,11 @@ public class shooterIOTalonFXS implements shooterIO {
 
   public shooterIOTalonFXS(int shooterMotorPort) {
     shooterMotor = new TalonFXS(shooterMotorPort);
+
+    CurrentLimitsConfigs limits = new CurrentLimitsConfigs();
+    limits.SupplyCurrentLimitEnable = true;
+    limits.SupplyCurrentLimit = 45;
+    shooterMotor.getConfigurator().apply(limits);
   }
 
   @Override

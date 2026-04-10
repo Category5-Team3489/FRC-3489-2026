@@ -2,6 +2,7 @@ package frc.robot.subsystems.intake;
 
 import static edu.wpi.first.units.Units.Amps;
 
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionDutyCycle;
 import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
@@ -20,10 +21,10 @@ public class intakeIOTalonFX implements intakeIO {
 
   public intakeIOTalonFX(int intakeMotorPort, int actmotorport1, int actmotorport2) {
     intakeMotor = new com.ctre.phoenix6.hardware.TalonFX(intakeMotorPort);
-    // CurrentLimitsConfigs limits = new CurrentLimitsConfigs();
-    // limits.SupplyCurrentLimitEnable = true;
-    // limits.SupplyCurrentLimit = 45;
-    // intakeMotor.getConfigurator().apply(limits);
+    CurrentLimitsConfigs limits = new CurrentLimitsConfigs();
+    limits.SupplyCurrentLimitEnable = true;
+    limits.SupplyCurrentLimit = 45;
+    intakeMotor.getConfigurator().apply(limits);
 
     actuatorMotor1 = new com.ctre.phoenix6.hardware.TalonFX(actmotorport1);
     actuatorMotor2 = new com.ctre.phoenix6.hardware.TalonFX(actmotorport2);
