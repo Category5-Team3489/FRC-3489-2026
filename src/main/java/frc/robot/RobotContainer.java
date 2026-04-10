@@ -551,8 +551,12 @@ public class RobotContainer {
         .b()
         .whileTrue(
             Commands.repeatingSequence(
-                Commands.run(() -> Index.spinMotor(-0.6), Index).withTimeout(1),
-                Commands.run(() -> Index.spinMotor(0.6), Index).withTimeout(1)));
+                Commands.run(() -> Index.spinMotor(-0.6), Index)
+                    .withTimeout(1)
+                    .alongWith(Commands.run(() -> Kicker.spinMotor(-0.99))),
+                Commands.run(() -> Index.spinMotor(0.6), Index)
+                    .withTimeout(1)
+                    .alongWith(Commands.run(() -> Kicker.spinMotor(-0.99)))));
 
     // Climber - Extend / Retract
     manipulatorController.a().onTrue(Climber.toggleClimberPosition().withTimeout(3));
