@@ -15,7 +15,7 @@ public class shooterIOTalonFXS implements shooterIO {
 
     CurrentLimitsConfigs limits = new CurrentLimitsConfigs();
     limits.SupplyCurrentLimitEnable = true;
-    limits.SupplyCurrentLimit = 45;
+    limits.SupplyCurrentLimit = 80;
     shooterMotor.getConfigurator().apply(limits);
   }
 
