@@ -39,7 +39,7 @@ public class shooter extends SubsystemBase {
     return Commands.run(() -> io.shootBall(speed * this.ferry), this);
   }
 
-  public void tryShoot(double speed){
+  public void tryShoot(double speed) {
     io.shootBall(speed);
   }
 
