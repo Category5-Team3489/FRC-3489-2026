@@ -311,11 +311,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("intakeOut", Intake.extend().withTimeout(2));
     NamedCommands.registerCommand(
         "shooterOnLong",
-        Commands.parallel(
-                Shooter.shootAtSpeed(1),
-                Commands.run(() -> Index.spinMotor(-0.99), Index),
-                Commands.run(() -> Kicker.spinMotor(0.99), Kicker))
-            .withTimeout(10));
+        Commands.run(() -> Shooter.tryShoot(1), Shooter));
     NamedCommands.registerCommand(
         "shooterOnShortKanye",
         Commands.parallel(

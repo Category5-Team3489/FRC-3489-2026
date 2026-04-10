@@ -39,6 +39,10 @@ public class shooter extends SubsystemBase {
     return Commands.run(() -> io.shootBall(speed * this.ferry), this);
   }
 
+  public void tryShoot(double speed){
+    io.shootBall(speed);
+  }
+
   // Overload that accepts a DoubleSupplier so the controller axis can be
   // sampled every scheduler run. The supplier should return volts (0..12)
   // if your IO implementation expects voltage; multiply the axis by 12 in

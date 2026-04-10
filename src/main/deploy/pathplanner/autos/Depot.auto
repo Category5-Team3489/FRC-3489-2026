@@ -15,24 +15,6 @@
           "data": {
             "pathName": "New New New Path"
           }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "autoHood"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "autoTurret"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "shooterOnLong"
-          }
         }
       ]
     }
