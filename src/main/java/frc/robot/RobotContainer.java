@@ -637,7 +637,8 @@ public class RobotContainer {
         .leftTrigger()
         .whileTrue(
             Commands.parallel(
-                Shooter.shootAtSpeed(1).alongWith(Commands.run(() -> Intake.spinTheStuff(1))),
+                Shooter.shootAtSpeed(1),
+                Intake.spinTheStuff(1.5),
                 Commands.run(() -> Index.spinMotor(-0.99)),
                 Commands.run(() -> Kicker.spinMotor(0.99))));
 
