@@ -161,6 +161,20 @@ public class RobotContainer {
             Kicker));
   }
 
+  private Command autoShootCommand(
+      double shooterSpeed, double indexDelaySeconds, double timeoutSeconds) {
+    Timer autoShootTimer = new Timer();
+
+    return shootWithIndexDelay(() -> shooterSpeed, indexDelaySeconds, autoShootTimer)
+        .beforeStarting(autoShootTimer::restart)
+        .finallyDo(
+            () -> {
+              autoShootTimer.stop();
+              autoShootTimer.reset();
+            })
+        .withTimeout(timeoutSeconds);
+  }
+
   private Command resetDriveHeading() {
     return Commands.runOnce(
             () -> drive.setPose(new Pose2d(drive.getPose().getTranslation(), Rotation2d.kZero)),
@@ -309,21 +323,9 @@ public class RobotContainer {
                       Logger.recordOutput("Is intaking?", true);
                     })));
     NamedCommands.registerCommand("intakeOut", Intake.extend().withTimeout(2));
-    NamedCommands.registerCommand(
-        "shooterOnLong", Commands.run(() -> Shooter.tryShoot(1), Shooter));
-    NamedCommands.registerCommand(
-        "shooterOnShortKanye",
-        Commands.parallel(
-                Shooter.shootAtSpeed(0.72),
-                Commands.run(() -> Index.spinMotor(-0.99), Index),
-                Commands.run(
-                    () -> {
-                      Intake.actuatevoid(-0.3);
-                      Intake.spinTheStuffvoid(0.4);
-                    },
-                    Intake),
-                Commands.run(() -> Kicker.spinMotor(0.99), Kicker))
-            .withTimeout(10));
+    NamedCommands.registerCommand("shooterOnLong", autoShootCommand(1.0, 1.0, 10.0));
+    NamedCommands.registerCommand("shooterOnShortKanye", autoShootCommand(0.72, 1.0, 10.0));
+    NamedCommands.registerCommand("autoShoot", autoShootCommand(0.72, 1.0, 10.0));
     NamedCommands.registerCommand(
         "autoHood",
         Hood.setHoodPosCommand(
