@@ -267,7 +267,7 @@ public class Vision extends SubsystemBase {
 
       // need to rotate the second observation into the first camera's frame of reference if they are not already aligned
 
-      transform2 = transform2.plus(new Transform3d(0, 0, 0, new Rotation3d(0, Math.toDegrees(180), 0))); // example rotation, adjust as needed
+      transform2 = transform2.plus(new Transform3d(0, 0, -0.5, new Rotation3d(0, Math.toRadians(180), 0))); // example rotation, adjust as needed
 
       double xd2 = transform2.getX();
       double yd2 = transform2.getY();
