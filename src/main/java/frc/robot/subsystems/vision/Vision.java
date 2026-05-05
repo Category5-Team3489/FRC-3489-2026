@@ -242,6 +242,60 @@ public class Vision extends SubsystemBase {
     return hi;
   }
 
+  public double getLatestAngleToSpecificTagMultCam(int cameraIndex, int camIndex2, int targetTagId) {
+    // 1. Array access syntax fix: inputs[cameraIndex] (no dot before bracket)
+    if (cameraIndex < 0 || cameraIndex >= inputs.length) return hi;
+
+    var targetObs = inputs[cameraIndex].latestTargetObservation;
+    var secondObs = inputs[camIndex2].latestTargetObservation;
+
+    // 2. Safety check: make sure targetObs isn't null before calling methods
+    if ((targetObs != null && targetObs.id() == targetTagId) || (secondObs != null && secondObs.id() == targetTagId)) {
+      // You can pull the transform once to keep the code clean
+      var transform = (targetObs != null && targetObs.id() == targetTagId) ? targetObs.transform3d() : (secondObs != null && secondObs.id() == targetTagId) ? secondObs.transform3d() : null;
+      var transform2 = (secondObs != null && secondObs.id() == targetTagId) ? secondObs.transform3d() : (targetObs != null && targetObs.id() == targetTagId) ? targetObs.transform3d() : null;
+
+      if(transform == null || transform2 == null) {
+        return hi; // Return previous value if we can't get a valid transform
+      }
+
+      // transform both observations to the same reference frame (e.g., robot center)
+      transform = transform.plus(new Transform3d(-0.5, -0.2, 0, new Rotation3d(0, 0, 0)));
+
+      double xd = transform.getX();
+      double yd = transform.getY();
+
+      // need to rotate the second observation into the first camera's frame of reference if they are not already aligned
+
+      transform2 = transform2.plus(new Transform3d(0, 0, 0, new Rotation3d(0, Math.toDegrees(180), 0))); // example rotation, adjust as needed
+
+      double xd2 = transform2.getX();
+      double yd2 = transform2.getY();
+
+      // 3. Use Math.atan2(y, x)
+      // This is safer than y/x because it handles the 90-degree case (x=0)
+      // and keeps the correct sign for all quadrants.
+      double angleRadians = Math.toDegrees(Math.abs(Math.atan2(Math.abs(yd), Math.abs(xd))));
+
+      double angleRadians2 = Math.toDegrees(Math.abs(Math.atan2(Math.abs(yd2), Math.abs(xd2))));
+
+      if (yd < 0) {
+        angleRadians *= -1;
+      }
+
+      if (yd2 < 0) {
+        angleRadians2 *= -1;
+      }
+
+      // 4. Conversion: Math.atan2 returns Radians.
+      // Most FRC gyro/drivetrain logic uses Degrees.
+      hi = (angleRadians + angleRadians2)/2;
+    }
+
+    return hi;
+  }
+
+
   public double getLatestAngleToSpecificTagSet(
       int cameraIndex,
       int targetTagId1,
