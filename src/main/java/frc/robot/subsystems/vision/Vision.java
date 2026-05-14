@@ -17,6 +17,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.Alert;
@@ -93,13 +94,20 @@ public class Vision extends SubsystemBase {
       int cameraIndex2,
       Transform3d fromCenter2,
       double theta2) {
+    if (cameraIndex1 < 0
+        || cameraIndex1 >= inputs.length
+        || cameraIndex2 < 0
+        || cameraIndex2 >= inputs.length) {
+      return new Transform3d();
+    }
+
     var targetObs1 = inputs[cameraIndex1].latestTargetObservation;
 
     Transform3d targetObs1TRANSFORM = targetObs1.transform3d();
 
     Transform3d trueTargetObs1TRANSFORM = targetObs1TRANSFORM.plus(fromCenter1);
 
-    Rotation3d rotation1 = new Rotation3d(0, 0, Math.toDegrees(theta1));
+    Rotation3d rotation1 = new Rotation3d(0, 0, theta1);
     Transform3d true1 = new Transform3d(trueTargetObs1TRANSFORM.getTranslation(), rotation1);
 
     var targetObs2 = inputs[cameraIndex2].latestTargetObservation;
@@ -108,13 +116,13 @@ public class Vision extends SubsystemBase {
 
     Transform3d trueTargetObs2TRANSFORM = targetObs2TRANSFORM.plus(fromCenter2);
 
-    Rotation3d rotation2 = new Rotation3d(0, 0, Math.toDegrees(theta2));
+    Rotation3d rotation2 = new Rotation3d(0, 0, theta2);
     Transform3d true2 = new Transform3d(trueTargetObs2TRANSFORM.getTranslation(), rotation2);
 
     return new Transform3d(
         Meters.of(true1.getX() + (true2.getX() - true1.getX()) * 0.5),
         Meters.of(true1.getY() + (true2.getY() - true1.getY()) * 0.5),
-        Meters.of(true1.getY() + (true2.getY() - true1.getY()) * 0.5),
+        Meters.of(true1.getZ() + (true2.getZ() - true1.getZ()) * 0.5),
         new Rotation3d());
   }
 
@@ -242,59 +250,58 @@ public class Vision extends SubsystemBase {
     return hi;
   }
 
-  public double getLatestAngleToSpecificTagMultCam(int cameraIndex, int camIndex2, int targetTagId) {
-    // 1. Array access syntax fix: inputs[cameraIndex] (no dot before bracket)
-    if (cameraIndex < 0 || cameraIndex >= inputs.length) return hi;
+  /**
+   * Calculates the angle to a tag using two cameras, accounting for their physical positions on the
+   * robot via offsets.
+   *
+   * @param cameraIndex1 Index of first camera
+   * @param offset1 Transform3d from Robot Center to Camera 1
+   * @param cameraIndex2 Index of second camera
+   * @param offset2 Transform3d from Robot Center to Camera 2
+   * @param targetTagId The AprilTag ID to look for
+   */
+  public double getLatestAngleToSpecificTagMultCam(
+      int cameraIndex1,
+      Transform3d offset1,
+      int cameraIndex2,
+      Transform3d offset2,
+      int targetTagId) {
+    if (cameraIndex1 < 0
+        || cameraIndex1 >= inputs.length
+        || cameraIndex2 < 0
+        || cameraIndex2 >= inputs.length) {
+      return hi;
+    }
 
-    var targetObs = inputs[cameraIndex].latestTargetObservation;
-    var secondObs = inputs[camIndex2].latestTargetObservation;
+    var obs1 = inputs[cameraIndex1].latestTargetObservation;
+    var obs2 = inputs[cameraIndex2].latestTargetObservation;
 
-    // 2. Safety check: make sure targetObs isn't null before calling methods
-    if ((targetObs != null && targetObs.id() == targetTagId) || (secondObs != null && secondObs.id() == targetTagId)) {
-      // You can pull the transform once to keep the code clean
-      var transform = (targetObs != null && targetObs.id() == targetTagId) ? targetObs.transform3d() : (secondObs != null && secondObs.id() == targetTagId) ? secondObs.transform3d() : null;
-      var transform2 = (secondObs != null && secondObs.id() == targetTagId) ? secondObs.transform3d() : (targetObs != null && targetObs.id() == targetTagId) ? targetObs.transform3d() : null;
+    Translation3d targetInRobotFrame1 = null;
+    Translation3d targetInRobotFrame2 = null;
 
-      if(transform == null || transform2 == null) {
-        return hi; // Return previous value if we can't get a valid transform
-      }
+    if (obs1 != null && obs1.id() == targetTagId) {
+      targetInRobotFrame1 = offset1.plus(obs1.transform3d()).getTranslation();
+    }
 
-      // transform both observations to the same reference frame (e.g., robot center)
-      transform = transform.plus(new Transform3d(-0.5, -0.2, 0, new Rotation3d(0, 0, 0)));
+    if (obs2 != null && obs2.id() == targetTagId) {
+      targetInRobotFrame2 = offset2.plus(obs2.transform3d()).getTranslation();
+    }
 
-      double xd = transform.getX();
-      double yd = transform.getY();
+    Translation3d finalTargetTranslation = null;
+    if (targetInRobotFrame1 != null && targetInRobotFrame2 != null) {
+      finalTargetTranslation = targetInRobotFrame1.plus(targetInRobotFrame2).div(2.0);
+    } else if (targetInRobotFrame1 != null) {
+      finalTargetTranslation = targetInRobotFrame1;
+    } else if (targetInRobotFrame2 != null) {
+      finalTargetTranslation = targetInRobotFrame2;
+    }
 
-      // need to rotate the second observation into the first camera's frame of reference if they are not already aligned
-
-      transform2 = transform2.plus(new Transform3d(0, 0, -0.5, new Rotation3d(0, Math.toRadians(180), 0))); // example rotation, adjust as needed
-
-      double xd2 = transform2.getX();
-      double yd2 = transform2.getY();
-
-      // 3. Use Math.atan2(y, x)
-      // This is safer than y/x because it handles the 90-degree case (x=0)
-      // and keeps the correct sign for all quadrants.
-      double angleRadians = Math.toDegrees(Math.abs(Math.atan2(Math.abs(yd), Math.abs(xd))));
-
-      double angleRadians2 = Math.toDegrees(Math.abs(Math.atan2(Math.abs(yd2), Math.abs(xd2))));
-
-      if (yd < 0) {
-        angleRadians *= -1;
-      }
-
-      if (yd2 < 0) {
-        angleRadians2 *= -1;
-      }
-
-      // 4. Conversion: Math.atan2 returns Radians.
-      // Most FRC gyro/drivetrain logic uses Degrees.
-      hi = (angleRadians + angleRadians2)/2;
+    if (finalTargetTranslation != null) {
+      hi = Math.toDegrees(Math.atan2(finalTargetTranslation.getY(), finalTargetTranslation.getX()));
     }
 
     return hi;
   }
-
 
   public double getLatestAngleToSpecificTagSet(
       int cameraIndex,
@@ -311,12 +318,13 @@ public class Vision extends SubsystemBase {
     var targetObs = inputs[cameraIndex].latestTargetObservation;
 
     // 2. Safety check: make sure targetObs isn't null before calling methods
-    if (targetObs != null && (targetObs.id() == targetTagId1)
-        || (targetObs.id() == targetTagId2)
-        || (targetObs.id() == targetTagId3)
-        || (targetObs.id() == targetTagId4)
-        || (targetObs.id() == targetTagId5)
-        || (targetObs.id() == targetTagId6)) {
+    if (targetObs != null
+        && (targetObs.id() == targetTagId1
+            || targetObs.id() == targetTagId2
+            || targetObs.id() == targetTagId3
+            || targetObs.id() == targetTagId4
+            || targetObs.id() == targetTagId5
+            || targetObs.id() == targetTagId6)) {
       // You can pull the transform once to keep the code clean
       var transform = targetObs.transform3d();
       double xd = transform.getX();
@@ -333,7 +341,8 @@ public class Vision extends SubsystemBase {
 
       // 4. Conversion: Math.atan2 returns Radians.
       // Most FRC gyro/drivetrain logic uses Degrees.
-      return hi += offset.getAsDouble();
+      hi = angleRadians + offset.getAsDouble();
+      return hi;
     }
 
     return hi;
