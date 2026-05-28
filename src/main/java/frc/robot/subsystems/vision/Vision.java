@@ -247,7 +247,7 @@ public double getLatestAngleToSpecificTagMultCam(
 
   Translation3d finalTargetTranslation = null;
   if (targetInRobotFrame1 != null && targetInRobotFrame2 != null) {
-    finalTargetTranslation = targetInRobotFrame1.plus(targetInRobotFrame2).div(2.0);
+    finalTargetTranslation = (targetInRobotFrame1.plus(targetInRobotFrame2)).div(2.0);
   } else if (targetInRobotFrame1 != null) {
     finalTargetTranslation = targetInRobotFrame1;
   } else if (targetInRobotFrame2 != null) {
