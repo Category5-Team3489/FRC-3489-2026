@@ -321,8 +321,8 @@ public class Vision extends SubsystemBase {
     return (ids != null && ids.length > 0) ? ids[0] : -1;
   }
 
-  private static Transform3d robotToCameraa0 = new Transform3d(new Translation3d(-0.3048, 0.0, 0.0952), new Rotation3d(0.0, -1.570796, Math.PI));
-  private static Transform3d robotToCameraa1 = new Transform3d(new Translation3d(0.3048, 0.0, 0.0952), new Rotation3d(0.0, 1.570796, 0.0));
+  private static Transform3d robotToCameraa0 = new Transform3d(new Translation3d(0.2286, 0.0, 0.0952), new Rotation3d(0.0, 0, Math.PI));
+  private static Transform3d robotToCameraa1 = new Transform3d(new Translation3d(-0.2032, 0.0, 0.0952), new Rotation3d(0.0, 0, 0.0));
 
   // private hood Hood;
   @Override
