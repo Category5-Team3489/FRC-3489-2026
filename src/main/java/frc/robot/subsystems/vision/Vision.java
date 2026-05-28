@@ -94,28 +94,35 @@ public class Vision extends SubsystemBase {
       int cameraIndex2,
       Transform3d fromCenter2,
       double theta2) {
+    if (cameraIndex1 < 0
+        || cameraIndex1 >= inputs.length
+        || cameraIndex2 < 0
+        || cameraIndex2 >= inputs.length) {
+      return new Transform3d();
+    }
+
     var targetObs1 = inputs[cameraIndex1].latestTargetObservation;
 
     Transform3d targetObs1TRANSFORM = targetObs1.transform3d();
 
-    Transform3d trueTargetObs1TRANSFORM = targetObs1TRANSFORM.plus(fromCenter1);
+    Transform3d trueTargetObs1TRANSFORM = fromCenter1.plus(targetObs1TRANSFORM);
 
-    Rotation3d rotation1 = new Rotation3d(0, 0, Math.toDegrees(theta1));
+    Rotation3d rotation1 = new Rotation3d(0, 0, theta1);
     Transform3d true1 = new Transform3d(trueTargetObs1TRANSFORM.getTranslation(), rotation1);
 
     var targetObs2 = inputs[cameraIndex2].latestTargetObservation;
 
     Transform3d targetObs2TRANSFORM = targetObs2.transform3d();
 
-    Transform3d trueTargetObs2TRANSFORM = targetObs2TRANSFORM.plus(fromCenter2);
+    Transform3d trueTargetObs2TRANSFORM = fromCenter2.plus(targetObs2TRANSFORM);
 
-    Rotation3d rotation2 = new Rotation3d(0, 0, Math.toDegrees(theta2));
+    Rotation3d rotation2 = new Rotation3d(0, 0, theta2);
     Transform3d true2 = new Transform3d(trueTargetObs2TRANSFORM.getTranslation(), rotation2);
 
     return new Transform3d(
         Meters.of(true1.getX() + (true2.getX() - true1.getX()) * 0.5),
         Meters.of(true1.getY() + (true2.getY() - true1.getY()) * 0.5),
-        Meters.of(true1.getY() + (true2.getY() - true1.getY()) * 0.5),
+        Meters.of(true1.getZ() + (true2.getZ() - true1.getZ()) * 0.5),
         new Rotation3d());
   }
 
@@ -220,46 +227,48 @@ public class Vision extends SubsystemBase {
  * @param offset2 Transform3d from Robot Center to Camera 2
  * @param targetTagId The AprilTag ID to look for
  */
-public double getLatestAngleToSpecificTagMultCam(
-    int cameraIndex1, Transform3d offset1,
-    int cameraIndex2, Transform3d offset2,
-    int targetTagId) {
+  public double getLatestAngleToSpecificTagMultCam(
+      int cameraIndex1,
+      Transform3d offset1,
+      int cameraIndex2,
+      Transform3d offset2,
+      int targetTagId) {
 
-  boolean camera1Valid = cameraIndex1 >= 0 && cameraIndex1 < inputs.length;
-  boolean camera2Valid = cameraIndex2 >= 0 && cameraIndex2 < inputs.length;
-  if (!camera1Valid && !camera2Valid) {
+    boolean camera1Valid = cameraIndex1 >= 0 && cameraIndex1 < inputs.length;
+    boolean camera2Valid = cameraIndex2 >= 0 && cameraIndex2 < inputs.length;
+    if (!camera1Valid && !camera2Valid) {
+      return hi;
+    }
+
+    var obs1 = camera1Valid ? inputs[cameraIndex1].latestTargetObservation : null;
+    var obs2 = camera2Valid ? inputs[cameraIndex2].latestTargetObservation : null;
+
+    Translation3d targetInRobotFrame1 = null;
+    Translation3d targetInRobotFrame2 = null;
+
+    if (obs1 != null && obs1.id() == targetTagId) {
+      targetInRobotFrame1 = offset1.plus(obs1.transform3d()).getTranslation();
+    }
+
+    if (obs2 != null && obs2.id() == targetTagId) {
+      targetInRobotFrame2 = offset2.plus(obs2.transform3d()).getTranslation();
+    }
+
+    Translation3d finalTargetTranslation = null;
+    if (targetInRobotFrame1 != null && targetInRobotFrame2 != null) {
+      finalTargetTranslation = targetInRobotFrame1.plus(targetInRobotFrame2).div(2.0);
+    } else if (targetInRobotFrame1 != null) {
+      finalTargetTranslation = targetInRobotFrame1;
+    } else if (targetInRobotFrame2 != null) {
+      finalTargetTranslation = targetInRobotFrame2;
+    }
+
+    if (finalTargetTranslation != null) {
+      hi = Math.toDegrees(Math.atan2(finalTargetTranslation.getY(), finalTargetTranslation.getX()));
+    }
+
     return hi;
   }
-
-  var obs1 = camera1Valid ? inputs[cameraIndex1].latestTargetObservation : null;
-  var obs2 = camera2Valid ? inputs[cameraIndex2].latestTargetObservation : null;
-
-  Translation3d targetInRobotFrame1 = null;
-  Translation3d targetInRobotFrame2 = null;
-
-  if (obs1 != null && obs1.id() == targetTagId) {
-    targetInRobotFrame1 = offset1.plus(obs1.transform3d()).getTranslation();
-  }
-
-  if (obs2 != null && obs2.id() == targetTagId) {
-    targetInRobotFrame2 = offset2.plus(obs2.transform3d()).getTranslation();
-  }
-
-  Translation3d finalTargetTranslation = null;
-  if (targetInRobotFrame1 != null && targetInRobotFrame2 != null) {
-    finalTargetTranslation = (targetInRobotFrame1.plus(targetInRobotFrame2)).div(2.0);
-  } else if (targetInRobotFrame1 != null) {
-    finalTargetTranslation = targetInRobotFrame1;
-  } else if (targetInRobotFrame2 != null) {
-    finalTargetTranslation = targetInRobotFrame2;
-  }
-
-  if (finalTargetTranslation != null) {
-    hi = Math.toDegrees(Math.atan2(finalTargetTranslation.getY(), finalTargetTranslation.getX()));
-  }
-
-  return hi;
-}
 
   public double getLatestAngleToSpecificTagSet(
       int cameraIndex,
@@ -311,6 +320,10 @@ public double getLatestAngleToSpecificTagMultCam(
     int[] ids = inputs[cameraIndex].tagIds;
     return (ids != null && ids.length > 0) ? ids[0] : -1;
   }
+
+  private static Transform3d robotToCameraa0 = new Transform3d(new Translation3d(-0.3048, 0.0, 0.0952), new Rotation3d(0.0, -1.570796, Math.PI));
+  private static Transform3d robotToCameraa1 = new Transform3d(new Translation3d(0.3048, 0.0, 0.0952), new Rotation3d(0.0, 1.570796, 0.0));
+
   // private hood Hood;
   @Override
   public void periodic() {
@@ -318,17 +331,12 @@ public double getLatestAngleToSpecificTagMultCam(
     if (inputs.length > 1) {
       Logger.recordOutput(
           "Vision BothCam ID 0+1:",
-          getLatestAngleToSpecificTagMultCam(0, robotToCamera0, 1, robotToCamera1, 10));
+          getLatestAngleToSpecificTagMultCam(0, robotToCameraa0, 1, robotToCameraa1, 10));
     } else {
       Logger.recordOutput("Vision SingleCam ID 0:", getAngleToSpecificTag(0, 10));
     }
 
     Logger.recordOutput("Vision hi:", getAngleToSpecificTag(0, 3));
-
-    for (int i = 0; i < io.length; i++) {
-      io[i].updateInputs(inputs[i]);
-      Logger.processInputs("Vision/Camera" + Integer.toString(i), inputs[i]);
-    }
     // System.out.println("Index 0: " + getDistanceToSpecificTag(0, 10));
     // System.out.println("Index 1: " + getDistanceToSpecificTag(1, 10));
     // System.out.println("Index 2: " + getDistanceToSpecificTag(2, 10));
