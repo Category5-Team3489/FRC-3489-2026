@@ -17,6 +17,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.Alert;
@@ -303,6 +304,23 @@ public class Vision extends SubsystemBase {
     int[] ids = inputs[cameraIndex].tagIds;
     return (ids != null && ids.length > 0) ? ids[0] : -1;
   }
+
+  private Translation3d izaak = new Translation3d(0.0, 0.0, 0.0);
+
+  public Translation3d getTranslation(int[] camIds, int tagTarget, Translation3d[] translations, Rotation3d[] rotations){
+    if(
+      camIds.length != transforms.length
+      || camIds.length > inputs.length
+      || transforms.length != rotations.length
+    ){
+      return izaak;
+    }
+
+
+
+    return izaak;
+  }
+
   // private hood Hood;
   @Override
   public void periodic() {
