@@ -211,8 +211,8 @@ public class RobotContainer {
         vision =
             new Vision(
                 kanyeDrive::addVisionMeasurement,
-                // new VisionIOPhotonVision(camera0Name, robotToCamera0),
-                // new VisionIOPhotonVision(camera1Name, robotToCamera1),
+                new VisionIOPhotonVision(camera0Name, robotToCamera0),
+                new VisionIOPhotonVision(camera1Name, robotToCamera1),
                 new VisionIOPhotonVision(camera2Name, robotToCamera2));
 
         // Turrent = new turrent(new turrentIOTalonFX(0));
@@ -270,8 +270,8 @@ public class RobotContainer {
         vision =
             new Vision(
                 kanyeDrive::addVisionMeasurement,
-                // new VisionIOPhotonVisionSim(camera0Name, robotToCamera0, drive::getPose),
-                // new VisionIOPhotonVisionSim(camera1Name, robotToCamera1, drive::getPose),
+                new VisionIOPhotonVisionSim(camera0Name, robotToCamera0, drive::getPose),
+                new VisionIOPhotonVisionSim(camera1Name, robotToCamera1, drive::getPose),
                 new VisionIOPhotonVisionSim(camera2Name, robotToCamera2, drive::getPose));
 
         break;
@@ -307,8 +307,8 @@ public class RobotContainer {
         vision =
             new Vision(
                 kanyeDrive::addVisionMeasurement,
-                // new VisionIOPhotonVision(camera0Name, robotToCamera0),
-                // new VisionIOPhotonVision(camera1Name, robotToCamera1),
+                new VisionIOPhotonVision(camera0Name, robotToCamera0),
+                new VisionIOPhotonVision(camera1Name, robotToCamera1),
                 new VisionIOPhotonVision(camera2Name, robotToCamera2));
 
         break;
