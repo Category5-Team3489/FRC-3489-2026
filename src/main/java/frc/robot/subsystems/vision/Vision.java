@@ -24,8 +24,12 @@ import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.vision.VisionIO.PoseObservationType;
+
+import java.io.Console;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.Logger;
 
@@ -321,18 +325,74 @@ public class Vision extends SubsystemBase {
     return (ids != null && ids.length > 0) ? ids[0] : -1;
   }
 
-  private Translation3d izaak = new Translation3d(0.0, 0.0, 0.0);
+  private Transform3d izaak = Transform3d.kZero;
 
-  public Translation3d getTranslation(int[] camIds, int tagTarget, Translation3d[] translations, Rotation3d[] rotations){
+  public Transform3d getTranslation(int[] camIds, int tagTarget, Translation3d[] translations, Rotation3d[] rotations){
     if(
-      camIds.length != transforms.length
+      camIds.length != translations.length
       || camIds.length > inputs.length
-      || transforms.length != rotations.length
+      || translations.length != rotations.length
     ){
       return izaak;
     }
 
+    List<Transform3d> translationList = new ArrayList<>();
+    boolean nick = false;
+    for(int i = 0; i < rotations.length; i++){
+      // transform the translations to make it correct
+      for(int j = 0; j < inputs[camIds[i]].tagIds.length; j++){
+        if(inputs[camIds[i]].tagIds[j] == tagTarget && 
+        inputs[camIds[i]].latestTargetObservation.id() == tagTarget){
+          nick = true;
+        }
+      }
 
+      Translation3d grant_and_tyler_and_dylan_and_diddy = inputs[camIds[i]].latestTargetObservation.transform3d().getTranslation();
+      Rotation3d currentRot = inputs[camIds[i]].latestTargetObservation.transform3d().getRotation();
+
+      if(nick){
+        grant_and_tyler_and_dylan_and_diddy = grant_and_tyler_and_dylan_and_diddy.plus(new Translation3d(
+          -translations[i].getX(),
+          -translations[i].getY(),
+          -translations[i].getZ()
+        ));
+
+        currentRot = currentRot.plus(new Rotation3d(
+          -rotations[i].getX(),
+          -rotations[i].getY(),
+          -rotations[i].getZ()
+        ));
+
+        System.out.println("Rotation: X = " + currentRot.getX()
+          + " \nY = " + currentRot.getY()
+          + " \nZ = " + currentRot.getZ());
+
+        System.out.println("Translation: Y = " + grant_and_tyler_and_dylan_and_diddy.getX()
+          + " \nY = " + grant_and_tyler_and_dylan_and_diddy.getY()
+          + " \nZ = " + grant_and_tyler_and_dylan_and_diddy.getZ());
+
+        translationList.add(new Transform3d(grant_and_tyler_and_dylan_and_diddy, currentRot));
+      }
+    }
+
+    for(int i = 0; i < translationList.size(); i++){
+      if(izaak.getTranslation().getX() == 0
+      && izaak.getTranslation().getY() == 0
+      && izaak.getTranslation().getY() == 0){
+        izaak = translationList.get(i);
+      }else{
+        izaak = new Transform3d(new Translation3d(
+          (izaak.getTranslation().getX() + translationList.get(i).getTranslation().getX()) / 2,
+          (izaak.getTranslation().getY() + translationList.get(i).getTranslation().getY()) / 2,
+          (izaak.getTranslation().getZ() + translationList.get(i).getTranslation().getZ()) / 2
+        ),
+        new Rotation3d(
+          (izaak.getRotation().getX() + translationList.get(i).getRotation().getX()) / 2,
+          (izaak.getRotation().getY() + translationList.get(i).getRotation().getY()) / 2,
+          (izaak.getRotation().getZ() + translationList.get(i).getRotation().getZ()) / 2
+        ));
+      }
+    }
 
     return izaak;
   }
