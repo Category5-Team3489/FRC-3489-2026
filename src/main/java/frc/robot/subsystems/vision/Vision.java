@@ -206,6 +206,10 @@ public class Vision extends SubsystemBase {
     return -1.0;
   }
 
+  public double Transform3dtoAngle(Transform3d transform) {
+    return Math.toDegrees(Math.atan2(transform.getY(), transform.getX()));
+  }
+
   private double hi = 0;
 
   public double getLatestAngleToSpecificTag(int cameraIndex, int targetTagId) {
@@ -326,6 +330,8 @@ public class Vision extends SubsystemBase {
   }
 
   private Transform3d izaak = Transform3d.kZero;
+
+  
 
   public Transform3d getTranslation(int[] camIds, int tagTarget, Translation3d[] translations, Rotation3d[] rotations){
     if(
