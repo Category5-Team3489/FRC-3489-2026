@@ -22,6 +22,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import frc.robot.Elastic.Notification;
 import frc.robot.Elastic.NotificationLevel;
 import frc.robot.commands.DriveCommands;
@@ -484,7 +490,16 @@ public class RobotContainer {
 
     // Default command, normal field-relative drive
     // Use a supplier so the joystick is sampled each scheduler cycle.
-    Turrent.setDefaultCommand(Turrent.turnTurrent(() -> -manipulatorController.getLeftX() * 0.2));
+    // Turrent.setDefaultCommand(Turrent.turnTurrent(() -> -manipulatorController.getLeftX() * 0.2));
+    Turrent.setDefaultCommand(Commands.run(() -> Turrent.setTurrentAngle(() -> vision.Transform3dtoAngle(vision.getTranslation(new int[]{0, 1, 2}, 18, new Translation3d[]{
+        // insert translations here
+        Translation3d.kZero
+    },
+    new Rotation3d[]{
+        // inser rotations here
+        Rotation3d.kZero
+
+    }))), Turrent));
     controller
         .rightBumper()
         .whileTrue(
