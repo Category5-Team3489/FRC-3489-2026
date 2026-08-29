@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.vision.VisionIO.PoseObservationType;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.DoubleSupplier;
@@ -202,6 +203,10 @@ public class Vision extends SubsystemBase {
     return -1.0;
   }
 
+  public double Transform3dtoAngle(Transform3d transform) {
+    return Math.toDegrees(Math.atan2(transform.getY(), transform.getX()));
+  }
+
   private double hi = 0;
 
   public double getLatestAngleToSpecificTag(int cameraIndex, int targetTagId) {
@@ -321,10 +326,93 @@ public class Vision extends SubsystemBase {
     return (ids != null && ids.length > 0) ? ids[0] : -1;
   }
 
+<<<<<<< HEAD
   private static Transform3d robotToCameraa0 =
       new Transform3d(new Translation3d(0.2286, 0.0, 0.0952), new Rotation3d(0.0, 0, Math.PI));
   private static Transform3d robotToCameraa1 =
       new Transform3d(new Translation3d(-0.2032, 0.0, 0.0952), new Rotation3d(0.0, 0, 0.0));
+=======
+  private Transform3d izaak = Transform3d.kZero;
+
+  public Transform3d getTranslation(
+      int[] camIds, int tagTarget, Translation3d[] translations, Rotation3d[] rotations) {
+    if (camIds.length != translations.length
+        || camIds.length > inputs.length
+        || translations.length != rotations.length) {
+      return izaak;
+    }
+
+    List<Transform3d> translationList = new ArrayList<>();
+    boolean nick = false;
+    for (int i = 0; i < rotations.length; i++) {
+      // transform the translations to make it correct
+      for (int j = 0; j < inputs[camIds[i]].tagIds.length; j++) {
+        if (inputs[camIds[i]].tagIds[j] == tagTarget
+            && inputs[camIds[i]].latestTargetObservation.id() == tagTarget) {
+          nick = true;
+        }
+      }
+
+      Translation3d grant_and_tyler_and_dylan_and_diddy =
+          inputs[camIds[i]].latestTargetObservation.transform3d().getTranslation();
+      Rotation3d currentRot = inputs[camIds[i]].latestTargetObservation.transform3d().getRotation();
+
+      if (nick) {
+        grant_and_tyler_and_dylan_and_diddy =
+            grant_and_tyler_and_dylan_and_diddy.plus(
+                new Translation3d(
+                    -translations[i].getX(), -translations[i].getY(), -translations[i].getZ()));
+
+        currentRot =
+            currentRot.plus(
+                new Rotation3d(-rotations[i].getX(), -rotations[i].getY(), -rotations[i].getZ()));
+
+        System.out.println(
+            "Rotation: X = "
+                + currentRot.getX()
+                + " \nY = "
+                + currentRot.getY()
+                + " \nZ = "
+                + currentRot.getZ());
+
+        System.out.println(
+            "Translation: Y = "
+                + grant_and_tyler_and_dylan_and_diddy.getX()
+                + " \nY = "
+                + grant_and_tyler_and_dylan_and_diddy.getY()
+                + " \nZ = "
+                + grant_and_tyler_and_dylan_and_diddy.getZ());
+
+        translationList.add(new Transform3d(grant_and_tyler_and_dylan_and_diddy, currentRot));
+      }
+    }
+
+    for (int i = 0; i < translationList.size(); i++) {
+      if (izaak.getTranslation().getX() == 0
+          && izaak.getTranslation().getY() == 0
+          && izaak.getTranslation().getY() == 0) {
+        izaak = translationList.get(i);
+      } else {
+        izaak =
+            new Transform3d(
+                new Translation3d(
+                    (izaak.getTranslation().getX() + translationList.get(i).getTranslation().getX())
+                        / 2,
+                    (izaak.getTranslation().getY() + translationList.get(i).getTranslation().getY())
+                        / 2,
+                    (izaak.getTranslation().getZ() + translationList.get(i).getTranslation().getZ())
+                        / 2),
+                new Rotation3d(
+                    (izaak.getRotation().getX() + translationList.get(i).getRotation().getX()) / 2,
+                    (izaak.getRotation().getY() + translationList.get(i).getRotation().getY()) / 2,
+                    (izaak.getRotation().getZ() + translationList.get(i).getRotation().getZ())
+                        / 2));
+      }
+    }
+
+    return izaak;
+  }
+>>>>>>> 2018b5c42350672215a91dd0db332f7d14f6185a
 
   // private hood Hood;
   @Override
@@ -333,7 +421,7 @@ public class Vision extends SubsystemBase {
     if (inputs.length > 1) {
       Logger.recordOutput(
           "Vision BothCam ID 0+1:",
-          getLatestAngleToSpecificTagMultCam(0, robotToCameraa0, 1, robotToCameraa1, 10));
+          getLatestAngleToSpecificTagMultCam(0, robotToCamera0, 1, robotToCamera1, 10));
     } else {
       Logger.recordOutput("Vision SingleCam ID 0:", getAngleToSpecificTag(0, 10));
     }

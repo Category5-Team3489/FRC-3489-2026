@@ -49,7 +49,7 @@ public class turrentIOTalonFX implements turrentIO {
   public turrentIOTalonFX(int topMotorPort, int cancoderId, double gearRatio) {
     this.topMotor = new TalonFX(topMotorPort);
     TalonFXConfiguration config = new TalonFXConfiguration();
-    config.Slot0.kP = 0.2;
+    config.Slot0.kP = 0.15;
     config.Slot0.kI = 0.0;
     config.Slot0.kD = 0.0;
     topMotor.getConfigurator().apply(config);
@@ -99,9 +99,7 @@ public class turrentIOTalonFX implements turrentIO {
   @Override
   public void setTurrentAngle(double degrees) {
     // Convert requested angle to motor rotations.
-    double turretRotations = degrees / 360.0;
-    double motorRotations = turretRotations * gearRatio;
-    topMotor.setControl(positionRequest.withPosition(motorRotations));
+    topMotor.setControl(positionRequest.withPosition(degrees));
   }
 
   private double getTurretDegrees() {

@@ -13,6 +13,8 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -322,6 +324,7 @@ public class RobotContainer {
                     () -> {
                       Logger.recordOutput("Is intaking?", true);
                     })));
+<<<<<<< HEAD
     NamedCommands.registerCommand("intakeOut", Intake.actuate(1.0).withTimeout(2));
     // NamedCommands.registerCommand(
     //     "intakeIn",
@@ -336,6 +339,11 @@ public class RobotContainer {
     //         .withTimeout(2));
     NamedCommands.registerCommand("shooterOnLong", autoShootCommand(1.0, 1.0, 10.0));
     NamedCommands.registerCommand("shooterOnShortKanye", autoShootCommand(0.72, 1.0, 10.0));
+=======
+    NamedCommands.registerCommand("intakeOut", Intake.extend().withTimeout(2));
+    NamedCommands.registerCommand("shooterOnLong", autoShootCommand(.89, 1.0, 10.0));
+    NamedCommands.registerCommand("shooterOnShortKanye", autoShootCommand(0.65, 1.0, 10.0));
+>>>>>>> 2018b5c42350672215a91dd0db332f7d14f6185a
     NamedCommands.registerCommand("autoShoot", autoShootCommand(0.72, 1.0, 10.0));
     NamedCommands.registerCommand(
         "autoHood",
@@ -381,7 +389,7 @@ public class RobotContainer {
 
     // Default command, normal field-relative drive
     // Use a supplier so the joystick is sampled each scheduler cycle.
-    Turrent.setDefaultCommand(Turrent.turnTurrent(() -> (-manipulatorController.getLeftX() * 0.2)));
+    Turrent.setDefaultCommand(Turrent.turnTurrent(() -> (manipulatorController.getRightX() * 0.2)));
 
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
@@ -495,7 +503,30 @@ public class RobotContainer {
 
     // Default command, normal field-relative drive
     // Use a supplier so the joystick is sampled each scheduler cycle.
+<<<<<<< HEAD
     Turrent.setDefaultCommand(Turrent.turnTurrent(() -> manipulatorController.getLeftX() * 0.2));
+=======
+    // Turrent.setDefaultCommand(Turrent.turnTurrent(() -> -manipulatorController.getLeftX() *
+    // 0.2));
+    Turrent.setDefaultCommand(
+        Commands.run(
+            () ->
+                Turrent.setTurrentAngle(
+                    () ->
+                        vision.Transform3dtoAngle(
+                            vision.getTranslation(
+                                new int[] {0, 1, 2},
+                                18,
+                                new Translation3d[] {
+                                  // insert translations here
+                                  Translation3d.kZero
+                                },
+                                new Rotation3d[] {
+                                  // inser rotations here
+                                  Rotation3d.kZero
+                                }))),
+            Turrent));
+>>>>>>> 2018b5c42350672215a91dd0db332f7d14f6185a
     controller
         .rightBumper()
         .whileTrue(
@@ -523,7 +554,7 @@ public class RobotContainer {
     // controller.y().onTrue(Commands.run(() -> Hood.resetHood()));
     // Hood - Ferry Mode
     manipulatorController
-        .povUp()
+        .povDown()
         .onTrue(
             Commands.runOnce(
                 () -> {
@@ -535,7 +566,7 @@ public class RobotContainer {
                         new Notification(
                             NotificationLevel.WARNING, "Ferrying", "Ferrying is now OFF."));
                   } else {
-                    Hood.setDefaultPosition(Hood.maxHoodPos);
+                    Hood.setDefaultPosition(Hood.maxHoodPos + 2);
                     Shooter.setFerry(1);
                     System.out.println("Ferrying ON");
                     Elastic.sendNotification(
@@ -545,9 +576,15 @@ public class RobotContainer {
                 }));
 
     // Hood - Hub Mode
+    manipulatorController.povUp().whileTrue(Commands.run(() -> Turrent.setTurrentAngle(() -> 0.0)));
+
     manipulatorController
-        .povDown()
-        .onTrue(Commands.runOnce(() -> Hood.setDefaultPosition(0), Hood));
+        .povRight()
+        .whileTrue(Commands.run(() -> Turrent.setTurrentAngle(() -> Turrent.degToPos(() -> -90))));
+
+    manipulatorController
+        .povLeft()
+        .whileTrue(Commands.run(() -> Turrent.setTurrentAngle(() -> Turrent.degToPos((() -> 90)))));
 
     // Intake - Intake Fuel
     manipulatorController.x().whileTrue(Intake.spinTheStuff(1.5));
@@ -562,8 +599,9 @@ public class RobotContainer {
         .b()
         .whileTrue(
             Commands.repeatingSequence(
-                Commands.run(() -> Index.spinMotor(-0.6), Index).withTimeout(1),
-                Commands.run(() -> Index.spinMotor(0.6), Index).withTimeout(1)));
+                    Commands.run(() -> Index.spinMotor(1), Index).withTimeout(0.4),
+                    Commands.run(() -> Index.spinMotor(1), Index).withTimeout(0.4))
+                .alongWith(Commands.run(() -> Kicker.spinMotor(-0.99))));
 
     // Climber - Extend / Retract
     manipulatorController.a().onTrue(Climber.toggleClimberPosition().withTimeout(3));
@@ -656,7 +694,7 @@ public class RobotContainer {
                 Commands.run(() -> Kicker.spinMotor(0.99))));
 
     // if (Drive      rStation.getAlliance().get() == Alliance.Red) {
-    manipulatorController.povRight().whileTrue(Hood.setHoodPosCommand(() -> -3.95));
+    // manipulatorController.povRight().whileTrue(Hood.setHoodPosCommand(() -> -3.95));
 
     // Drive Controller Configuration
     drive.setDefaultCommand(
