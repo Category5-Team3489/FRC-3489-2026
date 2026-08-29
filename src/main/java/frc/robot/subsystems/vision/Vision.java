@@ -219,14 +219,14 @@ public class Vision extends SubsystemBase {
   }
 
   /**
- * Calculates the angle to a tag using two cameras, accounting for their 
- * physical positions on the robot via offsets.
- * * @param cameraIndex1 Index of first camera
- * @param offset1 Transform3d from Robot Center to Camera 1
- * @param cameraIndex2 Index of second camera
- * @param offset2 Transform3d from Robot Center to Camera 2
- * @param targetTagId The AprilTag ID to look for
- */
+   * Calculates the angle to a tag using two cameras, accounting for their physical positions on the
+   * robot via offsets. * @param cameraIndex1 Index of first camera
+   *
+   * @param offset1 Transform3d from Robot Center to Camera 1
+   * @param cameraIndex2 Index of second camera
+   * @param offset2 Transform3d from Robot Center to Camera 2
+   * @param targetTagId The AprilTag ID to look for
+   */
   public double getLatestAngleToSpecificTagMultCam(
       int cameraIndex1,
       Transform3d offset1,
@@ -321,8 +321,10 @@ public class Vision extends SubsystemBase {
     return (ids != null && ids.length > 0) ? ids[0] : -1;
   }
 
-  private static Transform3d robotToCameraa0 = new Transform3d(new Translation3d(0.2286, 0.0, 0.0952), new Rotation3d(0.0, 0, Math.PI));
-  private static Transform3d robotToCameraa1 = new Transform3d(new Translation3d(-0.2032, 0.0, 0.0952), new Rotation3d(0.0, 0, 0.0));
+  private static Transform3d robotToCameraa0 =
+      new Transform3d(new Translation3d(0.2286, 0.0, 0.0952), new Rotation3d(0.0, 0, Math.PI));
+  private static Transform3d robotToCameraa1 =
+      new Transform3d(new Translation3d(-0.2032, 0.0, 0.0952), new Rotation3d(0.0, 0, 0.0));
 
   // private hood Hood;
   @Override

@@ -322,7 +322,18 @@ public class RobotContainer {
                     () -> {
                       Logger.recordOutput("Is intaking?", true);
                     })));
-    NamedCommands.registerCommand("intakeOut", Intake.extend().withTimeout(2));
+    NamedCommands.registerCommand("intakeOut", Intake.actuate(1.0).withTimeout(2));
+    // NamedCommands.registerCommand(
+    //     "intakeIn",
+    //     Intake.actuate(-1.0)
+    //         .alongWith(
+    //             Intake.spinTheStuff(1)
+    //                 .alongWith(
+    //                     Commands.run(
+    //                         () -> {
+    //                           Logger.recordOutput("Is intaking?", true);
+    //                         })))
+    //         .withTimeout(2));
     NamedCommands.registerCommand("shooterOnLong", autoShootCommand(1.0, 1.0, 10.0));
     NamedCommands.registerCommand("shooterOnShortKanye", autoShootCommand(0.72, 1.0, 10.0));
     NamedCommands.registerCommand("autoShoot", autoShootCommand(0.72, 1.0, 10.0));
@@ -404,8 +415,8 @@ public class RobotContainer {
     manipulatorController.povDown().whileTrue(Intake.actuate(-0.6));
     // manipulatorController.povDown().onTrue(Intake.extend()); -> anthony
     manipulatorController.povCenter().whileTrue(Intake.actuate(0));
-    manipulatorController.y().whileTrue((Intake.spinTheStuff(0.8)));
-    manipulatorController.a().whileTrue((Intake.spinTheStuff(-0.8)));
+    manipulatorController.y().whileTrue(Intake.spinTheStuff(0.8));
+    manipulatorController.a().whileTrue(Intake.spinTheStuff(0.8));
     manipulatorController
         .povLeft()
         .onTrue(
@@ -484,7 +495,7 @@ public class RobotContainer {
 
     // Default command, normal field-relative drive
     // Use a supplier so the joystick is sampled each scheduler cycle.
-    Turrent.setDefaultCommand(Turrent.turnTurrent(() -> manipulatorController.getRightX() * 0.2));
+    Turrent.setDefaultCommand(Turrent.turnTurrent(() -> manipulatorController.getLeftX() * 0.2));
     controller
         .rightBumper()
         .whileTrue(
@@ -633,7 +644,7 @@ public class RobotContainer {
                   kanye.start();
                 }));
     manipulatorController.leftTrigger().onFalse(Commands.runOnce(() -> kanye.stop()));
-    // Hood - Do  m mhgbn9njjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjqwn Flat
+    // Hood - Do Flat
 
     manipulatorController
         .leftTrigger()

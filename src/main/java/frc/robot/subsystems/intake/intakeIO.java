@@ -21,6 +21,8 @@ public interface intakeIO {
 
   public void extend();
 
+  // public void unextend();
+
   public boolean isExtended();
 
   public void retract();
