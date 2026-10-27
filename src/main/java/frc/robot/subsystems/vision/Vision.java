@@ -456,6 +456,12 @@ public class Vision extends SubsystemBase {
   // private hood Hood;
   @Override
   public void periodic() {
+
+    for (int i = 0; i < io.length; i++) {
+      io[i].updateInputs(inputs[i]);
+      Logger.processInputs("Vision/Camera" + Integer.toString(i), inputs[i]);
+    }
+
     Logger.recordOutput("VisionTEST", inputs[0].latestTargetObservation);
 
     Logger.recordOutput("W0", camWork(0));
@@ -467,6 +473,32 @@ public class Vision extends SubsystemBase {
     Logger.recordOutput("S2", camDetect(2));
 
     Logger.recordOutput("Vision ID 0:", getDistanceToSpecificTag(0, 10));
+    Logger.recordOutput(
+        "5----",
+        Transform3dtoAngle(
+            getTranslation(
+                new int[] {2},
+                5,
+                new Translation3d[] {Translation3d.kZero},
+                new Rotation3d[] {Rotation3d.kZero})));
+
+    Logger.recordOutput(
+        "3----",
+        Transform3dtoAngle(
+            getTranslation(
+                new int[] {2},
+                3,
+                new Translation3d[] {Translation3d.kZero},
+                new Rotation3d[] {Rotation3d.kZero})));
+    Logger.recordOutput(
+        "2----",
+        Transform3dtoAngle(
+            getTranslation(
+                new int[] {2},
+                2,
+                new Translation3d[] {Translation3d.kZero},
+                new Rotation3d[] {Rotation3d.kZero})));
+
     if (inputs.length > 1) {
       Logger.recordOutput(
           "Vision BothCam ID 0+1:",
