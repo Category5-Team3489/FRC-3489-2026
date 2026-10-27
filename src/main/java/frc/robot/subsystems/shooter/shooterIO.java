@@ -8,6 +8,9 @@ public interface shooterIO {
   public class shooterIOInputs {
     public double topMotorCurrent = 0.0;
     public double bottomMotorCurrent = 0.0;
+    public double topVelocityRotationsPerSecond = 0.0;
+    public double bottomVelocityRotationsPerSecond = 0.0;
+    public double appliedVolts = 0.0;
     public double distanceToTarget = 0.0;
     // Mechanism2d visualization objects belong to the subsystem implementation
     // and are not suitable for automatic logging. Create and manage them in

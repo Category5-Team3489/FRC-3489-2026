@@ -18,7 +18,7 @@ public class index extends SubsystemBase {
   }
 
   public void spinMotor(double speed) {
-    io.turnMotor(speed);
+    io.turnMotor(-speed);
   }
 
   public Command agitate() {

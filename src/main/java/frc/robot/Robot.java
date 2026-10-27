@@ -7,6 +7,10 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.sim.SimChessLauncher;
@@ -26,6 +30,8 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 public class Robot extends LoggedRobot {
   private Command autonomousCommand;
   private RobotContainer robotContainer;
+  private final Field2d field = new Field2d();
+  int odomStartPos;
 
   public Robot() {
     // Record metadata
@@ -49,7 +55,6 @@ public class Robot extends LoggedRobot {
         Logger.addDataReceiver(new WPILOGWriter());
         Logger.addDataReceiver(new NT4Publisher());
         break;
-
       case SIM:
         // Running a physics simulator, log to NT
         Logger.addDataReceiver(new NT4Publisher());
@@ -66,12 +71,30 @@ public class Robot extends LoggedRobot {
 
     // Start AdvantageKit logger
     Logger.start();
-
+    SmartDashboard.putNumber("Starting Position (1-6)", 0);
     // Instantiate our RobotContainer. This will perform all our button bindings,
     // and put our autonomous chooser on the dashboard.
     robotContainer = new RobotContainer();
   }
 
+  public void OdomReset() {
+    odomStartPos = (int) SmartDashboard.getNumber("Starting Position (1-6)", 0);
+    if (odomStartPos == 1)
+      this.robotContainer.setDrivePose(new Pose2d(3.5, 7.3, new Rotation2d(0)));
+    else if (odomStartPos == 2)
+      this.robotContainer.setDrivePose(new Pose2d(3.5, 4.0, new Rotation2d(0)));
+    else if (odomStartPos == 3)
+      this.robotContainer.setDrivePose(new Pose2d(3.5, 0.7, new Rotation2d(0)));
+    else if (odomStartPos == 4)
+      this.robotContainer.setDrivePose(new Pose2d(12.9, 0.7, new Rotation2d(3.14)));
+    else if (odomStartPos == 5)
+      this.robotContainer.setDrivePose(new Pose2d(12.9, 4, new Rotation2d()));
+    else if (odomStartPos == 6)
+      this.robotContainer.setDrivePose(new Pose2d(12.9, 7.3, new Rotation2d()));
+    else this.robotContainer.setDrivePose(new Pose2d(0.0, 0.0, new Rotation2d()));
+    System.out.print("odomStartPos: " + odomStartPos);
+    SmartDashboard.putData("field", field);
+  }
   /** This function is called periodically during all modes. */
   @Override
   public void robotPeriodic() {
@@ -85,7 +108,7 @@ public class Robot extends LoggedRobot {
     // This must be called from the robot's periodic block in order for anything in
     // the Command-based framework to work.
     CommandScheduler.getInstance().run();
-
+    field.setRobotPose(this.robotContainer.getDrivePose());
     // Return to non-RT thread priority (do not modify the first argument)
     // Threads.setCurrentThreadPriority(false, 10);
   }
@@ -102,7 +125,7 @@ public class Robot extends LoggedRobot {
   @Override
   public void autonomousInit() {
     autonomousCommand = robotContainer.getAutonomousCommand();
-
+    OdomReset();
     // schedule the autonomous command (example)
     if (autonomousCommand != null) {
       CommandScheduler.getInstance().schedule(autonomousCommand);
@@ -122,6 +145,8 @@ public class Robot extends LoggedRobot {
     // this line or comment it out.
     if (autonomousCommand != null) {
       autonomousCommand.cancel();
+    } else {
+      OdomReset();
     }
   }
 

@@ -207,7 +207,53 @@ public class Vision extends SubsystemBase {
     return Math.toDegrees(Math.atan2(transform.getY(), transform.getX()));
   }
 
+  /**
+   * Calculates the exact delta angles the camera needs to rotate from its current orientation to
+   * point directly at the target tag.
+   *
+   * @param relativeTransform The Transform3D representing the tag's position RELATIVE to the
+   *     camera's current local frame.
+   * @return An array containing [YawDeltaDegrees, PitchDeltaDegrees]
+   */
+  public double[] getDegreesToTurnToTag(Transform3d relativeTransform) {
+    // 1. Calculate horizontal turn error (Yaw error)
+    // Local Y (lateral offset) over Local X (forward depth)
+    double yawDelta =
+        Math.toDegrees(Math.atan2(relativeTransform.getY(), relativeTransform.getX()));
+
+    // 2. Calculate vertical turn error (Pitch error)
+    // Local Z (vertical height offset) over the horizontal straight-line distance
+    double horizontalDistance = Math.hypot(relativeTransform.getX(), relativeTransform.getY());
+    double pitchDelta = Math.toDegrees(Math.atan2(relativeTransform.getZ(), horizontalDistance));
+
+    return new double[] {yawDelta, pitchDelta};
+  }
+
   private double hi = 0;
+
+  public Boolean camWork(int cameraI) {
+    if (cameraI >= inputs.length) {
+      return false;
+    }
+
+    if (inputs[cameraI].connected) {
+      return true;
+    }
+
+    return false;
+  }
+
+  public Boolean camDetect(int cameraI) {
+    if (cameraI >= inputs.length) {
+      return false;
+    }
+
+    if (inputs[cameraI].poseObservations.length > 0) {
+      return true;
+    }
+
+    return false;
+  }
 
   public double getLatestAngleToSpecificTag(int cameraIndex, int targetTagId) {
     if (cameraIndex < 0 || cameraIndex >= inputs.length) return hi;
@@ -326,12 +372,6 @@ public class Vision extends SubsystemBase {
     return (ids != null && ids.length > 0) ? ids[0] : -1;
   }
 
-<<<<<<< HEAD
-  private static Transform3d robotToCameraa0 =
-      new Transform3d(new Translation3d(0.2286, 0.0, 0.0952), new Rotation3d(0.0, 0, Math.PI));
-  private static Transform3d robotToCameraa1 =
-      new Transform3d(new Translation3d(-0.2032, 0.0, 0.0952), new Rotation3d(0.0, 0, 0.0));
-=======
   private Transform3d izaak = Transform3d.kZero;
 
   public Transform3d getTranslation(
@@ -412,11 +452,20 @@ public class Vision extends SubsystemBase {
 
     return izaak;
   }
->>>>>>> 2018b5c42350672215a91dd0db332f7d14f6185a
 
   // private hood Hood;
   @Override
   public void periodic() {
+    Logger.recordOutput("VisionTEST", inputs[0].latestTargetObservation);
+
+    Logger.recordOutput("W0", camWork(0));
+    Logger.recordOutput("W1", camWork(1));
+    Logger.recordOutput("W2", camWork(2));
+
+    Logger.recordOutput("S0", camDetect(0));
+    Logger.recordOutput("S1", camDetect(1));
+    Logger.recordOutput("S2", camDetect(2));
+
     Logger.recordOutput("Vision ID 0:", getDistanceToSpecificTag(0, 10));
     if (inputs.length > 1) {
       Logger.recordOutput(
@@ -451,6 +500,13 @@ public class Vision extends SubsystemBase {
       List<Pose3d> robotPosesRejected = new LinkedList<>();
 
       // Add tag poses
+      for (int tagId : inputs[cameraIndex].tagIds) {
+        var tagPose = aprilTagLayout.getTagPose(tagId);
+        if (tagPose.isPresent()) {
+          tagPoses.add(tagPose.get());
+        }
+      }
+
       //  System.out.println("Observed tag: " + getLatestTagId(0));
       // Loop over pose observations
       for (var observation : inputs[cameraIndex].poseObservations) {

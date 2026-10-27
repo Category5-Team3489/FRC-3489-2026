@@ -9,6 +9,7 @@ import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.Logger;
 
 public class shooter extends SubsystemBase {
+  private boolean isrunning = false;
   private double ferry = 1;
   private final double distanceFromGround;
   private final double HubHeight = 1.829;
@@ -23,6 +24,7 @@ public class shooter extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     io.updateInputs(inputs);
+    Logger.processInputs("Shooter", inputs);
     Logger.recordOutput("Ferrying", (ferry == 1));
   }
   // Yo mentor anthony, if you can see this I was wondering
@@ -41,6 +43,18 @@ public class shooter extends SubsystemBase {
 
   public void tryShoot(double speed) {
     io.shootBall(speed);
+  }
+
+  public Command idleShootCommand(double speed) {
+    if (isrunning) {
+      return Commands.run(() -> shootAtSpeed(speed), this);
+    } else {
+      return noShoot();
+    }
+  }
+
+  public void toggleIsRunning() {
+    isrunning = !isrunning;
   }
 
   // Overload that accepts a DoubleSupplier so the controller axis can be

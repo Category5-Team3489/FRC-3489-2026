@@ -176,9 +176,12 @@ public class Drive extends SubsystemBase {
     }
 
     // Update odometry
+    Pose2d poseBeforeOdometry = getPose();
     double[] sampleTimestamps =
         modules[0].getOdometryTimestamps(); // All signals are sampled together
     int sampleCount = sampleTimestamps.length;
+    Logger.recordOutput("Odometry/SampleCount", sampleCount);
+
     for (int i = 0; i < sampleCount; i++) {
       // Read wheel positions and deltas from each module
       SwerveModulePosition[] modulePositions = new SwerveModulePosition[4];
@@ -194,14 +197,15 @@ public class Drive extends SubsystemBase {
       }
 
       // Update gyro angle
+      Twist2d twist = kinematics.toTwist2d(moduleDeltas);
       if (gyroInputs.connected) {
         // Use the real gyro angle
         rawGyroRotation = gyroInputs.odometryYawPositions[i].plus(gyroOffset);
       } else {
         // Use the angle delta from the kinematics and module deltas
-        Twist2d twist = kinematics.toTwist2d(moduleDeltas);
         rawGyroRotation = rawGyroRotation.plus(new Rotation2d(twist.dtheta));
       }
+      Logger.recordOutput("Odometry/LatestTwist", twist);
 
       // Apply update
       poseEstimator.updateWithTime(sampleTimestamps[i], rawGyroRotation, modulePositions);
@@ -209,6 +213,11 @@ public class Drive extends SubsystemBase {
 
     // Update gyro alert
     gyroDisconnectedAlert.set(!gyroInputs.connected && Constants.currentMode != Mode.SIM);
+
+    // Logger.recordOutput("SwerveStates/Measured", getModuleStates());
+    // Logger.recordOutput("SwerveChassisSpeeds/Measured", getChassisSpeeds());
+    Logger.recordOutput("Odometry/PoseBeforeUpdate", poseBeforeOdometry);
+    // Logger.recordOutput("Odometry/Robot", getPose());
   }
 
   /**
@@ -222,8 +231,8 @@ public class Drive extends SubsystemBase {
     SwerveModuleState[] setpointStates = kinematics.toSwerveModuleStates(discreteSpeeds);
     SwerveDriveKinematics.desaturateWheelSpeeds(setpointStates, TunerConstants.kSpeedAt12Volts);
 
-    // Log unoptimized setpoints and setpoint speeds
-    Logger.recordOutput("SwerveStates/Setpoints", setpointStates);
+    // Log raw setpoints and setpoint speeds
+    Logger.recordOutput("SwerveStates/SetpointsRaw", setpointStates);
     Logger.recordOutput("SwerveChassisSpeeds/Setpoints", discreteSpeeds);
 
     // Send setpoints to modules
@@ -232,6 +241,7 @@ public class Drive extends SubsystemBase {
     }
 
     // Log optimized setpoints (runSetpoint mutates each state)
+    Logger.recordOutput("SwerveStates/Setpoints", setpointStates);
     Logger.recordOutput("SwerveStates/SetpointsOptimized", setpointStates);
   }
 
@@ -307,6 +317,7 @@ public class Drive extends SubsystemBase {
   }
 
   /** Returns the average velocity of the modules in rotations/sec (Phoenix native units). */
+  @AutoLogOutput(key = "Velocity/Rotations\\Sec")
   public double getFFCharacterizationVelocity() {
     double output = 0.0;
     for (int i = 0; i < 4; i++) {
@@ -343,6 +354,10 @@ public class Drive extends SubsystemBase {
       Pose2d visionRobotPoseMeters,
       double timestampSeconds,
       Matrix<N3, N1> visionMeasurementStdDevs) {
+    if (Constants.currentMode == Mode.SIM) {
+      Logger.recordOutput("Vision/SimMeasurementSkipped", visionRobotPoseMeters);
+      return;
+    }
     poseEstimator.addVisionMeasurement(
         visionRobotPoseMeters, timestampSeconds, visionMeasurementStdDevs);
   }

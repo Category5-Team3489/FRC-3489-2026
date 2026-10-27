@@ -8,6 +8,7 @@ import java.util.function.DoubleSupplier;
 
 public class shooterIOSim implements shooterIO {
   private final DCMotorSim shooterMotorSim;
+  private double appliedVolts = 0.0;
 
   public shooterIOSim() {
     shooterMotorSim =
@@ -17,29 +18,33 @@ public class shooterIOSim implements shooterIO {
 
   @Override
   public void setShootVoltageSupp(DoubleSupplier why) {
-    shooterMotorSim.setInputVoltage(why.getAsDouble());
+    setShooterVoltage(why.getAsDouble());
   }
 
   @Override
   public void updateInputs(shooterIOInputs inputs) {
     shooterMotorSim.update(0.02);
-    inputs.topMotorCurrent = shooterMotorSim.getCurrentDrawAmps();
-    inputs.bottomMotorCurrent = shooterMotorSim.getCurrentDrawAmps();
+    inputs.topMotorCurrent = Math.abs(shooterMotorSim.getCurrentDrawAmps());
+    inputs.bottomMotorCurrent = Math.abs(shooterMotorSim.getCurrentDrawAmps());
+    inputs.topVelocityRotationsPerSecond = shooterMotorSim.getAngularVelocityRPM() / 60.0;
+    inputs.bottomVelocityRotationsPerSecond = shooterMotorSim.getAngularVelocityRPM() / 60.0;
+    inputs.appliedVolts = appliedVolts;
     inputs.distanceToTarget = 0.0;
   }
 
   @Override
   public void setShooterVoltage(double volts) {
-    shooterMotorSim.setInputVoltage(volts);
+    appliedVolts = MathUtil.clamp(volts, -12.0, 12.0);
+    shooterMotorSim.setInputVoltage(appliedVolts);
   }
 
   @Override
   public void stopMotors() {
-    shooterMotorSim.setInputVoltage(0);
+    setShooterVoltage(0.0);
   }
 
   @Override
   public void shootBall(double speed) {
-    shooterMotorSim.setInputVoltage(MathUtil.clamp(speed * 12.0, -12.0, 12.0));
+    setShooterVoltage(speed * 12.0);
   }
 }

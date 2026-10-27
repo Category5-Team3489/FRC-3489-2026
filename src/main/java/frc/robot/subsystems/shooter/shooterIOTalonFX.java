@@ -19,6 +19,9 @@ public class shooterIOTalonFX implements shooterIO {
     // Phoenix6 StatusSignal APIs return signal objects; read numeric values
     inputs.topMotorCurrent = shooterMotor.getSupplyCurrent().getValueAsDouble();
     inputs.bottomMotorCurrent = shootMotorOther.getSupplyCurrent().getValueAsDouble();
+    inputs.topVelocityRotationsPerSecond = shooterMotor.getVelocity().getValueAsDouble();
+    inputs.bottomVelocityRotationsPerSecond = shootMotorOther.getVelocity().getValueAsDouble();
+    inputs.appliedVolts = shooterMotor.getMotorVoltage().getValueAsDouble();
     inputs.distanceToTarget = 0.0; // This would need a sensor to be implemented
   }
 

@@ -5,6 +5,7 @@ import static edu.wpi.first.units.Units.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import org.littletonrobotics.junction.Logger;
 
 public class intake extends SubsystemBase {
   private final intakeIO parker;
@@ -21,6 +22,7 @@ public class intake extends SubsystemBase {
     // TODO Auto-generated method stub
 
     parker.updateInputs(inputs);
+    Logger.processInputs("Intake", inputs);
     super.periodic();
   }
 

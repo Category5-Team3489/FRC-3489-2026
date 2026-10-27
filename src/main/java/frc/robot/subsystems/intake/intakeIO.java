@@ -8,6 +8,12 @@ public interface intakeIO {
     public double motorCurrent = 0.0;
     public boolean isBallDetected = false;
     public double velocityflywheel = 0.0;
+    public double appliedVolts = 0.0;
+    public double actuatorPositionRotations = 0.0;
+    public double actuatorVelocityRotationsPerSecond = 0.0;
+    public double actuatorCurrentAmps = 0.0;
+    public boolean extended = false;
+    public boolean retracted = true;
   }
 
   // added an update inputs class
