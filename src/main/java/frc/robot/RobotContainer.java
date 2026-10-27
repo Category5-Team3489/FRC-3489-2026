@@ -661,7 +661,15 @@ public class RobotContainer {
             drive,
             () -> -controller.getLeftY(),
             () -> -controller.getLeftX(),
-            () -> -controller.getRightX()));
+            () ->
+                -controller.getRightX()
+                    + vision.Transform3dtoAngle(
+                            vision.getTranslation(
+                                new int[] {2},
+                                3,
+                                new Translation3d[] {Translation3d.kZero},
+                                new Rotation3d[] {Rotation3d.kZero}))
+                        / 100));
 
     controller.povUp().whileTrue(DriveCommands.joystickDrive(drive, () -> 10, () -> 0, () -> 0));
     controller.povDown().whileTrue(DriveCommands.joystickDrive(drive, () -> -10, () -> 0, () -> 0));
